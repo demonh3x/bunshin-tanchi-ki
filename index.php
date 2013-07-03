@@ -5,11 +5,22 @@
         <title></title>
     </head>
     <body>
-        <?php
-            // HOLA MATEU, QUE ASE?
-            // QUE TAL??? SAFDASD
-            // //HOAADASd
-            // HASDFKASDF
+        <?php 
+            $fp = fopen ( "archivo.csv" , "r" ); 
+            while (( $data = fgetcsv ( $fp , 1000 , "," )) !== FALSE ) { // Mientras hay líneas que leer...
+
+            $i = 0; 
+            foreach($data as $row) {
+
+            echo "Campo $i: $row<br>n"; // Muestra todos los campos de la fila actual 
+            $i++ ;
+
+            }
+
+            echo "<br><br>nn";
+
+            } 
+            fclose ( $fp ); 
         ?>
     </body>
 </html>
