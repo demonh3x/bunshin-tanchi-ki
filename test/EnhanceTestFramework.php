@@ -738,7 +738,7 @@ class Test
         try {
             $testClass->{$this->TestName}();
             $result = true;
-        } catch (TestException $e) {
+        } catch (\Exception $e) {
             $this->Message = $e->getMessage();
             $this->Line = $e->getLine();
             $this->File = pathinfo($e->getFile(), PATHINFO_BASENAME);
@@ -1786,12 +1786,12 @@ class TemplateType
 
 class Language
 {
-    const French = "Fr";
-    const English = 'En';
-    const Deutsch = 'De';
     const BrazilianPortuguese = 'PtBr';
-    const Spanish = 'Sp';
+    const Deutsch = 'De';
+    const English = 'En';
+    const French = "Fr";
     const Romana = 'Ro';
+    const Spanish = 'Sp';
 }
 
 class Localisation

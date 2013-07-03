@@ -1,17 +1,24 @@
 <?php
 namespace Enhance;
 
-include_once(__ROOT_DIR__ . "src/CsvReader.php");
+include_once(__ROOT_DIR__ . "src/Readers/CsvReader.php");
 
 class TestCsvReader extends TestFixture{
 
-    private $sampleCsv;
+    private $testDataCsv;
 
     public function setUp(){
-        $this->sampleCsv =  __ROOT_DIR__ . 'test/sampleFiles/test_data.csv';
+        $this->testDataCsv =  __ROOT_DIR__ . 'test/sampleFiles/test_data.csv';
     }
 
     public function tearDown(){
+    }
+
+    private function createTestDataCsvReader(){
+        $reader = new \CsvReader();
+        $reader->open($this->testDataCsv);
+
+        return $reader;
     }
 
     function testNotReadyOnCreate(){
@@ -26,14 +33,13 @@ class TestCsvReader extends TestFixture{
     }
 
     function testOpenFile(){
-        $reader = new \CsvReader();
-        $reader->open($this->sampleCsv);
+        $reader = $this->createTestDataCsvReader();
         Assert::isTrue($reader->isReady());
     }
 
     function testReadFirstRow(){
-        $reader = new \CsvReader();
-        $reader->open($this->sampleCsv);
+        $reader = $this->createTestDataCsvReader();
+        $reader->open($this->testDataCsv);
 
         $result = array(
             "0" => "",
@@ -51,8 +57,7 @@ class TestCsvReader extends TestFixture{
     }
 
     function testReadThreelRows(){
-        $reader = new \CsvReader();
-        $reader->open($this->sampleCsv);
+        $reader = $this->createTestDataCsvReader();
 
         $expectedResults = array(
             array(
@@ -75,5 +80,31 @@ class TestCsvReader extends TestFixture{
         Assert::areIdentical($expectedResults, $actualResults);
     }
 
-    //TODO: testReadUntilEOF()
+    function testNotEOF(){
+        $reader = $this->createTestDataCsvReader();
+
+        Assert::isFalse($reader->isEof());
+    }
+
+    function testReadUntilEOF(){
+        $reader = $this->createTestDataCsvReader();
+
+        $loopLimit = 100000;
+        $rowCounter = 0;
+        while (!$reader->isEof() &&
+                $rowCounter < $loopLimit){
+            $reader->readRow();
+            $rowCounter++;
+        }
+        $sampleCsvRows = 5;
+
+        Assert::areIdentical($sampleCsvRows, $rowCounter);
+    }
+
+    function testEmptyFile(){
+        $reader = new \CsvReader();
+        $reader->open( __ROOT_DIR__ . 'test/sampleFiles/test_empty_data.csv');
+
+        Assert::isTrue($reader->isEof());
+    }
 }
