@@ -1,6 +1,6 @@
 <?php
 
-class XlsReader {
+class CsvReader {
     function openFile(){
     }
 
