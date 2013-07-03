@@ -5,9 +5,5 @@ define("__ROOT_DIR__", "../");
 
 include_once('EnhanceTestFramework.php');
 
-foreach (glob("Test*.php") as $filename)
-{
-    include_once($filename);
-}
-
+Core::discoverTests(".", true, array('sampleFiles'));
 Core::runTests();

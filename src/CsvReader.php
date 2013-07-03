@@ -2,9 +2,11 @@
 
 class CsvReader {
     private $ready = false;
+    private $fp;
 
-    function openFile(){
-        $this->ready = true;
+    function open($path){
+        $this->fp = fopen($path, "r");
+        $this->ready = (bool) $this->fp;
     }
 
     function isReady(){
@@ -12,6 +14,7 @@ class CsvReader {
     }
 
     function readRow(){
-        return null;
+        $data = fgetcsv($this->fp, 1000, ",");
+        return $data;
     }
 }
