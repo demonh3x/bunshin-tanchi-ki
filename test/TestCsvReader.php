@@ -14,6 +14,14 @@ class TestCsvReader extends TestFixture{
     public function tearDown(){
     }
 
+    function testOpenNonExistingFile(){
+        $reader = new \CsvReader();
+        Assert::isFalse($reader->isReady());
+
+        $reader->openFile('');
+        Assert::isFalse($reader->isReady());
+    }
+
     function testOpenFile(){
         $reader = new \CsvReader();
         Assert::isFalse($reader->isReady());
@@ -39,5 +47,26 @@ class TestCsvReader extends TestFixture{
             "9" => ""
         );
         Assert::areIdentical($result, $reader->readRow());
+    }
+
+    function testReadAllRows(){
+        $reader = new \CsvReader();
+        $reader->openFile($this->sampleCsv);
+
+        $results = array(
+            array(
+                "0" => "", "1" => "Luxlo", "2" => "Property", "3" => "Amit", "4" => "Chadha",
+                "5" => "www.amayadesign.co.uk/AmitChadha", "6" => "www.amayadesign.co.uk/",
+                "7" => "AmitChadha", "8" => "Y", "9" => ""
+            ),
+            array(
+                "0" => "", "1" => "タマ", "2" => "いぬ", "3" => "", "4" => "",
+                "5" => "", "6" => "",
+                "7" => "", "8" => "", "9" => ""
+            )
+        );
+        $reader->readRow();
+        Assert::areIdentical($results[0], $reader->readRow());
+        Assert::areIdentical($results[1], $reader->readRow());
     }
 }
