@@ -21,5 +21,17 @@ class TestStringEqualityComparator extends TestFixture{
         Assert::isFalse($comparator->compare("Hi!", "Hello!"));
     }
 
+    function testDifferentDataTypes(){
+        $comparator = new \StringEqualityComparator();
+        Assert::isFalse($comparator->compare(4, "4"));
+    }
 
+    function testOtherDataTypesThanString(){
+        $comparator = new \StringEqualityComparator();
+        Assert::isFalse($comparator->compare(4, 4));
+    }
+
+/*    function testSameStringsWithMockFilter(){
+
+    }*/
 }

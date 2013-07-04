@@ -10,6 +10,6 @@ class StringEqualityComparator implements Comparator{
     }
 
     function compare($a, $b){
-        return $a === $b;
+        return gettype($a) === 'string' && gettype($b) === 'string' && $a === $b;
     }
 }
