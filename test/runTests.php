@@ -4,6 +4,13 @@ namespace Enhance;
 define("__ROOT_DIR__", "../");
 
 include_once('EnhanceTestFramework.php');
+$filterRegex =  "//";
 
-Core::discoverTests(".", true, array('sampleFiles'));
+foreach (glob("Test*.php") as $filename)
+{
+    if (preg_match($filterRegex, $filename)){
+        include_once($filename);
+    }
+}
+
 Core::runTests();
