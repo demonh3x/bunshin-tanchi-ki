@@ -22,7 +22,7 @@ class CsvReader implements Reader{
         return $this->cycleCachedRow();
     }
 
-    protected function cycleCachedRow(){
+    private function cycleCachedRow(){
         $previousCache = $this->cachedRow;
 
         if ($this->isReady()){
