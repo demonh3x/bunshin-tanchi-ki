@@ -7,5 +7,5 @@
  */
 
 interface Comparator {
-    public function compare($a, $b);
+    public function areEqual($a, $b);
 }
