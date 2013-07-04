@@ -7,5 +7,3 @@ class TrimFilter implements Filter{
         return trim($text);
     }
 }
-
-//MIERDA DE MAC
