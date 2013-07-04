@@ -4,59 +4,22 @@ include_once("Filter.php");
 
 class OnlyLettersFilter implements Filter{
     function filter($text){
-        $text = trim($text);
-
-        $text = str_replace(
-            array('á', 'à', 'ä', 'â', 'ª', 'Á', 'À', 'Â', 'Ä'),
-            array('a', 'a', 'a', 'a', 'a', 'A', 'A', 'A', 'A'),
-            $text
+              $letters = array("a","b","c","d","e","f","g","h","i","j","k","l",
+                  "m","n","ñ","o","p","q","r","s","t","u","v","w","x","y","z",
+                  "A","B","C","D","E","F","G","H","I","J","K","L","M","N","Ñ",
+                  "O","P","Q","R","S","T","U","V","W","X","Y","Z"," "
         );
-
-        $text = str_replace(
-            array('é', 'è', 'ë', 'ê', 'É', 'È', 'Ê', 'Ë'),
-            array('e', 'e', 'e', 'e', 'E', 'E', 'E', 'E'),
-            $text
-        );
-
-        $text = str_replace(
-            array('í', 'ì', 'ï', 'î', 'Í', 'Ì', 'Ï', 'Î'),
-            array('i', 'i', 'i', 'i', 'I', 'I', 'I', 'I'),
-            $text
-        );
-
-        $text = str_replace(
-            array('ó', 'ò', 'ö', 'ô', 'Ó', 'Ò', 'Ö', 'Ô'),
-            array('o', 'o', 'o', 'o', 'O', 'O', 'O', 'O'),
-            $text
-        );
-
-        $text = str_replace(
-            array('ú', 'ù', 'ü', 'û', 'Ú', 'Ù', 'Û', 'Ü'),
-            array('u', 'u', 'u', 'u', 'U', 'U', 'U', 'U'),
-            $text
-        );
-
-        $text = str_replace(
-            array('ñ', 'Ñ', 'ç', 'Ç'),
-            array('n', 'N', 'c', 'C',),
-            $text
-        );
-
         
-        $text = str_replace(
-            array("\\", "¨", "º", "-", "~",
-                 "#", "@", "|", "!", "\"",
-                 "·", "$", "%", "&", "/",
-                 "(", ")", "?", "'", "¡",
-                 "¿", "[", "^", "`", "]",
-                 "+", "}", "{", "¨", "´",
-                 ">", "< ", ";", ",", ":",
-                 "."),
-            '',
-            $text
-        );
-
-        echo $text;
-        return $text;
+              $onlyLettersText = "";
+        for($i = 0; $i < strlen($text); $i++)
+        {
+            foreach($letters as $letter){
+                if ($text[$i] == $letter )
+                {
+                    $onlyLettersText .= $text[$i];
+                }
+            }
+        }
+        return $onlyLettersText;
     }
 }
