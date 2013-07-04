@@ -6,21 +6,23 @@
     </head>
     <body>
         <?php
-            $fp = fopen ( "archivo.csv" , "r" );
-            while (( $data = fgetcsv ( $fp , 1000 , "," )) !== FALSE ) { // Mientras hay líneas que leer...
-
-                $i = 0;
-                foreach($data as $row) {
-
-                    echo "Campo $i: $row<br>n"; // Muestra todos los campos de la fila actual
-                    $i++ ;
-
-                }
-
-                echo "<br><br>nn";
-
-            } 
-            fclose ( $fp ); 
+            ini_set('auto_detect_line_endings', TRUE);
+            include_once 'src/Readers/CsvReader.php';
+            
+            $testCSV = new CsvReader();
+            
+            $testCSV->open("test/sampleFiles/archivo.csv");
+            
+            var_dump ($testCSV->readRow());
+            
+            echo "<hr>";
+            
+            include_once 'src/Readers/XlsReader.php';
+            
+            $testXLS = new XlsReader();
+            
+            $testCSV->open('test/sampleFiles/amaya_data_template.xls');
+            var_dump ($testXLS->readRow());
         ?>
     </body>
 </html>
