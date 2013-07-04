@@ -54,6 +54,18 @@ class TestStringComparator extends TestFixture{
 
         Assert::isFalse($comparator->areEqual($firstColumn, $secondColumn));
     }
+
+    function testTwoFiltersInOrderEqualValues(){
+        $comparator = new \StringComparator();
+
+        $firstColumn = " Hi";
+        $secondColumn = " h I ";
+
+        $comparator->addFilter(new RemoveSpacesMockFilter());
+        $comparator->addFilter(new LowercaseMockFilter());
+
+        Assert::isTrue($comparator->areEqual($firstColumn, $secondColumn));
+    }
 }
 
 class RemoveSpacesMockFilter implements \Filter{
@@ -65,8 +77,25 @@ class RemoveSpacesMockFilter implements \Filter{
                 return "hi";
             case " hello":
                 return "hello";
+            case " Hi":
+                return "Hi";
+            case " h I ":
+                return "hI";
             default:
-                return $text;
+                throw new \Exception("RemoveSpacesMockFilter's case not defined");
+        }
+    }
+}
+
+class LowercaseMockFilter implements \Filter{
+    function filter($text){
+        switch($text){
+            case "Hi":
+                return "hi";
+            case "hI":
+                return "hi";
+            default:
+                throw new \Exception("LowercaseMockFilter's case not defined");
         }
     }
 }
