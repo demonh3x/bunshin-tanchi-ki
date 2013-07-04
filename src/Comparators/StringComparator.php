@@ -1,7 +1,7 @@
 <?php
 
 include_once("Comparator.php");
-include_once(__ROOT_DIR__ . "src/Filters/Filter.php");
+include_once(__ROOT_DIR__ . "src/Comparators/Filters/Filter.php");
 
 class StringComparator implements Comparator{
     private $filters = array();

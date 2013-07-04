@@ -1,7 +1,7 @@
 <?php
 namespace Enhance;
 
-include_once(__ROOT_DIR__ . "src/Filters/SubstituteAccentsFilter.php");
+include_once(__ROOT_DIR__ . "src/Comparators/Filters/SubstituteAccentsFilter.php");
 
 class TestSubstituteAccentsFilter extends TestFixture{
 

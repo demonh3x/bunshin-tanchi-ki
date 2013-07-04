@@ -1,7 +1,7 @@
 <?php
 namespace Enhance;
 
-include_once(__ROOT_DIR__ . "src/Filters/OnlyLettersFilter.php");
+include_once(__ROOT_DIR__ . "src/Comparators/Filters/OnlyLettersFilter.php");
 
 class TestOnlyLettersFilter extends TestFixture{
 

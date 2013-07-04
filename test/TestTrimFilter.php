@@ -1,7 +1,7 @@
 <?php
 namespace Enhance;
 
-include_once(__ROOT_DIR__ . "src/Filters/TrimFilter.php");
+include_once(__ROOT_DIR__ . "src/Comparators/Filters/TrimFilter.php");
 
 class TestTrimFilter extends TestFixture{
 
