@@ -16,6 +16,7 @@ class XlsReader implements Reader{
         {
             $this->objPHPExcel = PHPExcel_IOFactory::load($path);
             $this->ready = true;
+            $this->cycleCachedRow();
         }
         catch (PHPExcel_Exception $e)
         {
@@ -31,7 +32,7 @@ class XlsReader implements Reader{
         if ($this->eof == false)
         {
             $this->nextLine = $this->nextLine + 1;
-            return $this->cycleCachedRow();
+            return $this->cycleCachedRow()[$this->nextLine];
         }
         else
         {
@@ -46,7 +47,7 @@ class XlsReader implements Reader{
            $this->eof = true;
        }
        
-       return $this->sheetData[$this->nextLine];
+       return $this->sheetData;
     }
 
     function isEof(){
