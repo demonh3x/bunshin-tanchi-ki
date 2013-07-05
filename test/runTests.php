@@ -4,7 +4,7 @@ namespace Enhance;
 define("__ROOT_DIR__", "../");
 
 include_once('EnhanceTestFramework.php');
-$filterRegex =  "//";
+$filterRegex =  "/Xls/";
 
 foreach (glob("Test*.php") as $filename)
 {
