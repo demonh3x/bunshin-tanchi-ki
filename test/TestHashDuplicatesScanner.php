@@ -51,7 +51,7 @@ class TestHashDuplicatesScanner extends TestFixture{
         Assert::areIdentical($dataOneColumnNoDuplicates, $scanner->getUniques());
     }
 
-    /*function testGettingUniquesWhenDuplicates(){
+    function testGettingUniquesWhenDuplicates(){
         $dataOneColumnWithDuplicates = array(
             array(
                 "Column1" => "Foo"
@@ -73,7 +73,7 @@ class TestHashDuplicatesScanner extends TestFixture{
 
         );
         Assert::areIdentical($uniques, $scanner->getUniques());
-    }*/
+    }
 }
 
 class NotReadyMockReader implements \Reader{
