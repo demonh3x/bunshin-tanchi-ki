@@ -119,4 +119,33 @@ class TestHashDuplicatesScanner extends TestFixture{
         );
         Assert::areIdentical($duplicates, $scanner->getDuplicates());
     }
+
+
+    function testGettingDuplicatesWhenDuplicatesWithFilters(){
+        $dataOneColumnWithFilterDuplicates = array(
+            array(
+                "Column1" => "Foo"
+            ),
+            array(
+                "Column1" => "Bar"
+            ),
+            array(
+                "Column1" => "bar"
+            )
+        );
+
+        $scanner = $this->createScannerWithReader($dataOneColumnWithFilterDuplicates);
+
+        $duplicates = array(
+            array(
+                array(
+                    "Column1" => "Bar"
+                ),
+                array(
+                    "Column1" => "bar"
+                )
+            )
+        );
+        Assert::areIdentical($duplicates, $scanner->getDuplicates());
+    }
 }
