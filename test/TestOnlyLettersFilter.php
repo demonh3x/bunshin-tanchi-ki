@@ -17,6 +17,4 @@ class TestOnlyLettersFilter extends TestFixture{
         $expected = "Hello World ";
         Assert::areIdentical($expected, $filter->filter($input));
     }
-
-
 }

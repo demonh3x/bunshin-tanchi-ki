@@ -3,6 +3,9 @@ namespace Enhance;
 
 include_once(__ROOT_DIR__ . "src/HashDuplicatesScanner.php");
 
+include_once(__ROOT_DIR__ . "test/mocks/NotReadyMockReader.php");
+include_once(__ROOT_DIR__ . "test/mocks/MockReader.php");
+
 class TestHashDuplicatesScanner extends TestFixture{
     public function setUp(){
     }
@@ -74,44 +77,46 @@ class TestHashDuplicatesScanner extends TestFixture{
         );
         Assert::areIdentical($uniques, $scanner->getUniques());
     }
-}
 
-class NotReadyMockReader implements \Reader{
-    function open($path){
-    }
-    function isReady(){
-        return false;
-    }
-    function readRow(){
-        return array();
-    }
-    function isEof(){
-        return false;
-    }
-}
+    function testGettingDuplicatesWhenNoDuplicates(){
+        $dataOneColumnNoDuplicates = array(
+            array(
+                "Column1" => "Foo"
+            ),
+            array(
+                "Column1" => "Bar"
+            )
+        );
 
-class MockReader implements \Reader{
-    private $cursor = 0, $resource = array();
-
-    function setResource($resource){
-        $this->resource = $resource;
+        $scanner = $this->createScannerWithReader($dataOneColumnNoDuplicates);
+        Assert::areIdentical(array(), $scanner->getDuplicates());
     }
 
-    function open($path){
-    }
-    function isReady(){
-        return true;
-    }
-    function readRow(){
-        $data = $this->resource[$this->cursor];
+    function testGettingDuplicatesWhenDuplicates(){
+        $dataOneColumnWithDuplicates = array(
+            array(
+                "Column1" => "Foo"
+            ),
+            array(
+                "Column1" => "Bar"
+            ),
+            array(
+                "Column1" => "Bar"
+            )
+        );
 
-        if(!$this->isEof()){
-            $this->cursor++;
-        }
+        $scanner = $this->createScannerWithReader($dataOneColumnWithDuplicates);
 
-        return $data;
-    }
-    function isEof(){
-        return $this->cursor >= count($this->resource);
+        $duplicates = array(
+            array(
+                array(
+                    "Column1" => "Bar"
+                ),
+                array(
+                    "Column1" => "Bar"
+                )
+            )
+        );
+        Assert::areIdentical($duplicates, $scanner->getDuplicates());
     }
 }

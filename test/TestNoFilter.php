@@ -16,6 +16,4 @@ class TestNoFilter extends TestFixture{
         $input = "Hello World!";
         Assert::areIdentical($input, $filter->filter($input));
     }
-
-
 }

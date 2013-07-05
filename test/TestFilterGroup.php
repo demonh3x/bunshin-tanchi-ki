@@ -3,6 +3,9 @@ namespace Enhance;
 
 include_once(__ROOT_DIR__ . "src/Comparators/Filters/FilterGroup.php");
 
+include_once(__ROOT_DIR__ . "test/mocks/NoSpacesMockFilter.php");
+include_once(__ROOT_DIR__ . "test/mocks/UppercaseMockFilter.php");
+
 class TestFilterGroup extends TestFixture{
 
     public function setUp(){
@@ -38,31 +41,5 @@ class TestFilterGroup extends TestFixture{
         $group->addFilter(new UppercaseMockFilter());
         $group->addFilter(new NoSpacesMockFilter());
         Assert::areIdentical("HI", $group->filter(" h i "));
-    }
-}
-
-class NoSpacesMockFilter implements \Filter{
-    function filter($text){
-        switch($text){
-            case " h i ":
-                return "hi";
-            case " H I ":
-                return "HI";
-            default:
-                throw new \Exception("NoSpacesMockFilter's case ($text) is not defined");
-        }
-    }
-}
-
-class UppercaseMockFilter implements \Filter{
-    function filter($text){
-        switch($text){
-            case "hi":
-                return "HI";
-            case " h i ":
-                return " H I ";
-            default:
-                throw new \Exception("UppercaseMockFilter's case ($text) is not defined");
-        }
     }
 }
