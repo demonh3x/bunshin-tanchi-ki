@@ -25,14 +25,29 @@ class TestStringComparator extends TestFixture{
         Assert::isFalse($comparator->areEqual("Hi!", "Hello!"));
     }
 
-    function testDifferentDataTypes(){
+    function testComparingSameStringAndIntValues(){
         $comparator = $this->stringComparatorFactory();
-        Assert::isFalse($comparator->areEqual(4, "4"));
+        Assert::isTrue($comparator->areEqual(4, "4"));
     }
 
-    function testOtherDataTypesThanString(){
+    function testComparingDifferentStringAndIntValues(){
         $comparator = $this->stringComparatorFactory();
-        Assert::isFalse($comparator->areEqual(4, 4));
+        Assert::isFalse($comparator->areEqual("5", 4));
+    }
+
+    function testComparingSameIntValues(){
+        $comparator = $this->stringComparatorFactory();
+        Assert::isTrue($comparator->areEqual(4, 4));
+    }
+
+    function testComparingDifferentIntValues(){
+        $comparator = $this->stringComparatorFactory();
+        Assert::isFalse($comparator->areEqual(5, 4));
+    }
+
+    function testComparingSameStringAndNullValues(){
+        $comparator = $this->stringComparatorFactory();
+        Assert::isTrue($comparator->areEqual(null, ""));
     }
 
     function testOneFilterEqualValues(){

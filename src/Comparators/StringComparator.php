@@ -2,26 +2,21 @@
 
 include_once("Comparator.php");
 include_once(__ROOT_DIR__ . "src/Comparators/Filters/Filter.php");
+include_once(__ROOT_DIR__ . "src/Comparators/Filters/FilterGroup.php");
 
 class StringComparator implements Comparator{
-    private $filters = array();
+    private $filterGroup;
+
+    function __construct(){
+        $this->filterGroup = new FilterGroup();
+    }
 
     function addFilter(Filter $filter){
-        $this->filters[] = $filter;
+        $this->filterGroup->addFilter($filter);
     }
 
     function areEqual($a, $b){
-        return gettype($a) === 'string' && gettype($b) === 'string' &&
-               $this->applyFilters($a) === $this->applyFilters($b);
-    }
-
-    private function applyFilters($text){
-        $filteredText = $text;
-
-        foreach ($this->filters as $filter){
-            $filteredText = $filter->filter($filteredText);
-        }
-
-        return $filteredText;
+        return $this->filterGroup->filter((string) $a) ===
+               $this->filterGroup->filter((string) $b);
     }
 }
