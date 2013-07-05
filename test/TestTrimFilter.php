@@ -12,7 +12,7 @@ class TestTrimFilter extends TestFixture{
     }
 
     function testTrimmedOutput(){
-        $filter = new \TrimFilter();
+        $filter = Core::getCodeCoverageWrapper("TrimFilter");
         $input = "  Hello World!  ";
         $expected = "Hello World!";
         Assert::areIdentical($expected, $filter->filter($input));

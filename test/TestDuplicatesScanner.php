@@ -11,8 +11,12 @@ class TestDuplicatesScanner extends TestFixture{
     public function tearDown(){
     }
 
+    private function duplicatesScannerFactory(){
+        return Core::getCodeCoverageWrapper('DuplicatesScanner');
+    }
+
     function testRaiseExceptionWhenSettingAReaderNotReady(){
-        $scanner = new \DuplicatesScanner();
+        $scanner = $this->duplicatesScannerFactory();
         $exceptionRaised = false;
 
         try {
@@ -25,7 +29,7 @@ class TestDuplicatesScanner extends TestFixture{
     }
 
     function testGetUniquesCheckingAllColumnsWhenNoDuplicates(){
-        $scanner = new \DuplicatesScanner();
+        $scanner = $this->duplicatesScannerFactory();
 
         $resource = array(
             array(
@@ -50,7 +54,7 @@ class TestDuplicatesScanner extends TestFixture{
     }
 
     function testGetUniquesCheckingAllColumnsWhenDuplicates(){
-        $scanner = new \DuplicatesScanner();
+        $scanner = $this->duplicatesScannerFactory();
 
         $resource = array(
             array(
@@ -107,7 +111,7 @@ class TestDuplicatesScanner extends TestFixture{
      * It is going to take a while to execute and use a considerable amount of ram.
      */
 /*    function testBenchmark100000(){
-        $scanner = new \DuplicatesScanner();
+        $scanner = $this->duplicatesScannerFactory();
 
         $uniqueData = array(
             "0" => "", "1" => "Luxlo", "2" => "Property", "3" => "Amit", "4" => "Chadha",
@@ -128,8 +132,8 @@ class TestDuplicatesScanner extends TestFixture{
 
         Assert::areIdentical(array($uniqueData), $scanner->getUniques());
 
-        $memory = memory_get_usage();
-        echo "<h1>Memory usage: $memory</h1>";
+        $memory = memory_get_usage(true) / 1024 / 1024;
+        echo "<h1>100.000 Duplicates benchmark memory usage: $memory MB</h1>";
     }*/
 }
 

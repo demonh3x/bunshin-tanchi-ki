@@ -11,28 +11,32 @@ class TestStringComparator extends TestFixture{
     public function tearDown(){
     }
 
+    private function stringComparatorFactory(){
+        return Core::getCodeCoverageWrapper("StringComparator");
+    }
+
     function testSameStringsWithoutFilters(){
-        $comparator = new \StringComparator();
+        $comparator = $this->stringComparatorFactory();
         Assert::isTrue($comparator->areEqual("Hi!", "Hi!"));
     }
 
     function testDifferentStringsWithoutFilters(){
-        $comparator = new \StringComparator();
+        $comparator = $this->stringComparatorFactory();
         Assert::isFalse($comparator->areEqual("Hi!", "Hello!"));
     }
 
     function testDifferentDataTypes(){
-        $comparator = new \StringComparator();
+        $comparator = $this->stringComparatorFactory();
         Assert::isFalse($comparator->areEqual(4, "4"));
     }
 
     function testOtherDataTypesThanString(){
-        $comparator = new \StringComparator();
+        $comparator = $this->stringComparatorFactory();
         Assert::isFalse($comparator->areEqual(4, 4));
     }
 
     function testOneFilterEqualValues(){
-        $comparator = new \StringComparator();
+        $comparator = $this->stringComparatorFactory();
 
         $firstColumn = " hi";
         $secondColumn = " h i ";
@@ -44,7 +48,7 @@ class TestStringComparator extends TestFixture{
     }
 
     function testOneFilterDifferentValues(){
-        $comparator = new \StringComparator();
+        $comparator = $this->stringComparatorFactory();
 
         $firstColumn = " hi";
         $secondColumn = " hello";
@@ -56,7 +60,7 @@ class TestStringComparator extends TestFixture{
     }
 
     function testTwoFiltersInOrderEqualValues(){
-        $comparator = new \StringComparator();
+        $comparator = $this->stringComparatorFactory();
 
         $firstColumn = " Hi";
         $secondColumn = " h I ";

@@ -14,20 +14,24 @@ class TestCsvReader extends TestFixture{
     public function tearDown(){
     }
 
+    private function csvReaderFactory(){
+        return Core::getCodeCoverageWrapper('CsvReader');
+    }
+
     private function createTestDataCsvReader(){
-        $reader = new \CsvReader();
+        $reader = $this->csvReaderFactory();
         $reader->open($this->testDataCsv);
 
         return $reader;
     }
 
     function testNotReadyOnCreate(){
-        $reader = new \CsvReader();
+        $reader = $this->csvReaderFactory();
         Assert::isFalse($reader->isReady());
     }
 
     function testOpenNonExistingFile(){
-        $reader = new \CsvReader();
+        $reader = $this->csvReaderFactory();
         $reader->open('');
         Assert::isFalse($reader->isReady());
     }
@@ -102,7 +106,7 @@ class TestCsvReader extends TestFixture{
     }
 
     function testEmptyFile(){
-        $reader = new \CsvReader();
+        $reader = $this->csvReaderFactory();
         $reader->open( __ROOT_DIR__ . 'test/sampleFiles/test_empty_data.csv');
 
         Assert::isTrue($reader->isEof());

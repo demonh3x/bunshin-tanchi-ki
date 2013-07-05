@@ -12,7 +12,7 @@ class TestNoFilter extends TestFixture{
     }
 
     function testSameInputAndOutput(){
-        $filter = new \NoFilter();
+        $filter = Core::getCodeCoverageWrapper("NoFilter");
         $input = "Hello World!";
         Assert::areIdentical($input, $filter->filter($input));
     }

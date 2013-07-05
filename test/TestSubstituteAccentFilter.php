@@ -11,14 +11,18 @@ class TestSubstituteAccentsFilter extends TestFixture{
     public function tearDown(){
     }
 
+    private function substituteAccentsFilterFactory(){
+        return Core::getCodeCoverageWrapper("SubstituteAccentsFilter");
+    }
+
     function testUnchangedNormalSymbols(){
-        $filter = new \SubstituteAccentsFilter();
+        $filter = $this->substituteAccentsFilterFactory();
         $input = "abcdfghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ~¨`";
         Assert::areIdentical($input, $filter->filter($input));
     }
 
     function testSubstituteAccents(){
-        $filter = new \SubstituteAccentsFilter();
+        $filter = $this->substituteAccentsFilterFactory();
         $input = "áàäâªÁÀÂÄdoéèëêÉÈÊËreíìïîÍÌÏÎmióòöôÓÒÖÔfaúùüûÚÙÛÜsolñÑçÇlasi";
         $expected = "aaaaaAAAAdoeeeeEEEEreiiiiIIIImiooooOOOOfauuuuUUUUsolnNcClasi";
         Assert::areIdentical($expected, $filter->filter($input));

@@ -12,7 +12,7 @@ class TestOnlyLettersFilter extends TestFixture{
     }
 
     function testRemovingNotCommonLetters(){
-        $filter = new \OnlyLettersFilter();
+        $filter = Core::getCodeCoverageWrapper("OnlyLettersFilter");
         $input = "Hello $%&(+World! ";
         $expected = "Hello World ";
         Assert::areIdentical($expected, $filter->filter($input));
