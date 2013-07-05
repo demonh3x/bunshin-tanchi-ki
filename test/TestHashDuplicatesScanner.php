@@ -74,6 +74,48 @@ class TestHashDuplicatesScanner extends TestFixture{
         );
         Assert::areIdentical($uniques, $scanner->getUniques());
     }
+
+    function testGettingDuplicatesWhenNoDuplicates(){
+        $dataOneColumnNoDuplicates = array(
+            array(
+                "Column1" => "Foo"
+            ),
+            array(
+                "Column1" => "Bar"
+            )
+        );
+
+        $scanner = $this->createScannerWithReader($dataOneColumnNoDuplicates);
+        Assert::areIdentical(array(), $scanner->getDuplicates());
+    }
+
+    function testGettingDuplicatesWhenDuplicates(){
+        $dataOneColumnWithDuplicates = array(
+            array(
+                "Column1" => "Foo"
+            ),
+            array(
+                "Column1" => "Bar"
+            ),
+            array(
+                "Column1" => "Bar"
+            )
+        );
+
+        $scanner = $this->createScannerWithReader($dataOneColumnWithDuplicates);
+
+        $duplicates = array(
+            array(
+                array(
+                    "Column1" => "Bar"
+                ),
+                array(
+                    "Column1" => "Bar"
+                )
+            )
+        );
+        Assert::areIdentical($duplicates, $scanner->getDuplicates());
+    }
 }
 
 class NotReadyMockReader implements \Reader{
