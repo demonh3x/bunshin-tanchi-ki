@@ -1,6 +1,6 @@
 <?php
 
-class UniqueList {
+class HashList {
     private $values = array();
 
     function contains($value){

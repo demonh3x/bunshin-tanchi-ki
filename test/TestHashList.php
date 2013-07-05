@@ -1,9 +1,9 @@
 <?php
 namespace Enhance;
 
-include_once(__ROOT_DIR__ . "src/UniqueList.php");
+include_once(__ROOT_DIR__ . "src/HashList.php");
 
-class TestUniqueList extends TestFixture{
+class TestHashList extends TestFixture{
 
     public function setUp(){
     }
@@ -12,7 +12,7 @@ class TestUniqueList extends TestFixture{
     }
 
     private function uniqueListFactory(){
-        return Core::getCodeCoverageWrapper("UniqueList");
+        return Core::getCodeCoverageWrapper("HashList");
     }
 
     function testContainsNotAddedValue(){
