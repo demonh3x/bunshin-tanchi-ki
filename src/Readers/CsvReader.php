@@ -1,5 +1,6 @@
 <?php
 
+ini_set('auto_detect_line_endings', TRUE);
 include_once("Reader.php");
 
 class CsvReader implements Reader{
