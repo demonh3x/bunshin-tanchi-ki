@@ -11,8 +11,7 @@ class StringComparator implements Comparator{
     }
 
     function areEqual($a, $b){
-        return gettype($a) === 'string' && gettype($b) === 'string' &&
-               $this->applyFilters($a) === $this->applyFilters($b);
+        return $this->applyFilters((string) $a) === $this->applyFilters((string) $b);
     }
 
     private function applyFilters($text){
