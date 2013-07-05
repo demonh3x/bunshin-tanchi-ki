@@ -3,6 +3,9 @@ namespace Enhance;
 
 include_once(__ROOT_DIR__ . "src/HashDuplicatesScanner.php");
 
+include_once(__ROOT_DIR__ . "test/mocks/NotReadyMockReader.php");
+include_once(__ROOT_DIR__ . "test/mocks/MockReader.php");
+
 class TestHashDuplicatesScanner extends TestFixture{
     public function setUp(){
     }
@@ -115,45 +118,5 @@ class TestHashDuplicatesScanner extends TestFixture{
             )
         );
         Assert::areIdentical($duplicates, $scanner->getDuplicates());
-    }
-}
-
-class NotReadyMockReader implements \Reader{
-    function open($path){
-    }
-    function isReady(){
-        return false;
-    }
-    function readRow(){
-        return array();
-    }
-    function isEof(){
-        return false;
-    }
-}
-
-class MockReader implements \Reader{
-    private $cursor = 0, $resource = array();
-
-    function setResource($resource){
-        $this->resource = $resource;
-    }
-
-    function open($path){
-    }
-    function isReady(){
-        return true;
-    }
-    function readRow(){
-        $data = $this->resource[$this->cursor];
-
-        if(!$this->isEof()){
-            $this->cursor++;
-        }
-
-        return $data;
-    }
-    function isEof(){
-        return $this->cursor >= count($this->resource);
     }
 }

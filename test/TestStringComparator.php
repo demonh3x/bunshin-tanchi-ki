@@ -3,6 +3,9 @@ namespace Enhance;
 
 include_once(__ROOT_DIR__ . "src/Comparators/StringComparator.php");
 
+include_once(__ROOT_DIR__ . "test/mocks/RemoveSpacesMockFilter.php");
+include_once(__ROOT_DIR__ . "test/mocks/LowercaseMockFilter.php");
+
 class TestStringComparator extends TestFixture{
 
     public function setUp(){
@@ -84,37 +87,5 @@ class TestStringComparator extends TestFixture{
         $comparator->addFilter(new LowercaseMockFilter());
 
         Assert::isTrue($comparator->areEqual($firstColumn, $secondColumn));
-    }
-}
-
-class RemoveSpacesMockFilter implements \Filter{
-    function filter($text){
-        switch($text){
-            case " hi":
-                return "hi";
-            case " h i ":
-                return "hi";
-            case " hello":
-                return "hello";
-            case " Hi":
-                return "Hi";
-            case " h I ":
-                return "hI";
-            default:
-                throw new \Exception("RemoveSpacesMockFilter's case not defined");
-        }
-    }
-}
-
-class LowercaseMockFilter implements \Filter{
-    function filter($text){
-        switch($text){
-            case "Hi":
-                return "hi";
-            case "hI":
-                return "hi";
-            default:
-                throw new \Exception("LowercaseMockFilter's case not defined");
-        }
     }
 }
