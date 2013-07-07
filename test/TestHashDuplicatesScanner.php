@@ -5,6 +5,7 @@ include_once(__ROOT_DIR__ . "src/HashDuplicatesScanner.php");
 
 include_once(__ROOT_DIR__ . "test/mocks/NotReadyMockReader.php");
 include_once(__ROOT_DIR__ . "test/mocks/MockReader.php");
+include_once(__ROOT_DIR__ . "test/mocks/LowercaseMockFilter.php");
 
 class TestHashDuplicatesScanner extends TestFixture{
     public function setUp(){
@@ -135,6 +136,7 @@ class TestHashDuplicatesScanner extends TestFixture{
         );
 
         $scanner = $this->createScannerWithReader($dataOneColumnWithFilterDuplicates);
+        $scanner->setFilter(new LowercaseMockFilter());
 
         $duplicates = array(
             array(

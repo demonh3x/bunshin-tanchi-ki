@@ -2,6 +2,7 @@
 
 include_once("Readers/Reader.php");
 include_once("HashList.php");
+include_once("Comparators/Filters/FilterGroup.php");
 
 class HashDuplicatesScanner {
     private $reader;
@@ -9,8 +10,11 @@ class HashDuplicatesScanner {
     private $appearedRows, $uniqueRows = array();
     private $duplicatedRows = array();
 
+    private $filter;
+
     function __construct(){
         $this->appearedRows = new HashList();
+        $this->filter = new FilterGroup();
     }
 
     function setReader(Reader $reader){
@@ -37,7 +41,7 @@ class HashDuplicatesScanner {
         $hash = $this->getHash($row);
 
         if ($this->appearedRows->contains($hash)) {
-            $this->moveUniqueToDuplicateRows($row, $hash);
+            $this->moveUniqueToDuplicateRows($hash);
             $this->addDuplicateRow($row, $hash);
         } else {
             $this->addUniqueRow($row, $hash);
@@ -47,12 +51,14 @@ class HashDuplicatesScanner {
     private function getHash($row){
         $hash = "";
         foreach ($row as $column => $value){
+            $value = $this->filter->filter($value);
             $hash .= "$column$value";
         }
         return $hash;
     }
 
-    private function moveUniqueToDuplicateRows($row, $hash){
+    private function moveUniqueToDuplicateRows($hash){
+        $row = $this->uniqueRows[$hash];
         $this->addDuplicateRow($row, $hash);
         unset($this->uniqueRows[$hash]);
     }
@@ -69,5 +75,9 @@ class HashDuplicatesScanner {
     function getDuplicates(){
         $this->processInput();
         return array_values($this->duplicatedRows);
+    }
+
+    function setFilter(Filter $filter){
+        $this->filter = $filter;
     }
 }

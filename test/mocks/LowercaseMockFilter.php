@@ -10,6 +10,11 @@ class LowercaseMockFilter implements \Filter{
                 return "hi";
             case "hI":
                 return "hi";
+            case "Foo":
+                return "foo";
+            case "Bar":
+            case "bar":
+                return "bar";
             default:
                 throw new \Exception("LowercaseMockFilter's case ($text) is not defined");
         }
