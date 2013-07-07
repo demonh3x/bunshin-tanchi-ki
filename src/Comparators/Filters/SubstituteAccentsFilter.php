@@ -3,7 +3,7 @@
 include_once("Filter.php");
 
 class SubstituteAccentsFilter implements Filter{
-    function filter($text){
+    function applyTo($text){
         $text = str_replace(
             array('á', 'à', 'ä', 'â', 'ª', 'Á', 'À', 'Â', 'Ä'),
             array('a', 'a', 'a', 'a', 'a', 'A', 'A', 'A', 'A'),

@@ -16,7 +16,7 @@ class StringComparator implements Comparator{
     }
 
     function areEqual($a, $b){
-        return $this->filterGroup->filter((string) $a) ===
-               $this->filterGroup->filter((string) $b);
+        return $this->filterGroup->applyTo((string) $a) ===
+               $this->filterGroup->applyTo((string) $b);
     }
 }

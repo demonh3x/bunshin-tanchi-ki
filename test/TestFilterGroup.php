@@ -20,26 +20,26 @@ class TestFilterGroup extends TestFixture{
 
     function testNoFilters(){
         $group = $this->createFilterGroup();
-        Assert::areIdentical("hi", $group->filter("hi"));
+        Assert::areIdentical("hi", $group->applyTo("hi"));
     }
 
     function testOneFilter(){
         $group = $this->createFilterGroup();
         $group->addFilter(new UppercaseMockFilter());
-        Assert::areIdentical("HI", $group->filter("hi"));
+        Assert::areIdentical("HI", $group->applyTo("hi"));
     }
 
     function testTwoFiltersOneWay(){
         $group = $this->createFilterGroup();
         $group->addFilter(new NoSpacesMockFilter());
         $group->addFilter(new UppercaseMockFilter());
-        Assert::areIdentical("HI", $group->filter(" h i "));
+        Assert::areIdentical("HI", $group->applyTo(" h i "));
     }
 
     function testTwoFiltersReversed(){
         $group = $this->createFilterGroup();
         $group->addFilter(new UppercaseMockFilter());
         $group->addFilter(new NoSpacesMockFilter());
-        Assert::areIdentical("HI", $group->filter(" h i "));
+        Assert::areIdentical("HI", $group->applyTo(" h i "));
     }
 }

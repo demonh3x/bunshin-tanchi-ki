@@ -15,6 +15,6 @@ class TestTrimFilter extends TestFixture{
         $filter = Core::getCodeCoverageWrapper("TrimFilter");
         $input = "  Hello World!  ";
         $expected = "Hello World!";
-        Assert::areIdentical($expected, $filter->filter($input));
+        Assert::areIdentical($expected, $filter->applyTo($input));
     }
 }

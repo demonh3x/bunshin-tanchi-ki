@@ -15,6 +15,6 @@ class TestOnlyLettersFilter extends TestFixture{
         $filter = Core::getCodeCoverageWrapper("OnlyLettersFilter");
         $input = "Hello $%&(+World! ";
         $expected = "Hello World ";
-        Assert::areIdentical($expected, $filter->filter($input));
+        Assert::areIdentical($expected, $filter->applyTo($input));
     }
 }

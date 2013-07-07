@@ -2,7 +2,7 @@
 
 include_once("Readers/Reader.php");
 include_once("HashList.php");
-include_once("Comparators/Filters/FilterGroup.php");
+include_once("Comparators/Filters/Filter.php");
 
 class HashDuplicatesScanner {
     private $reader;
@@ -14,7 +14,6 @@ class HashDuplicatesScanner {
 
     function __construct(){
         $this->appearedRows = new HashList();
-        $this->filter = new FilterGroup();
     }
 
     function setReader(Reader $reader){
@@ -51,10 +50,14 @@ class HashDuplicatesScanner {
     private function getHash($row){
         $hash = "";
         foreach ($row as $column => $value){
-            $value = $this->filter->filter($value);
+            $value = $this->applyFilterTo($value);
             $hash .= "$column$value";
         }
         return $hash;
+    }
+
+    private function applyFilterTo($text){
+        return isset($this->filter)? $this->filter->applyTo($text) : $text;
     }
 
     private function moveUniqueToDuplicateRows($hash){

@@ -8,5 +8,5 @@ interface Filter {
      * @return mixed
      * The transformed result.
      */
-    public function filter($text);
+    public function applyTo($text);
 }
