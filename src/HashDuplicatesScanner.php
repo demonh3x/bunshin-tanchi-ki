@@ -5,12 +5,12 @@ include_once("HashList.php");
 include_once("Comparators/Filters/Filter.php");
 
 class HashDuplicatesScanner {
-    private $reader;
+    private $reader, $filter;
 
     private $appearedRows, $uniqueRows = array();
     private $duplicatedRows = array();
 
-    private $filter;
+    private $columnsToScan = array();
 
     function __construct(){
         $this->appearedRows = new HashList();
@@ -49,10 +49,13 @@ class HashDuplicatesScanner {
 
     private function getHash($row){
         $hash = "";
-        foreach ($row as $column => $value){
-            $value = $this->applyFilterTo($value);
+        $columns = empty($this->columnsToScan)? array_keys($row) : $this->columnsToScan;
+
+        foreach ($columns as $column){
+            $value = $this->applyFilterTo($row[$column]);
             $hash .= "$column$value";
         }
+
         return $hash;
     }
 
@@ -82,5 +85,9 @@ class HashDuplicatesScanner {
 
     function setFilter(Filter $filter){
         $this->filter = $filter;
+    }
+
+    function watchColumns($columns){
+        $this->columnsToScan = is_array($columns)? $columns : array($columns);
     }
 }
