@@ -1,7 +1,10 @@
 <?php
 
+include_once("Comparators/Filters/Filter.php");
+
 class HashCalculator {
     private $columnsToScan = array();
+    private $filter;
 
     function calculate($row){
         $hash = "";
@@ -11,6 +14,7 @@ class HashCalculator {
 
         foreach ($columns as $column){
             $value = $row[$column];
+            $value = $this->applyFilterTo($value);
             $hash .= "$column$value";
         }
 
@@ -21,7 +25,15 @@ class HashCalculator {
         return !empty($this->columnsToScan);
     }
 
+    private function applyFilterTo($text){
+        return isset($this->filter)? $this->filter->applyTo($text) : $text;
+    }
+
     function watchColumns($columns){
         $this->columnsToScan = $columns;
+    }
+
+    function setFilter(Filter $filter){
+        $this->filter = $filter;
     }
 }

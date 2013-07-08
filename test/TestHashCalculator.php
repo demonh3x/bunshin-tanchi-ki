@@ -2,6 +2,7 @@
 namespace Enhance;
 
 include_once(__ROOT_DIR__ . "src/HashCalculator.php");
+include_once(__ROOT_DIR__ . "test/mocks/LowercaseMockFilter.php");
 
 class TestHashCalculator extends TestFixture{
 
@@ -66,4 +67,15 @@ class TestHashCalculator extends TestFixture{
         Assert::areIdentical("0foo3qwer", $calculator->calculate($data));
     }
 
+    function testFilteredHash(){
+        $calculator = $this->createHashCalculator();
+
+        $data = array(
+            "0" => "Foo"
+        );
+
+        $calculator->setFilter(new LowercaseMockFilter());
+
+        Assert::areIdentical("0foo", $calculator->calculate($data));
+    }
 }
