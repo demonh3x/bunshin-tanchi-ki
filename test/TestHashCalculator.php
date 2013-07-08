@@ -92,4 +92,21 @@ class TestHashCalculator extends TestFixture{
 
         Assert::areIdentical("0foo1Bar", $calculator->calculate($data));
     }
+
+    function testSelectedColumnsWithFilters(){
+        $calculator = $this->createHashCalculator();
+
+        $data = array(
+            "0" => "asdf",
+            "1" => "Foo",
+            "2" => "qwer",
+            "3" => " B a r "
+        );
+
+        $calculator->watchColumns(array("3", "1"));
+        $calculator->setFilter(new LowercaseMockFilter(), "1");
+        $calculator->setFilter(new RemoveSpacesMockFilter(), "3");
+
+        Assert::areIdentical("3Bar1foo", $calculator->calculate($data));
+    }
 }
