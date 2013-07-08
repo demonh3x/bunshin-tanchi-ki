@@ -42,4 +42,20 @@ class TestFilterGroup extends TestFixture{
         $group->addFilter(new NoSpacesMockFilter());
         Assert::areIdentical("HI", $group->applyTo(" h i "));
     }
+
+    function testGroupCreationByParameters(){
+        $group = \FilterGroup::create(
+            new UppercaseMockFilter(),
+            new NoSpacesMockFilter()
+        );
+        Assert::areIdentical("HI", $group->applyTo(" h i "));
+    }
+
+    function testGroupCreationByArray(){
+        $group = \FilterGroup::create(array(
+            new UppercaseMockFilter(),
+            new NoSpacesMockFilter()
+        ));
+        Assert::areIdentical("HI", $group->applyTo(" h i "));
+    }
 }
