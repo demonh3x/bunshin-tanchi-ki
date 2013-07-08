@@ -1,8 +1,9 @@
 <?php
 
 include_once("Readers/Reader.php");
+include_once("HashCalculators/HashCalculator.php");
+
 include_once("HashList.php");
-include_once("HashCalculators/StringHashCalculator.php");
 
 class HashDuplicatesScanner {
     private $reader, $hashCalculator;
@@ -10,10 +11,8 @@ class HashDuplicatesScanner {
     private $appearedRows;
     private $uniqueRows = array(), $duplicatedRows = array();
 
-
     function __construct(){
         $this->appearedRows = new HashList();
-        $this->hashCalculator = new StringHashCalculator();
     }
 
     function setReader(Reader $reader){
@@ -24,12 +23,20 @@ class HashDuplicatesScanner {
         $this->reader = $reader;
     }
 
+    function setHashCalculator(HashCalculator $calculator){
+        $this->hashCalculator = $calculator;
+    }
+
     function getUniques(){
         $this->processInput();
         return array_values($this->uniqueRows);
     }
 
     private function processInput(){
+        if (!isset($this->hashCalculator)){
+            throw new Exception("No hash calculator has been set!");
+        }
+
         while(!$this->reader->isEof()){
             $row = $this->reader->readRow();
             $this->check($row);
@@ -71,13 +78,5 @@ class HashDuplicatesScanner {
     function getDuplicates(){
         $this->processInput();
         return array_values($this->duplicatedRows);
-    }
-
-    function setFilter(Filter $filter){
-        $this->hashCalculator->setGlobalFilter($filter);
-    }
-
-    function watchColumns($columns){
-        $this->hashCalculator->watchColumns($columns);
     }
 }
