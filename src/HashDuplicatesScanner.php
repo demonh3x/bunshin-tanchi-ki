@@ -1,16 +1,15 @@
 <?php
 
 include_once("Readers/Reader.php");
+include_once("HashCalculators/HashCalculator.php");
+
 include_once("HashList.php");
-include_once("HashCalculators/Filters/Filter.php");
 
 class HashDuplicatesScanner {
-    private $reader, $filter;
+    private $reader, $hashCalculator;
 
-    private $appearedRows, $uniqueRows = array();
-    private $duplicatedRows = array();
-
-    private $columnsToScan = array();
+    private $appearedRows;
+    private $uniqueRows = array(), $duplicatedRows = array();
 
     function __construct(){
         $this->appearedRows = new HashList();
@@ -24,12 +23,20 @@ class HashDuplicatesScanner {
         $this->reader = $reader;
     }
 
+    function setHashCalculator(HashCalculator $calculator){
+        $this->hashCalculator = $calculator;
+    }
+
     function getUniques(){
         $this->processInput();
         return array_values($this->uniqueRows);
     }
 
     private function processInput(){
+        if (!isset($this->hashCalculator)){
+            throw new Exception("No hash calculator has been set!");
+        }
+
         while(!$this->reader->isEof()){
             $row = $this->reader->readRow();
             $this->check($row);
@@ -48,20 +55,7 @@ class HashDuplicatesScanner {
     }
 
     private function getHash($row){
-        $hash = "";
-        $columns = empty($this->columnsToScan)? array_keys($row) : $this->columnsToScan;
-
-        foreach ($columns as $column){
-            $data = $row[$column];
-            $value = $this->applyFilterTo($data);
-            $hash .= "$column$value";
-        }
-
-        return $hash;
-    }
-
-    private function applyFilterTo($text){
-        return isset($this->filter)? $this->filter->applyTo($text) : $text;
+        return $this->hashCalculator->calculate($row);
     }
 
     private function moveUniqueToDuplicateRows($hash){
@@ -84,13 +78,5 @@ class HashDuplicatesScanner {
     function getDuplicates(){
         $this->processInput();
         return array_values($this->duplicatedRows);
-    }
-
-    function setFilter(Filter $filter){
-        $this->filter = $filter;
-    }
-
-    function watchColumns($columns){
-        $this->columnsToScan = is_array($columns)? $columns : array($columns);
     }
 }
