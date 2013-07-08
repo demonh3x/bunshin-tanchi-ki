@@ -21,7 +21,7 @@
             
             $testXLS = new XlsReader();
             
-            $testXLS->open('test/sampleFiles/amaya_data_template.xls');
+            $testXLS->open('test/sampleFiles/test_empty_file2.xls');
             
             var_dump ($testXLS->readRow());
             var_dump ($testXLS->readRow());
@@ -36,6 +36,11 @@
             var_dump ($testXLS->readRow());
             var_dump ($testXLS->readRow());
             var_dump ($testXLS->readRow());
+            var_dump ($testXLS->readRow());
+            var_dump ($testXLS->readRow());
+            var_dump ($testXLS->readRow());
+            var_dump ($testXLS->readRow());
+            
             
             echo "<hr>";////////////////////////////////////////////////////
 //        define ("__ROOT_DIR__", "./");

@@ -5,8 +5,8 @@ include_once(__ROOT_DIR__ . "lib/PHPExcel_1.7.9_doc/Classes/PHPExcel/IOFactory.p
 include_once("Reader.php");
 
 class XlsReader implements Reader{
-    private $objPHPExcel, 
-            $sheetData,
+    private $objPHPExcel = null, 
+            $sheetData = null,
             $nextLine = 0,
             $ready = false,
             $eof = false;
@@ -16,8 +16,19 @@ class XlsReader implements Reader{
         {
             $this->objPHPExcel = PHPExcel_IOFactory::load($path);
             $this->ready = true;
-            $this->cycleCachedRow();
+            $this->sheetData = $this->objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
+            
+            echo "<br>";
+            // Check if the file is empty
+            if (count($this->sheetData) == 1 && count($this->sheetData[1] == 1))
+            {
+                if ($this->sheetData[1]["A"] == NULL)
+                {
+                    $this->eof = true;
+                }
+            }
         }
+       
         catch (PHPExcel_Exception $e)
         {
             $this->ready = false;
@@ -41,13 +52,13 @@ class XlsReader implements Reader{
     }
 
     protected function cycleCachedRow(){
-       $this->sheetData = $this->objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
-       if ($this->nextLine >= count($this->sheetData))
-       {
-           $this->eof = true;
-       }
-       
-       return $this->sheetData;
+        if ($this->nextLine >= count($this->sheetData))
+        {
+            $this->eof = true;
+        }
+
+
+        return $this->sheetData;
     }
 
     function isEof(){
