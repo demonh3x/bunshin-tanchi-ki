@@ -5,7 +5,7 @@ include_once("Filter.php");
 class FilterGroup implements Filter{
     private $filters = array();
 
-    function filter($text){
+    function applyTo($text){
         return $this->applyFilters($text);
     }
 
@@ -17,7 +17,7 @@ class FilterGroup implements Filter{
         $filteredText = $text;
 
         foreach ($this->filters as $filter){
-            $filteredText = $filter->filter($filteredText);
+            $filteredText = $filter->applyTo($filteredText);
         }
 
         return $filteredText;

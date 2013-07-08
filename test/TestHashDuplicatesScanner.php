@@ -5,6 +5,7 @@ include_once(__ROOT_DIR__ . "src/HashDuplicatesScanner.php");
 
 include_once(__ROOT_DIR__ . "test/mocks/NotReadyMockReader.php");
 include_once(__ROOT_DIR__ . "test/mocks/MockReader.php");
+include_once(__ROOT_DIR__ . "test/mocks/LowercaseMockFilter.php");
 
 class TestHashDuplicatesScanner extends TestFixture{
     public function setUp(){
@@ -54,6 +55,20 @@ class TestHashDuplicatesScanner extends TestFixture{
         Assert::areIdentical($dataOneColumnNoDuplicates, $scanner->getUniques());
     }
 
+    function testGettingUniquesWhenNoDuplicatesAllColumns(){
+        $dataOneColumnNoDuplicates = array(
+            array(
+                "Column1" => "Foo", "Column2" => "asdf", "Column3" => "qwer"
+            ),
+            array(
+                "Column1" => "Bar", "Column2" => "asdf", "Column3" => "qwer"
+            )
+        );
+
+        $scanner = $this->createScannerWithReader($dataOneColumnNoDuplicates);
+        Assert::areIdentical($dataOneColumnNoDuplicates, $scanner->getUniques());
+    }
+
     function testGettingUniquesWhenDuplicates(){
         $dataOneColumnWithDuplicates = array(
             array(
@@ -72,6 +87,55 @@ class TestHashDuplicatesScanner extends TestFixture{
         $uniques = array(
             array(
                 "Column1" => "Foo"
+            ),
+
+        );
+        Assert::areIdentical($uniques, $scanner->getUniques());
+    }
+
+    function testGettingUniquesWhenDuplicatesAllColumns(){
+        $dataOneColumnWithDuplicates = array(
+            array(
+                "Column1" => "Foo", "Column2" => "asdf", "Column3" => "qwer"
+            ),
+            array(
+                "Column1" => "Bar", "Column2" => "asdf", "Column3" => "qwer"
+            ),
+            array(
+                "Column1" => "Bar", "Column2" => "asdf", "Column3" => "qwer"
+            )
+        );
+
+        $scanner = $this->createScannerWithReader($dataOneColumnWithDuplicates);
+
+        $uniques = array(
+            array(
+                "Column1" => "Foo", "Column2" => "asdf", "Column3" => "qwer"
+            ),
+
+        );
+        Assert::areIdentical($uniques, $scanner->getUniques());
+    }
+
+    function testGettingUniquesWhenDuplicatesWatchingOneColumn(){
+        $dataOneColumnWithDuplicates = array(
+            array(
+                "Column1" => "Foo", "Column2" => "asdf", "Column3" => "qwer"
+            ),
+            array(
+                "Column1" => "Bar", "Column2" => "qwer", "Column3" => "asdf"
+            ),
+            array(
+                "Column1" => "Asdf", "Column2" => "asdf", "Column3" => "foo"
+            )
+        );
+
+        $scanner = $this->createScannerWithReader($dataOneColumnWithDuplicates);
+        $scanner->watchColumns(array("Column2"));
+
+        $uniques = array(
+            array(
+                "Column1" => "Bar", "Column2" => "qwer", "Column3" => "asdf"
             ),
 
         );
@@ -119,4 +183,35 @@ class TestHashDuplicatesScanner extends TestFixture{
         );
         Assert::areIdentical($duplicates, $scanner->getDuplicates());
     }
+
+    function testGettingDuplicatesWhenDuplicatesWithFilters(){
+        $dataOneColumnWithFilterDuplicates = array(
+            array(
+                "Column1" => "Foo"
+            ),
+            array(
+                "Column1" => "Bar"
+            ),
+            array(
+                "Column1" => "bar"
+            )
+        );
+
+        $scanner = $this->createScannerWithReader($dataOneColumnWithFilterDuplicates);
+        $scanner->setFilter(new LowercaseMockFilter());
+
+        $duplicates = array(
+            array(
+                array(
+                    "Column1" => "Bar"
+                ),
+                array(
+                    "Column1" => "bar"
+                )
+            )
+        );
+        Assert::areIdentical($duplicates, $scanner->getDuplicates());
+    }
+
+
 }

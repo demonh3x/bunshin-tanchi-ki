@@ -18,13 +18,13 @@ class TestSubstituteAccentsFilter extends TestFixture{
     function testUnchangedNormalSymbols(){
         $filter = $this->substituteAccentsFilterFactory();
         $input = "abcdfghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ~¨`";
-        Assert::areIdentical($input, $filter->filter($input));
+        Assert::areIdentical($input, $filter->applyTo($input));
     }
 
     function testSubstituteAccents(){
         $filter = $this->substituteAccentsFilterFactory();
         $input = "áàäâªÁÀÂÄdoéèëêÉÈÊËreíìïîÍÌÏÎmióòöôÓÒÖÔfaúùüûÚÙÛÜsolñÑçÇlasi";
         $expected = "aaaaaAAAAdoeeeeEEEEreiiiiIIIImiooooOOOOfauuuuUUUUsolnNcClasi";
-        Assert::areIdentical($expected, $filter->filter($input));
+        Assert::areIdentical($expected, $filter->applyTo($input));
     }
 }

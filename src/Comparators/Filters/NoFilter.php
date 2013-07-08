@@ -3,7 +3,7 @@
 include_once("Filter.php");
 
 class NoFilter implements Filter{
-    function filter($text){
+    function applyTo($text){
         return $text;
     }
 }

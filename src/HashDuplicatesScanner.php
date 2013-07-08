@@ -2,12 +2,15 @@
 
 include_once("Readers/Reader.php");
 include_once("HashList.php");
+include_once("Comparators/Filters/Filter.php");
 
 class HashDuplicatesScanner {
-    private $reader;
+    private $reader, $filter;
 
     private $appearedRows, $uniqueRows = array();
     private $duplicatedRows = array();
+
+    private $columnsToScan = array();
 
     function __construct(){
         $this->appearedRows = new HashList();
@@ -37,7 +40,7 @@ class HashDuplicatesScanner {
         $hash = $this->getHash($row);
 
         if ($this->appearedRows->contains($hash)) {
-            $this->moveUniqueToDuplicateRows($row, $hash);
+            $this->moveUniqueToDuplicateRows($hash);
             $this->addDuplicateRow($row, $hash);
         } else {
             $this->addUniqueRow($row, $hash);
@@ -46,13 +49,22 @@ class HashDuplicatesScanner {
 
     private function getHash($row){
         $hash = "";
-        foreach ($row as $column => $value){
+        $columns = empty($this->columnsToScan)? array_keys($row) : $this->columnsToScan;
+
+        foreach ($columns as $column){
+            $value = $this->applyFilterTo($row[$column]);
             $hash .= "$column$value";
         }
+
         return $hash;
     }
 
-    private function moveUniqueToDuplicateRows($row, $hash){
+    private function applyFilterTo($text){
+        return isset($this->filter)? $this->filter->applyTo($text) : $text;
+    }
+
+    private function moveUniqueToDuplicateRows($hash){
+        $row = $this->uniqueRows[$hash];
         $this->addDuplicateRow($row, $hash);
         unset($this->uniqueRows[$hash]);
     }
@@ -69,5 +81,13 @@ class HashDuplicatesScanner {
     function getDuplicates(){
         $this->processInput();
         return array_values($this->duplicatedRows);
+    }
+
+    function setFilter(Filter $filter){
+        $this->filter = $filter;
+    }
+
+    function watchColumns($columns){
+        $this->columnsToScan = is_array($columns)? $columns : array($columns);
     }
 }

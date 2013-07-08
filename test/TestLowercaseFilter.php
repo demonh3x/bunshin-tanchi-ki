@@ -15,6 +15,6 @@ class TestLowercaseFilter extends TestFixture{
         $filter = Core::getCodeCoverageWrapper("LowercaseFilter");
         $input = "Hello World!";
         $expected = "hello world!";
-        Assert::areIdentical($expected, $filter->filter($input));
+        Assert::areIdentical($expected, $filter->applyTo($input));
     }
 }
