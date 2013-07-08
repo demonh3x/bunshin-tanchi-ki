@@ -184,6 +184,35 @@ class TestHashDuplicatesScanner extends TestFixture{
         Assert::areIdentical($duplicates, $scanner->getDuplicates());
     }
 
+    function testGettingDuplicatesWhenDuplicatesWatchingTwoColumns(){
+        $dataWithDuplicates = array(
+            array(
+                "Column1" => "Foo", "Column2" => "asdf", "Column3" => "qwer"
+            ),
+            array(
+                "Column1" => "Bar", "Column2" => "qwer", "Column3" => "asdf"
+            ),
+            array(
+                "Column1" => "Bar", "Column2" => "asdf", "Column3" => "qwer"
+            )
+        );
+
+        $scanner = $this->createScannerWithReader($dataWithDuplicates);
+        $scanner->watchColumns(array("Column2", "Column3"));
+
+        $duplicates = array(
+            array(
+                array(
+                    "Column1" => "Foo", "Column2" => "asdf", "Column3" => "qwer"
+                ),
+                array(
+                    "Column1" => "Bar", "Column2" => "asdf", "Column3" => "qwer"
+                )
+            )
+        );
+        Assert::areIdentical($duplicates, $scanner->getDuplicates());
+    }
+
     function testGettingDuplicatesWhenDuplicatesWithFilters(){
         $dataOneColumnWithFilterDuplicates = array(
             array(
@@ -212,6 +241,4 @@ class TestHashDuplicatesScanner extends TestFixture{
         );
         Assert::areIdentical($duplicates, $scanner->getDuplicates());
     }
-
-
 }
