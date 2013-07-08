@@ -16,6 +16,8 @@ class RemoveSpacesMockFilter implements \Filter{
                 return "Hi";
             case " h I ":
                 return "hI";
+            case " B a r ":
+                return "Bar";
             default:
                 throw new \Exception("RemoveSpacesMockFilter's case ($text) is not defined");
         }

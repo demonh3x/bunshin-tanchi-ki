@@ -3,6 +3,7 @@ namespace Enhance;
 
 include_once(__ROOT_DIR__ . "src/HashCalculator.php");
 include_once(__ROOT_DIR__ . "test/mocks/LowercaseMockFilter.php");
+include_once(__ROOT_DIR__ . "test/mocks/RemoveSpacesMockFilter.php");
 
 class TestHashCalculator extends TestFixture{
 
@@ -74,8 +75,21 @@ class TestHashCalculator extends TestFixture{
             "0" => "Foo"
         );
 
-        $calculator->setFilter(new LowercaseMockFilter());
+        $calculator->setGlobalFilter(new LowercaseMockFilter());
 
         Assert::areIdentical("0foo", $calculator->calculate($data));
+    }
+
+    function testDifferentFiltersPerColumn(){
+        $calculator = $this->createHashCalculator();
+
+        $data = array(
+            "0" => "Foo",
+            "1" => " B a r "
+        );
+        $calculator->setFilter(new LowercaseMockFilter(), "0");
+        $calculator->setFilter(new RemoveSpacesMockFilter(), "1");
+
+        Assert::areIdentical("0foo1Bar", $calculator->calculate($data));
     }
 }

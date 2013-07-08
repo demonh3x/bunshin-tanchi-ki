@@ -4,7 +4,11 @@ include_once("Comparators/Filters/Filter.php");
 
 class HashCalculator {
     private $columnsToScan = array();
-    private $filter;
+    private $globalFilter, $columnFilters;
+
+    function watchColumns($columns){
+        $this->columnsToScan = $columns;
+    }
 
     function calculate($row){
         $hash = "";
@@ -14,7 +18,8 @@ class HashCalculator {
 
         foreach ($columns as $column){
             $value = $row[$column];
-            $value = $this->applyFilterTo($value);
+            $value = $this->applyGlobalFilterTo($value);
+            $value = $this->applyFilterTo($column, $value);
             $hash .= "$column$value";
         }
 
@@ -25,15 +30,27 @@ class HashCalculator {
         return !empty($this->columnsToScan);
     }
 
-    private function applyFilterTo($text){
-        return isset($this->filter)? $this->filter->applyTo($text) : $text;
+    private function applyGlobalFilterTo($text){
+        return $this->isGlobalFilterSet()? $this->globalFilter->applyTo($text) : $text;
     }
 
-    function watchColumns($columns){
-        $this->columnsToScan = $columns;
+    function setGlobalFilter(Filter $filter){
+        $this->globalFilter = $filter;
     }
 
-    function setFilter(Filter $filter){
-        $this->filter = $filter;
+    function setFilter(Filter $filter, $column){
+        $this->columnFilters[$column] = $filter;
+    }
+
+    private function isGlobalFilterSet(){
+        return isset($this->globalFilter);
+    }
+
+    private function applyFilterTo($column, $text){
+        return $this->isFilterSet($column)? $this->columnFilters[$column]->applyTo($text) : $text;
+    }
+
+    private function isFilterSet($column){
+        return isset($this->columnFilters[$column]);
     }
 }
