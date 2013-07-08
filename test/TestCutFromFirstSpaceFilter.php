@@ -1,7 +1,7 @@
 <?php
 namespace Enhance;
 
-include_once(__ROOT_DIR__ . "src/Comparators/Filters/CutFromFirstSpaceFilter.php");
+include_once(__ROOT_DIR__ . "src/HashCalculators/Filters/CutFromFirstSpaceFilter.php");
 
 class TestCutFromFirstSpaceFilter extends TestFixture{
 

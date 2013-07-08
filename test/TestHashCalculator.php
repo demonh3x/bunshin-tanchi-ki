@@ -1,7 +1,7 @@
 <?php
 namespace Enhance;
 
-include_once(__ROOT_DIR__ . "src/HashCalculator.php");
+include_once(__ROOT_DIR__ . "src/HashCalculators/StringHashCalculator.php");
 include_once(__ROOT_DIR__ . "test/mocks/LowercaseMockFilter.php");
 include_once(__ROOT_DIR__ . "test/mocks/RemoveSpacesMockFilter.php");
 
@@ -14,7 +14,7 @@ class TestHashCalculator extends TestFixture{
     }
 
     private function createHashCalculator(){
-        return Core::getCodeCoverageWrapper('HashCalculator');
+        return Core::getCodeCoverageWrapper('StringHashCalculator');
     }
 
     function testOneColumnHash(){

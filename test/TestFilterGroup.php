@@ -1,7 +1,7 @@
 <?php
 namespace Enhance;
 
-include_once(__ROOT_DIR__ . "src/Comparators/Filters/FilterGroup.php");
+include_once(__ROOT_DIR__ . "src/HashCalculators/Filters/FilterGroup.php");
 
 include_once(__ROOT_DIR__ . "test/mocks/NoSpacesMockFilter.php");
 include_once(__ROOT_DIR__ . "test/mocks/UppercaseMockFilter.php");

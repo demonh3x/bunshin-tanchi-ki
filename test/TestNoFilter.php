@@ -1,7 +1,7 @@
 <?php
 namespace Enhance;
 
-include_once(__ROOT_DIR__ . "src/Comparators/Filters/NoFilter.php");
+include_once(__ROOT_DIR__ . "src/HashCalculators/Filters/NoFilter.php");
 
 class TestNoFilter extends TestFixture{
 

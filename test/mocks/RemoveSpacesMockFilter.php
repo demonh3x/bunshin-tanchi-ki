@@ -1,7 +1,7 @@
 <?php
 namespace Enhance;
 
-include_once(__ROOT_DIR__ . "src/Comparators/Filters/Filter.php");
+include_once(__ROOT_DIR__ . "src/HashCalculators/Filters/Filter.php");
 
 class RemoveSpacesMockFilter implements \Filter{
     function applyTo($text){

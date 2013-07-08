@@ -1,8 +1,9 @@
 <?php
 
-include_once("Comparators/Filters/Filter.php");
+include_once("Filters/Filter.php");
+include_once("HashCalculator.php");
 
-class HashCalculator {
+class StringHashCalculator implements HashCalculator{
     private $columnsToScan = array();
     private $globalFilter, $columnFilters;
 

@@ -2,7 +2,7 @@
 
 include_once("Readers/Reader.php");
 include_once("HashList.php");
-include_once("Comparators/Filters/Filter.php");
+include_once("HashCalculators/Filters/Filter.php");
 
 class HashDuplicatesScanner {
     private $reader, $filter;

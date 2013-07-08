@@ -1,7 +1,7 @@
 <?php
 namespace Enhance;
 
-include_once(__ROOT_DIR__ . "src/Comparators/Filters/LowercaseFilter.php");
+include_once(__ROOT_DIR__ . "src/HashCalculators/Filters/LowercaseFilter.php");
 
 class TestLowercaseFilter extends TestFixture{
 
