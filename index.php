@@ -3,6 +3,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title></title>
+
     </head>
     <body>
         <?php
@@ -34,6 +35,17 @@
             $testXLSX->open('test/sampleFiles/test_empaty_data.xlsx');
             
 //            var_dump ($testXLSX->readRow());
+
+            $array_php = array("1", "2", "3", "4");
             ?>
     </body>
+    <script>
+        var arrayPHPToJavascript = new Array();
+        <?php
+        for ($i = 0, $total = count($array_php); $i < $total; $i ++)
+        echo "\narrayPHPToJavascript[$i] = '$array_php[$i]';";
+        ?>
+
+        document.write(arrayPHPToJavascript[1]);
+    </script>
 </html>
