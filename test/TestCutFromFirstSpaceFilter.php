@@ -11,10 +11,17 @@ class TestCutFromFirstSpaceFilter extends TestFixture{
     public function tearDown(){
     }
 
-    function testTrimmedOutput(){
+    function testInputtingTwoWordsOutputingOnlyFirst(){
         $filter = Core::getCodeCoverageWrapper("CutFromFirstSpaceFilter");
-        $input = "Hello World!";
-        $expected = "Hello";
+        $input = "Jason Mark";
+        $expected = "Jason";
+        Assert::areIdentical($expected, $filter->applyTo($input));
+    }
+
+    function testInputtingOneWordOutputtingTheSame(){
+        $filter = Core::getCodeCoverageWrapper("CutFromFirstSpaceFilter");
+        $input = "Jason";
+        $expected = "Jason";
         Assert::areIdentical($expected, $filter->applyTo($input));
     }
 }
