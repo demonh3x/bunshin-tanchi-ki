@@ -2,18 +2,18 @@
 
 include_once("Readers/Reader.php");
 include_once("HashList.php");
-include_once("HashCalculators/Filters/Filter.php");
+include_once("HashCalculators/StringHashCalculator.php");
 
 class HashDuplicatesScanner {
-    private $reader, $filter;
+    private $reader, $hashCalculator;
 
-    private $appearedRows, $uniqueRows = array();
-    private $duplicatedRows = array();
+    private $appearedRows;
+    private $uniqueRows = array(), $duplicatedRows = array();
 
-    private $columnsToScan = array();
 
     function __construct(){
         $this->appearedRows = new HashList();
+        $this->hashCalculator = new StringHashCalculator();
     }
 
     function setReader(Reader $reader){
@@ -48,20 +48,7 @@ class HashDuplicatesScanner {
     }
 
     private function getHash($row){
-        $hash = "";
-        $columns = empty($this->columnsToScan)? array_keys($row) : $this->columnsToScan;
-
-        foreach ($columns as $column){
-            $data = $row[$column];
-            $value = $this->applyFilterTo($data);
-            $hash .= "$column$value";
-        }
-
-        return $hash;
-    }
-
-    private function applyFilterTo($text){
-        return isset($this->filter)? $this->filter->applyTo($text) : $text;
+        return $this->hashCalculator->calculate($row);
     }
 
     private function moveUniqueToDuplicateRows($hash){
@@ -87,10 +74,10 @@ class HashDuplicatesScanner {
     }
 
     function setFilter(Filter $filter){
-        $this->filter = $filter;
+        $this->hashCalculator->setGlobalFilter($filter);
     }
 
     function watchColumns($columns){
-        $this->columnsToScan = is_array($columns)? $columns : array($columns);
+        $this->hashCalculator->watchColumns($columns);
     }
 }
