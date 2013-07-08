@@ -18,7 +18,6 @@ class XlsReader implements Reader{
             $this->ready = true;
             $this->sheetData = $this->objPHPExcel->getActiveSheet()->toArray(null,true,true,true);
             
-            echo "<br>";
             // Check if the file is empty
             if (count($this->sheetData) == 1 && count($this->sheetData[1] == 1))
             {

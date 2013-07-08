@@ -16,30 +16,30 @@
 //            var_dump ($testCSV->readRow());
 //            
 //            echo "<hr>";////////////////////////////////////////////////////
-            define ("__ROOT_DIR__", "./");
-            include_once 'src/Readers/XlsReader.php';
-            
-            $testXLS = new XlsReader();
-            
-            $testXLS->open('test/sampleFiles/test_empty_file2.xls');
-            
-            var_dump ($testXLS->readRow());
-            var_dump ($testXLS->readRow());
-            var_dump ($testXLS->readRow());
-            var_dump ($testXLS->readRow());
-            var_dump ($testXLS->readRow());
-            var_dump ($testXLS->readRow());
-            var_dump ($testXLS->readRow());
-            var_dump ($testXLS->readRow());
-            var_dump ($testXLS->readRow());
-            var_dump ($testXLS->readRow());
-            var_dump ($testXLS->readRow());
-            var_dump ($testXLS->readRow());
-            var_dump ($testXLS->readRow());
-            var_dump ($testXLS->readRow());
-            var_dump ($testXLS->readRow());
-            var_dump ($testXLS->readRow());
-            var_dump ($testXLS->readRow());
+//            define ("__ROOT_DIR__", "./");
+//            include_once 'src/Readers/XlsReader.php';
+//            
+//            $testXLS = new XlsReader();
+//            
+//            $testXLS->open('test/sampleFiles/test_empty_file2.xls');
+//            
+//            var_dump ($testXLS->readRow());
+//            var_dump ($testXLS->readRow());
+//            var_dump ($testXLS->readRow());
+//            var_dump ($testXLS->readRow());
+//            var_dump ($testXLS->readRow());
+//            var_dump ($testXLS->readRow());
+//            var_dump ($testXLS->readRow());
+//            var_dump ($testXLS->readRow());
+//            var_dump ($testXLS->readRow());
+//            var_dump ($testXLS->readRow());
+//            var_dump ($testXLS->readRow());
+//            var_dump ($testXLS->readRow());
+//            var_dump ($testXLS->readRow());
+//            var_dump ($testXLS->readRow());
+//            var_dump ($testXLS->readRow());
+//            var_dump ($testXLS->readRow());
+//            var_dump ($testXLS->readRow());
             
             
             echo "<hr>";////////////////////////////////////////////////////
