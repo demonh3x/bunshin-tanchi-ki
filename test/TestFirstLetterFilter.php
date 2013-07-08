@@ -17,8 +17,8 @@ class TestFirstLetterFilter extends TestFixture{
 
     function testInput(){
         $filter = $this->createFilter();
-        $input = "Hello!";
-        $expected = "H";
+        $input = "hello!";
+        $expected = "h";
         Assert::areIdentical($expected, $filter->applyTo($input));
     }
 
