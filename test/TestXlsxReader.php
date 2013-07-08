@@ -62,7 +62,7 @@ class TestXlsxReader extends TestFixture{
 
         $expectedResults = array(
             array(
-                "A" => NULL, "B" => "Finchatton", "C" => NULL, "D" => "Adam", "E" => "Hunter",
+                "A" => NULL, "B" => "Finchatton", "C" => "", "D" => "Adam", "E" => "Hunter",
                 "F" => "www.amayadesign.co.uk/AdamHunter", "G" => "www.amayadesign.co.uk/"
             ),
             array(
