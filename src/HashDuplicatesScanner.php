@@ -52,7 +52,8 @@ class HashDuplicatesScanner {
         $columns = empty($this->columnsToScan)? array_keys($row) : $this->columnsToScan;
 
         foreach ($columns as $column){
-            $value = $this->applyFilterTo($row[$column]);
+            $data = $row[$column];
+            $value = $this->applyFilterTo($data);
             $hash .= "$column$value";
         }
 
@@ -64,9 +65,11 @@ class HashDuplicatesScanner {
     }
 
     private function moveUniqueToDuplicateRows($hash){
-        $row = $this->uniqueRows[$hash];
-        $this->addDuplicateRow($row, $hash);
-        unset($this->uniqueRows[$hash]);
+        if (isset($this->uniqueRows[$hash])){
+            $row = $this->uniqueRows[$hash];
+            $this->addDuplicateRow($row, $hash);
+            unset($this->uniqueRows[$hash]);
+        }
     }
 
     private function addDuplicateRow($row, $hash){
