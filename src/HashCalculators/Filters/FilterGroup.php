@@ -3,7 +3,7 @@
 include_once("Filter.php");
 
 class FilterGroup implements Filter{
-    static $instance;
+    private static $instance;
 
     static function create(){
         static::$instance = new self();
