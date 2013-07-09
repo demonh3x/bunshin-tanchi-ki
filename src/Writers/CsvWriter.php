@@ -7,18 +7,14 @@ class CsvWriter implements Writer{
         $fp;
 
     function create($path) {
-        // TODO: Implement create() method.
         $this->fp = fopen($path, 'c');
     }
 
     function isReady() {
-        // TODO: Implement isReady() method.
-
         return $this->ready;
     }
 
     function writeRow($data) {
-        // TODO: Implement writeRow() method.
         foreach ($data as $fields) {
             fputcsv($this->fp, $fields, ',', '"');
         }
