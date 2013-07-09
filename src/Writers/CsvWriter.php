@@ -7,7 +7,11 @@ class CsvWriter implements Writer{
         $fp;
 
     function create($path) {
-        $this->fp = fopen($path, 'c');
+        $this->fp = fopen($path, 'w');
+        if ((bool) $this->fp)
+        {
+            $this->ready=true;
+        }
     }
 
     function isReady() {
@@ -15,12 +19,13 @@ class CsvWriter implements Writer{
     }
 
     function writeRow($data) {
-        foreach ($data as $fields) {
-            fputcsv($this->fp, $fields, ',', '"');
-        }
+        fputcsv($this->fp, $data);
     }
 
     function __destruct() {
-        fclose($this->fp);
+        if ($this->fp)
+        {
+            fclose($this->fp);
+        }
     }
 }
