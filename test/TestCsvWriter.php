@@ -11,9 +11,27 @@ class TestCsvWriter extends TestFixture{
     public function tearDown(){
     }
 
-    function test(){
-        Assert::fail();
+    private function createWriter(){
+        return Core::getCodeCoverageWrapper("CsvWriter");
     }
 
+    private function deleteFile($path){
+        unlink($path);
+        if (file_exists($path)){
+            throw new \Exception("Cannot delete the file: [$path]");
+        }
+    }
+
+    function testCreateFile(){
+        $writer = $this->createWriter();
+
+        $path = "sampleFiles/test_csv_writer.csv";
+        Assert::isFalse(file_exists($path));
+
+        $writer->create($path);
+        Assert::isTrue(file_exists($path));
+
+        $this->deleteFile($path);
+    }
 
 }
