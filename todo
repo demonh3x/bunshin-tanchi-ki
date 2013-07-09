@@ -1,0 +1,9 @@
+Writer interface
+Writer classes
+User interface for selecting:
+    Sending arrays from php to js and the oposite way.
+PURL Combinations (Jamie)
+    Multiple HashCalculators
+Filter Composite Names (ex: MacDow)
+DuplicatesScanner saving data on disk focusing on Memory usage.
+Random reader classes
