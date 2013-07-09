@@ -15,6 +15,12 @@ class CsvReader implements Reader{
         $this->cycleCachedRow();
     }
 
+    function __destruct(){
+        if ($this->fp){
+            fclose($this->fp);
+        }
+    }
+
     function isReady(){
         return $this->ready;
     }
