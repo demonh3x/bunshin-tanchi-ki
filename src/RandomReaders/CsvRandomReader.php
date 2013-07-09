@@ -18,17 +18,17 @@ class CsvRandomReader implements RandomReader{
 
     private function scanFile(){
         $position = $this->getFilePosition();
-        $this->moveFilePosition(0);
+        $this->setFilePosition(0);
 
         $this->countRowsAndCreateMap();
 
-        $this->moveFilePosition($position);
+        $this->setFilePosition($position);
     }
 
     private function countRowsAndCreateMap(){
         $this->rowCount = 0;
-        while(!$this->eof()){
-            $this->rowPositionMap[] = $this->getFilePosition();
+        while(!$this->isEof()){
+            $this->rowPositionMap[$this->rowCount] = $this->getFilePosition();
 
             $this->readFileLine();
             $this->rowCount++;
@@ -39,11 +39,11 @@ class CsvRandomReader implements RandomReader{
         return ftell($this->filePointer);
     }
 
-    private function moveFilePosition($position){
+    private function setFilePosition($position){
         fseek($this->filePointer, $position, SEEK_SET);
     }
 
-    private function eof(){
+    private function isEof(){
         return feof($this->filePointer);
     }
 
@@ -56,8 +56,10 @@ class CsvRandomReader implements RandomReader{
     }
 
     function readRow($index) {
-        $this->moveFilePosition($this->rowPositionMap[$index]);
-        return str_getcsv(fgets($this->filePointer));
+        $this->setFilePosition($this->rowPositionMap[$index]);
+        $ret = $this->readFileLine();
+        $ret = str_getcsv($ret);
+        return $ret;
     }
 
     function getRowCount() {
