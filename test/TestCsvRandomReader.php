@@ -29,6 +29,12 @@ class TestCsvRandomReader extends TestFixture{
         Assert::isFalse($reader->isReady());
     }
 
+    function testReadEmptyFile(){
+        $reader = $this->createReader();
+        $reader->open(__ROOT_DIR__ . 'test/sampleFiles/test_empty_data.csv');
+        Assert::areIdentical(0, $reader->getRowCount());
+    }
+
     private function createTestReader(){
         $reader = $this->createReader();
         $reader->open($this->testDataCsv);

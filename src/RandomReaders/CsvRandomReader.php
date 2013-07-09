@@ -27,6 +27,13 @@ class CsvRandomReader implements RandomReader{
 
     private function countRowsAndCreateMap(){
         $this->rowCount = 0;
+
+        $this->rowPositionMap[$this->rowCount] = $this->getFilePosition();
+        $firstLine = $this->readFileLine();
+        if (!empty($firstLine)){
+            $this->rowCount++;
+        }
+
         while(!$this->isEof()){
             $this->rowPositionMap[$this->rowCount] = $this->getFilePosition();
 
