@@ -8,8 +8,7 @@ class CsvWriter implements Writer{
 
     function create($path) {
         // TODO: Implement create() method.
-        $this->fp = fopen($path.'file.csv', 'w');
-
+        $this->fp = fopen($path, 'c');
     }
 
     function isReady() {
@@ -23,5 +22,9 @@ class CsvWriter implements Writer{
         foreach ($data as $fields) {
             fputcsv($this->fp, $fields, ',', '"');
         }
+    }
+
+    function __destruct() {
+        fclose($this->fp);
     }
 }
