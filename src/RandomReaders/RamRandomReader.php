@@ -8,7 +8,8 @@ class RamRandomReader implements RandomReader{
 
     function open($path){
         $this->ready = isset($GLOBALS[$path]) && is_array($GLOBALS[$path]);
-        if ($this->isReady()){
+
+        if ($this->ready){
             $this->pointerToGlobal = &$GLOBALS[$path];
         }
     }
