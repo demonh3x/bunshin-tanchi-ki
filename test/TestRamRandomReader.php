@@ -3,9 +3,9 @@ namespace Enhance;
 
 include_once(__ROOT_DIR__ . "src/RandomReaders/RamRandomReader.php");
 
-class TestRamReader extends TestFixture{
+class TestRamRandomReader extends TestFixture{
 
-    private $globalVariableName = "testGlobalVariable";
+    private $globalVariableName = "testRamRandomReaderGlobalVariable";
 
     public function setUp(){
     }
