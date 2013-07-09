@@ -35,7 +35,6 @@ class TestCsvWriter extends TestFixture{
         Assert::isTrue(file_exists($path));
 
         $writer->__destruct();
-        Assert::isFalse(file_exists($path));
 
         $this->deleteFile($path);
     }
