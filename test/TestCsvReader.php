@@ -43,7 +43,6 @@ class TestCsvReader extends TestFixture{
 
     function testReadFirstRow(){
         $reader = $this->createTestDataCsvReader();
-        $reader->open($this->testDataCsv);
 
         $result = array(
             "0" => "",
