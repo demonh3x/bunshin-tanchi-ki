@@ -33,10 +33,6 @@ class TestCsvWriter extends TestFixture{
 
         $writer->create($path);
         Assert::isTrue(file_exists($path));
-
-        $writer->__destruct();
-
-        $this->deleteFile($path);
     }
 
     function testWritingRow(){
@@ -57,8 +53,6 @@ class TestCsvWriter extends TestFixture{
         $outputRow = $reader->readRow();
 
         Assert::areIdentical($inputRow, $outputRow);
-
-        $this->deleteFile($path);
     }
 
     function testIsReady(){
@@ -70,7 +64,5 @@ class TestCsvWriter extends TestFixture{
 
         $writer->create($path);
         Assert::isTrue($writer->isReady());
-
-        $this->deleteFile($path);
     }
 }
