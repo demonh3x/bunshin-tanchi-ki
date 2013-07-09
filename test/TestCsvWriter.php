@@ -61,4 +61,17 @@ class TestCsvWriter extends TestFixture{
 
         $this->deleteFile($path);
     }
+
+    function testIsReady(){
+        $writer = $this->createWriter();
+        Assert::isFalse($writer->isReady());
+
+        $path = "sampleFiles/test_csv_writer_ready.csv";
+        $this->deleteFile($path);
+
+        $writer->create($path);
+        Assert::isTrue($writer->isReady());
+
+        $this->deleteFile($path);
+    }
 }
