@@ -16,9 +16,11 @@ class TestCsvWriter extends TestFixture{
     }
 
     private function deleteFile($path){
-        unlink($path);
         if (file_exists($path)){
-            throw new \Exception("Cannot delete the file: [$path]");
+            unlink($path);
+            if (file_exists($path)){
+                throw new \Exception("Cannot delete the file: [$path]");
+            }
         }
     }
 
@@ -26,12 +28,13 @@ class TestCsvWriter extends TestFixture{
         $writer = $this->createWriter();
 
         $path = "sampleFiles/test_csv_writer.csv";
-        Assert::isFalse(file_exists($path));
+        $this->deleteFile($path);
 
         $writer->create($path);
         Assert::isTrue(file_exists($path));
 
-        $this->deleteFile($path);
+        $writer->__destruct();
+        Assert::isFalse(file_exists($path));
     }
 
 }
