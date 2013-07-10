@@ -14,8 +14,6 @@ class TestHashDuplicatesScanner extends TestFixture{
     }
 
     public function tearDown(){
-        $memoryUsage = memory_get_usage(true) / 1024 / 1024;
-        echo "<p>Memory Usage: $memoryUsage MB</p>";
     }
 
     private function createScanner(){
@@ -121,7 +119,6 @@ class TestHashDuplicatesScanner extends TestFixture{
         $scanner->scan();
 
         $actualData = $this->readRamData($ramId);
-        print_r($actualData);
 
         Assert::areIdentical($expectedOutput, $actualData);
     }
