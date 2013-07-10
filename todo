@@ -1,7 +1,5 @@
-Implement global array readers and writers
-DuplicatesScanner saving data on writer interface (focusing on Memory usage)
 User interface for selecting:
-    Sending arrays from php to js and the oposite way.
 PURL Combinations (Jamie)
     Multiple HashCalculators
 Filter Composite Names (ex: MacDow)
+Extract Row behaviour in HashDuplicatesScanner to a class named "Row"

@@ -215,7 +215,25 @@ class TestHashDuplicatesScanner extends TestFixture{
         $this->assertUniques($input, $uniques);
     }
 
-    function testGettingDuplicatesWhenNoDuplicates(){
+    function testGettingDuplicatesWhenNoDuplicatesOneColumn(){
+        $input = array(
+            array(
+                "Column1" => "Foo"
+            ),
+            array(
+                "Column1" => "Bar"
+            ),
+            array(
+                "Column1" => "Asdf"
+            )
+        );
+
+        $expected = array();
+
+        $this->assertDuplicates($input, $expected);
+    }
+
+    function testGettingDuplicatesWhenTwoDuplicatesOneColumn(){
         $input = array(
             array(
                 "Column1" => "Foo"
@@ -257,26 +275,61 @@ class TestHashDuplicatesScanner extends TestFixture{
 
         Assert::areIdentical($expectedOutput, $allDuplicates);
     }
-/*
-    function testGettingDuplicatesWhenTwoDuplicates(){
-        Assert::fail();
-    }
 
-    function testGettingDuplicatesWhenFourDuplicates(){
-        Assert::fail();
-    }*/
+    function testGettingDuplicatesWhenDuplicatesThreeColumns(){
+        $input = array(
+            array(
+                "Column1" => "Foo", "Column2" => "asdf", "Column3" => "qwer"
+            ),
+            array(
+                "Column1" => "Foo", "Column2" => "asdf", "Column3" => "qwer"
+            ),
+            array(
+                "Column1" => "Bar", "Column2" => "asdf", "Column3" => "qwer"
+            ),
+            array(
+                "Column1" => "Bar", "Column2" => "asdf", "Column3" => "qwer"
+            ),
+            array(
+                "Column1" => "Asdf", "Column2" => "asdf", "Column3" => "qwer"
+            )
+        );
+
+        $uniques = array(
+            array(
+                array(
+                    "Column1" => "Foo", "Column2" => "asdf", "Column3" => "qwer"
+                ),
+                array(
+                    "Column1" => "Foo", "Column2" => "asdf", "Column3" => "qwer"
+                )
+            ),
+            array(
+                array(
+                    "Column1" => "Bar", "Column2" => "asdf", "Column3" => "qwer"
+                ),
+                array(
+                    "Column1" => "Bar", "Column2" => "asdf", "Column3" => "qwer"
+                )
+            )
+        );
+        $this->assertDuplicates($input, $uniques);
+    }
 }
 
 class MockRamWriterFactory implements \WriterFactory{
     public $createdWriters = array();
 
     function createWriter($id){
-        $writer = new \RamWriter();
         $ramId = "testMockRamWriterFactory_$id";
+        unset($GLOBALS[$ramId]);
+
+        $writer = new \RamWriter();
         $writer->create($ramId);
         if (!$writer->isReady()){
             throw new \Exception("The MockRamWriterFactory couldn't create a Writer with the id: [$id]");
         }
+
         $this->createdWriters[$ramId] = &$writer;
 
         return $this->createdWriters[$ramId];
