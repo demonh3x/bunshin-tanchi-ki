@@ -18,6 +18,8 @@ class HashDuplicatesScanner {
 
     function __construct(){
         $this->appearedRows = new HashList();
+        $this->uniqueWriter = new NullWriter();
+        $this->duplicatesWriterFactory = new NullWriterFactory();
     }
 
     function setReader(RandomReader $reader){
@@ -36,6 +38,10 @@ class HashDuplicatesScanner {
             throw new Exception("The unique writer is not ready!");
         }
         $this->uniqueWriter = $writer;
+    }
+
+    function setDuplicatesWriterFactory(WriterFactory $factory){
+        $this->duplicatesWriterFactory = $factory;
     }
 
     function scan(){
@@ -58,7 +64,10 @@ class HashDuplicatesScanner {
         $rowHash = $this->getHash($row);
 
         if ($this->isDuplicate($rowHash)) {
+            $this->copyFromUniquesToDuplicates($rowHash);
             $this->removeUnique($rowHash);
+
+            $this->writeDuplicate($rowHash, $row);
         } else {
             $this->addUnique($rowHash, $rowIndex);
         }
@@ -70,6 +79,25 @@ class HashDuplicatesScanner {
 
     private function isDuplicate($rowHash){
         return $this->appearedRows->contains($rowHash);
+    }
+
+    private function copyFromUniquesToDuplicates($rowHash){
+        $rowIndex = &$this->uniqueRowIndexes[$rowHash];
+        if (isset($rowIndex)) {
+            $rowPointed = $this->reader->readRow($rowIndex);
+            $this->writeDuplicate($rowHash, $rowPointed);
+        }
+    }
+
+    private function writeDuplicate($hash, $row){
+        $this->getDuplicatesWriter($hash)->writeRow($row);
+    }
+
+    private function getDuplicatesWriter($rowHash) {
+        if (!isset($this->duplicatedWriters[$rowHash])) {
+            $this->duplicatedWriters[$rowHash] = $this->duplicatesWriterFactory->createWriter($rowHash);
+        }
+        return $this->duplicatedWriters[$rowHash];
     }
 
     private function removeUnique($rowHash){
@@ -86,5 +114,17 @@ class HashDuplicatesScanner {
             $row = $this->reader->readRow($rowIndex);
             $this->uniqueWriter->writeRow($row);
         }
+    }
+}
+
+class NullWriter implements Writer{
+    function create($path){}
+    function isReady(){}
+    function writeRow($data){}
+}
+
+class NullWriterFactory implements WriterFactory{
+    function createWriter($id){
+        return new NullWriter();
     }
 }

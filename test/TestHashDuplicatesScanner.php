@@ -214,11 +214,50 @@ class TestHashDuplicatesScanner extends TestFixture{
 
         $this->assertUniques($input, $uniques);
     }
-/*
+
     function testGettingDuplicatesWhenNoDuplicates(){
-        Assert::fail();
+        $input = array(
+            array(
+                "Column1" => "Foo"
+            ),
+            array(
+                "Column1" => "Bar"
+            ),
+            array(
+                "Column1" => "Bar"
+            )
+        );
+
+        $expected = array(
+            array(
+                array(
+                    "Column1" => "Bar"
+                ),
+                array(
+                    "Column1" => "Bar"
+                )
+            )
+        );
+
+        $this->assertDuplicates($input, $expected);
     }
 
+    private function assertDuplicates($input, $expectedOutput){
+        $scanner = $this->createScannerWithReaderAndHashCalculator($input);
+
+        $factory = new MockRamWriterFactory();
+
+        $scanner->setDuplicatesWriterFactory($factory);
+        $scanner->scan();
+
+        $allDuplicates = array();
+        foreach ($factory->createdWriters as $id => $writer){
+            $allDuplicates[] = $this->readRamData($id);
+        }
+
+        Assert::areIdentical($expectedOutput, $allDuplicates);
+    }
+/*
     function testGettingDuplicatesWhenTwoDuplicates(){
         Assert::fail();
     }
@@ -226,4 +265,20 @@ class TestHashDuplicatesScanner extends TestFixture{
     function testGettingDuplicatesWhenFourDuplicates(){
         Assert::fail();
     }*/
+}
+
+class MockRamWriterFactory implements \WriterFactory{
+    public $createdWriters = array();
+
+    function createWriter($id){
+        $writer = new \RamWriter();
+        $ramId = "testMockRamWriterFactory_$id";
+        $writer->create($ramId);
+        if (!$writer->isReady()){
+            throw new \Exception("The MockRamWriterFactory couldn't create a Writer with the id: [$id]");
+        }
+        $this->createdWriters[$ramId] = &$writer;
+
+        return $this->createdWriters[$ramId];
+    }
 }
