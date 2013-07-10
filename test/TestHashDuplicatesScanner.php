@@ -152,7 +152,7 @@ class TestHashDuplicatesScanner extends TestFixture{
         $this->assertUniques($input, $input);
     }
 
-    function testGettingUniquesWhenDuplicates(){
+    function testGettingUniquesWhenDuplicatesOneColumn(){
         $input = array(
             array(
                 "Column1" => "Foo"
@@ -174,11 +174,47 @@ class TestHashDuplicatesScanner extends TestFixture{
 
         $this->assertUniques($input, $uniques);
     }
-/*
-    function testGettingUniquesWhenDuplicatesAllColumns(){
-        Assert::fail();
+
+    function testGettingUniquesWhenDuplicatesThreeColumns(){
+        $input = array(
+            array(
+                "Column1" => "Foo", "Column2" => "asdf", "Column3" => "qwer"
+            ),
+            array(
+                "Column1" => "Bar", "Column2" => "asdf", "Column3" => "qwer"
+            ),
+            array(
+                "Column1" => "Bar", "Column2" => "asdf", "Column3" => "qwer"
+            )
+        );
+
+        $uniques = array(
+            array(
+                "Column1" => "Foo", "Column2" => "asdf", "Column3" => "qwer"
+            ),
+
+        );
+        $this->assertUniques($input, $uniques);
     }
 
+    function testGettingUniquesWhenNoDuplicatesOneColumn(){
+        $input = array(
+            array(
+                "Column1" => "Bar"
+            ),
+            array(
+                "Column1" => "Bar"
+            ),
+            array(
+                "Column1" => "Bar"
+            )
+        );
+
+        $uniques = array();
+
+        $this->assertUniques($input, $uniques);
+    }
+/*
     function testGettingDuplicatesWhenNoDuplicates(){
         Assert::fail();
     }
