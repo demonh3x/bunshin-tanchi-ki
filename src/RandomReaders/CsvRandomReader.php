@@ -1,5 +1,6 @@
 <?php
 
+ini_set("auto_detect_line_endings", true);
 include_once("RandomReader.php");
 
 class CsvRandomReader implements RandomReader{
