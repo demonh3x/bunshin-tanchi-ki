@@ -22,6 +22,7 @@ class TestRamRandomReader extends TestFixture{
 
         $reader->open("nonExistingGlobalVariable");
         Assert::isFalse($reader->isReady());
+        Assert::areIdentical(0, $reader->getRowCount());
     }
 
     function testOpeningNonArrayDefinedGlobal(){
