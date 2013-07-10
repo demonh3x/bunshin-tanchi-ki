@@ -2,8 +2,9 @@
 namespace Enhance;
 
 include_once(__ROOT_DIR__ . "src/Readers/Reader.php");
+include_once(__ROOT_DIR__ . "src/RandomReaders/RandomReader.php");
 
-class MockReader implements \Reader{
+class MockReader implements \Reader, \RandomReader{
     private $cursor = 0, $resource = array();
 
     function setResource($resource){
@@ -15,16 +16,23 @@ class MockReader implements \Reader{
     function isReady(){
         return true;
     }
-    function readRow(){
-        $data = $this->resource[$this->cursor];
+    function readRow($index = null){
+        if ($index == null){
+            $data = $this->resource[$this->cursor];
 
-        if(!$this->isEof()){
-            $this->cursor++;
+            if(!$this->isEof()){
+                $this->cursor++;
+            }
+        } else {
+            $data = $this->resource[$index];
         }
 
         return $data;
     }
     function isEof(){
-        return $this->cursor >= count($this->resource);
+        return $this->cursor >= $this->getRowCount();
+    }
+    function getRowCount(){
+        return count($this->resource);
     }
 }
