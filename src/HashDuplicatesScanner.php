@@ -1,25 +1,29 @@
 <?php
 
-include_once("Readers/Reader.php");
+include_once("RandomReaders/RandomReader.php");
 include_once("HashCalculators/HashCalculator.php");
+
+include_once("Writers/Writer.php");
+include_once("Writers/WriterFactory.php");
 
 include_once("HashList.php");
 
 class HashDuplicatesScanner {
     private $reader, $hashCalculator;
+    private $uniqueWriter, $duplicatesWriterFactory;
 
     private $appearedRows;
-    private $uniqueRows = array(), $duplicatedRows = array();
+    private $duplicatedWriters = array();
+    private $uniqueRowIndexes = array();
 
     function __construct(){
         $this->appearedRows = new HashList();
     }
 
-    function setReader(Reader $reader){
+    function setReader(RandomReader $reader){
         if (!$reader->isReady()){
             throw new Exception("The reader is not ready!");
         }
-
         $this->reader = $reader;
     }
 
@@ -27,30 +31,36 @@ class HashDuplicatesScanner {
         $this->hashCalculator = $calculator;
     }
 
-    function getUniques(){
-        $this->processInput();
-        return array_values($this->uniqueRows);
+    function setUniquesWriter(Writer $writer){
+        if (!$writer->isReady()){
+            throw new Exception("The unique writer is not ready!");
+        }
+        $this->uniqueWriter = $writer;
     }
 
-    private function processInput(){
+    function scan(){
         if (!isset($this->hashCalculator)){
             throw new Exception("No hash calculator has been set!");
         }
 
-        while(!$this->reader->isEof()){
-            $row = $this->reader->readRow();
-            $this->check($row);
+        $this->processAllInputRows();
+        $this->writeUniques();
+    }
+
+    private function processAllInputRows(){
+        for ($rowIndex = 0; $rowIndex < $this->reader->getRowCount(); $rowIndex++) {
+            $this->processRow($rowIndex);
         }
     }
 
-    private function check($row){
-        $hash = $this->getHash($row);
+    private function processRow($rowIndex){
+        $row = $this->reader->readRow($rowIndex);
+        $rowHash = $this->getHash($row);
 
-        if ($this->appearedRows->contains($hash)) {
-            $this->moveUniqueToDuplicateRows($hash);
-            $this->addDuplicateRow($row, $hash);
+        if ($this->isDuplicate($rowHash)) {
+            $this->removeUnique($rowHash);
         } else {
-            $this->addUniqueRow($row, $hash);
+            $this->addUnique($rowHash, $rowIndex);
         }
     }
 
@@ -58,25 +68,23 @@ class HashDuplicatesScanner {
         return $this->hashCalculator->calculate($row);
     }
 
-    private function moveUniqueToDuplicateRows($hash){
-        if (isset($this->uniqueRows[$hash])){
-            $row = $this->uniqueRows[$hash];
-            $this->addDuplicateRow($row, $hash);
-            unset($this->uniqueRows[$hash]);
+    private function isDuplicate($rowHash){
+        return $this->appearedRows->contains($rowHash);
+    }
+
+    private function removeUnique($rowHash){
+        unset($this->uniqueRowIndexes[$rowHash]);
+    }
+
+    private function addUnique($rowHash, $rowIndex) {
+        $this->appearedRows->add($rowHash);
+        $this->uniqueRowIndexes[$rowHash] = $rowIndex;
+    }
+
+    private function writeUniques(){
+        foreach ($this->uniqueRowIndexes as $rowIndex){
+            $row = $this->reader->readRow($rowIndex);
+            $this->uniqueWriter->writeRow($row);
         }
-    }
-
-    private function addDuplicateRow($row, $hash){
-        $this->duplicatedRows[$hash][] = $row;
-    }
-
-    private function addUniqueRow($row, $hash){
-        $this->appearedRows->add($hash);
-        $this->uniqueRows[$hash] = $row;
-    }
-
-    function getDuplicates(){
-        $this->processInput();
-        return array_values($this->duplicatedRows);
     }
 }
