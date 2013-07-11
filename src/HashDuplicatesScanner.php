@@ -13,7 +13,7 @@ class HashDuplicatesScanner {
     private $uniqueWriter, $duplicatesWriterFactory;
 
     private $appearedRows;
-    private $duplicatedWriters = array();
+    private $duplicatesWriters = array();
     private $uniqueRowIndexes = array();
 
     function __construct(){
@@ -35,7 +35,7 @@ class HashDuplicatesScanner {
 
     function setUniquesWriter(Writer $writer){
         if (!$writer->isReady()){
-            throw new Exception("The unique writer is not ready!");
+            throw new Exception("The uniques writer is not ready!");
         }
         $this->uniqueWriter = $writer;
     }
@@ -94,10 +94,10 @@ class HashDuplicatesScanner {
     }
 
     private function getDuplicatesWriter($rowHash) {
-        if (!isset($this->duplicatedWriters[$rowHash])) {
-            $this->duplicatedWriters[$rowHash] = $this->duplicatesWriterFactory->createWriter($rowHash);
+        if (!isset($this->duplicatesWriters[$rowHash])) {
+            $this->duplicatesWriters[$rowHash] = $this->duplicatesWriterFactory->createWriter($rowHash);
         }
-        return $this->duplicatedWriters[$rowHash];
+        return $this->duplicatesWriters[$rowHash];
     }
 
     private function removeUnique($rowHash){
