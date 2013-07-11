@@ -18,10 +18,12 @@ class StringHashCalculator implements HashCalculator{
         $columns = $this->areColumnsDefined()? $this->columnsToScan : $rowColumns;
 
         foreach ($columns as $column){
-            $value = $row[$column];
-            $value = $this->applyGlobalFilterTo($value);
-            $value = $this->applyFilterTo($column, $value);
-            $hash .= "$column$value";
+            if (isset($row[$column])){
+                $value = $row[$column];
+                $value = $this->applyGlobalFilterTo($value);
+                $value = $this->applyFilterTo($column, $value);
+                $hash .= "$column$value";
+            }
         }
 
         return $hash;
