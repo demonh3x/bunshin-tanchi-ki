@@ -5,7 +5,7 @@ include_once(__ROOT_DIR__ . "src/HashCalculators/StringHashCalculator.php");
 include_once(__ROOT_DIR__ . "test/mocks/LowercaseMockFilter.php");
 include_once(__ROOT_DIR__ . "test/mocks/RemoveSpacesMockFilter.php");
 
-class TestHashCalculator extends TestFixture{
+class TestStringHashCalculator extends TestFixture{
 
     public function setUp(){
     }
@@ -108,5 +108,50 @@ class TestHashCalculator extends TestFixture{
         $calculator->setFilter(new RemoveSpacesMockFilter(), "3");
 
         Assert::areIdentical("3Bar1foo", $calculator->calculate($data));
+    }
+
+    function testSelectingNonExistingColumns(){
+        $calculator = $this->createHashCalculator();
+
+        $data = array(
+            "0" => "asdf",
+            "1" => "Foo",
+            "2" => "qwer",
+            "3" => " B a r "
+        );
+
+        $calculator->watchColumns(array("5", "asdf"));
+
+        Assert::areIdentical("", $calculator->calculate($data));
+    }
+
+    function testSelectingSomeNonExistingColumns(){
+        $calculator = $this->createHashCalculator();
+
+        $data = array(
+            "0" => "asdf",
+            "1" => "Foo",
+            "2" => "qwer",
+            "3" => " B a r "
+        );
+
+        $calculator->watchColumns(array("1", "asdf"));
+
+        Assert::areIdentical("1Foo", $calculator->calculate($data));
+    }
+
+    function testNullValues(){
+        $calculator = $this->createHashCalculator();
+
+        $data = array(
+            "0" => null,
+            "1" => "Foo",
+            "2" => "qwer",
+            "3" => " B a r "
+        );
+
+        $calculator->watchColumns(array("0", "1"));
+
+        Assert::areIdentical("1Foo", $calculator->calculate($data));
     }
 }
