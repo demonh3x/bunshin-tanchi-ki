@@ -8,70 +8,45 @@
     <body>
     </body>
 
+    <script type="text/javascript" src="js/jquery.js"></script>
     <script type="text/javascript">
-
-        /*function saveModifiedDuplicates (
-
-        )*/
-
-        var arrayPHPToJavascript = new Array();
-
-
         <?php
-
-        include_once ("sendArrayFromPHPToJavascript.php");
-        $objectGetArray = new Arrays();
-
-        $array_php = $objectGetArray->getArray();
-
-        echo "\narrayPHPToJavascript = [";
-        for ($i = 0, $totalArrays = count($array_php); $i < $totalArrays; $i ++)
-        {
-            echo "[";
-            for($j = 0, $totalValues = count($array_php[$i]); $j < $totalValues; $j ++)
-            {
-                echo "\"".$array_php[$i][$j]."\"";
-                if ($j != $totalValues-1)
-                {
-                    echo ", ";
-                }
-            }
-            echo "]";
-            if ($i != $totalArrays-1)
-            {
-                echo ", ";
-            }
-        }
-        echo "];";
+            include_once ("sendArrayFromPHPToJavascript.php");
+            $objectGetArray = new Arrays();
         ?>
 
+        var arrayPHPToJavascript = new Array();
+        arrayPHPToJavascript = JSON.parse( <?php echo json_encode($objectGetArray->getArray()) ?> );
 
-        document.write("<form name=\"duplicates\" onSubmit=saveModifiedDuplicates()><table border=1>");
 
-            //Reads the Javascript resulting array
+
+        // Transform the arrayPHPToJavascript Array to a table
+        document.write("<form name=\"duplicates\" onSubmit=saveModifiedDuplicates()><table id=list_of_duplicates border=1>");
+
             document.write("<tr><td style=\"background-color: grey;\"></td>");
 
-            for (var column = 0; column < arrayPHPToJavascript.length; column++)
+            for (var columnName in arrayPHPToJavascript[0])
             {
-                document.write("<td id style=\"color: white; width: 100px; text-align: center; font-weight: 900; background-color: grey;\">" +
-                    "Column " + (column+1) + "</td>");
+                document.write("<td id style=\"color: white; width: 100px; text-align: center; font-weight: 900; background-color: grey;\"><span>" +
+                columnName + "</span></td>");
             }
             document.write("</tr>");
 
-            for (var k = 0; k < arrayPHPToJavascript.length; k++)
+        for (var i = 0; i < arrayPHPToJavascript.length; i++)
             {
                 document.write("<tr>" + "<td style=\"width: 25px; text-align: center; background-color: grey;\">" +
-                    "<input type=checkbox>" + "</td>");
+                    "<input type=checkbox name=\"checkboxlist\" />" + "</td>");
 
-                for (var i = 0; i < arrayPHPToJavascript[k].length; i++)
+                for (var k in arrayPHPToJavascript[i])
                 {
                     document.write("<td style=\"width: 100px;\">" +
-                        "<input type=text value=\""+ arrayPHPToJavascript[k][i] +"\"></td>");
+                        "<input type=text value=\""+ arrayPHPToJavascript[i][k] +"\"></td>");
                 }
                 document.write("</tr>");
             }
 
         document.write("</table>" +
+            "<input type=\"button\" value=\"Show me checked\" onclick=getCheckboxValue()>" +
             "<input type=\"submit\" value=\"Save Modified Duplicates\"" +
             "</form>");
 
@@ -79,13 +54,30 @@
 
         document.write("<hr><h3>Modified rows</h3>")
 
-        /*for (var k = 0; k < modifiedArray.length; k++)
-        {
-            for (var i = 0; i < modified[k].length; i++)
+
+        function getCheckboxValue(){
+            var checkedCheckboxes = $("input[type=checkbox]:checked");
+            var arrayRow = new Array();
+
+            var arrayColumnTitles = new Array();
+
+            for (var titleText in arrayPHPToJavascript[0])
             {
-                document.write(modifiedArray[k][i] + " - ");
+                arrayColumnTitles.push(titleText);
             }
-        }*/
+
+            checkedCheckboxes.each(function(indexRow){
+                var columnsInSelectedRow = $(this).parent().parent().find("input[type=text]");
+                var arrayColumns = {};
+                columnsInSelectedRow.each ( function(indexCols, element) {
+                        arrayColumns[arrayColumnTitles[indexCols]] = ($(element).val());
+                        console.log(arrayColumns);
+                })
+                arrayRow.push(arrayColumns);
+            })
+            console.log(arrayRow);
+        }
+
 
     </script>
 </html>
