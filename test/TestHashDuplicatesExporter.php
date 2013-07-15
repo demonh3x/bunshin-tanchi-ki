@@ -16,16 +16,16 @@ class TestHashDuplicatesExporter extends TestFixture{
     public function tearDown(){
     }
 
-    private function createScanner(){
+    private function createExporter(){
         return Core::getCodeCoverageWrapper('HashDuplicatesExporter');
     }
 
     function testRaiseExceptionWhenSettingAReaderNotReady(){
-        $scanner = $this->createScanner();
+        $exporter = $this->createExporter();
         $exceptionRaised = false;
 
         try {
-            $scanner->setReader(new NotReadyMockReader());
+            $exporter->setReader(new NotReadyMockReader());
         } catch(\Exception $e){
             $exceptionRaised = true;
         }
@@ -33,10 +33,10 @@ class TestHashDuplicatesExporter extends TestFixture{
         Assert::isTrue($exceptionRaised);
     }
 
-    private function createScannerWithReader($readerData){
-        $scanner = $this->createScanner();
+    private function createExporterWithReader($readerData){
+        $exporter = $this->createExporter();
 
-        $ramId = "testHashDuplicatesScanner";
+        $ramId = "testHashDuplicatesExporter";
         unset($GLOBALS[$ramId]);
 
         $writer = new \RamWriter();
@@ -50,19 +50,19 @@ class TestHashDuplicatesExporter extends TestFixture{
 
         $reader = new \RamRandomReader();
         $reader->open($ramId);
-        $scanner->setReader($reader);
+        $exporter->setReader($reader);
 
-        return $scanner;
+        return $exporter;
     }
 
     function testRaiseExceptionWhenScanningAndHashCalculatorNotSet(){
-        $scanner = $this->createScannerWithReader(array(
+        $exporter = $this->createExporterWithReader(array(
             "asdf"
         ));
         $exceptionRaised = false;
 
         try {
-            $scanner->scan();
+            $exporter->scan();
         } catch(\Exception $e){
             $exceptionRaised = true;
         }
@@ -70,28 +70,28 @@ class TestHashDuplicatesExporter extends TestFixture{
         Assert::isTrue($exceptionRaised);
     }
 
-    private function createScannerWithReaderAndHashCalculator($readerData){
-        $scanner = $this->createScannerWithReader($readerData);
+    private function createExporterrWithReaderAndHashCalculator($readerData){
+        $exporter = $this->createExporterWithReader($readerData);
 
         $hashCalculator = new \StringHashCalculator();
-        $scanner->setHashCalculator($hashCalculator);
+        $exporter->setHashCalculator($hashCalculator);
 
-        return $scanner;
+        return $exporter;
     }
 
     function testNotRaisingExceptionWhenReaderAndHashCalculatorAreSet(){
-        $scanner = $this->createScannerWithReaderAndHashCalculator(array());
-        $scanner->scan();
+        $exporter = $this->createExporterrWithReaderAndHashCalculator(array());
+        $exporter->scan();
     }
 
     function testRaiseExceptionWhenSettingANotReadyUniquesWriter(){
-        $scanner = $this->createScannerWithReaderAndHashCalculator(array());
+        $exporter = $this->createExporterrWithReaderAndHashCalculator(array());
 
         $exceptionRaised = false;
 
         $writer = new \RamWriter();
         try {
-            $scanner->setUniquesWriter($writer);
+            $exporter->setUniquesWriter($writer);
         } catch(\Exception $e){
             $exceptionRaised = true;
         }
@@ -112,13 +112,13 @@ class TestHashDuplicatesExporter extends TestFixture{
     }
 
     private function assertUniques($input, $expectedOutput){
-        $scanner = $this->createScannerWithReaderAndHashCalculator($input);
+        $exporter = $this->createExporterrWithReaderAndHashCalculator($input);
 
-        $ramId = "testHashDuplicatesScannerAssertUniques";
+        $ramId = "testHashDuplicatesExporterAssertUniques";
         unset($GLOBALS[$ramId]);
 
-        $scanner->setUniquesWriter($this->getRamWriter($ramId));
-        $scanner->scan();
+        $exporter->setUniquesWriter($this->getRamWriter($ramId));
+        $exporter->scan();
 
         $actualData = $this->readRamData($ramId);
 
@@ -263,12 +263,12 @@ class TestHashDuplicatesExporter extends TestFixture{
     }
 
     private function assertDuplicates($input, $expectedOutput){
-        $scanner = $this->createScannerWithReaderAndHashCalculator($input);
+        $exporter = $this->createExporterrWithReaderAndHashCalculator($input);
 
         $factory = new MockRamWriterFactory();
 
-        $scanner->setDuplicatesWriterFactory($factory);
-        $scanner->scan();
+        $exporter->setDuplicatesWriterFactory($factory);
+        $exporter->scan();
 
         $allDuplicates = array();
         foreach ($factory->createdWriters as $id => $writer){
