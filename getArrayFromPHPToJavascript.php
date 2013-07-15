@@ -5,9 +5,6 @@
         <title></title>
     </head>
 
-    <body>
-    </body>
-
     <script type="text/javascript" src="js/jquery.js"></script>
     <script type="text/javascript">
         <?php
@@ -16,9 +13,9 @@
         ?>
 
         var arrayPHPToJavascript = new Array();
-        arrayPHPToJavascript = JSON.parse( <?php echo json_encode($objectGetArray->getArray()) ?> );
-
-
+        arrayPHPToJavascript = JSON.parse( <?php echo json_encode($objectGetArray->getArrayRows()) ?> );
+        var arrayPURLs = new Array();
+        arrayPURLs = JSON.parse( <?php echo json_encode($objectGetArray->getArrayPURLs()) ?> );
 
         // Transform the arrayPHPToJavascript Array to a table
         document.write("<form name=\"duplicates\" onSubmit=saveModifiedDuplicates()><table id=list_of_duplicates border=1>");
@@ -46,16 +43,10 @@
             }
 
         document.write("</table>" +
-            "<input type=\"button\" value=\"Show me checked\" onclick=getCheckboxValue()>" +
-            "<input type=\"submit\" value=\"Save Modified Duplicates\"" +
+            "<input type=\"button\" value=\"Show me checked with current values\" onclick=getCheckedCurrentValue()>" +
             "</form>");
 
-
-
-        document.write("<hr><h3>Modified rows</h3>")
-
-
-        function getCheckboxValue(){
+        function getCheckedCurrentValue(){
             var checkedCheckboxes = $("input[type=checkbox]:checked");
             var arrayRow = new Array();
 
@@ -66,7 +57,7 @@
                 arrayColumnTitles.push(titleText);
             }
 
-            checkedCheckboxes.each(function(indexRow){
+            checkedCheckboxes.each(function(){
                 var columnsInSelectedRow = $(this).parent().parent().find("input[type=text]");
                 var arrayColumns = {};
                 columnsInSelectedRow.each ( function(indexCols, element) {
@@ -89,10 +80,47 @@
                 document.sendArrayToPHP.submit();
         }
 
-        function sendArrayToPHP(){
+        /*function checkIfPURLExists () {*/
+            var purlColumnIndex = 5;
+            var purlColumn = $("#list_of_duplicates tr:gt(0) td:nth-child(" + purlColumnIndex + ") input[type=text]");
+            var arrayModifiedPURLs = new Array();
 
-        }
+
+            purlColumn.css("background", "lightgreen");
+
+            purlColumn.each(function(index, element){
+                arrayModifiedPURLs[index] = $(element).val();
+            });
+
+            console.log(arrayModifiedPURLs);
 
 
+            function checkIfUsed(element){
+                if ($(element).val() in arrayPURLs)
+                {
+                    console.log("--" + $(element).val() + "-- is ALREADY defined.");
+                    $(element).css("background", "red");
+                }
+                else
+                {
+                    console.log("--" + $(element).val() + "-- is NOT yet defined.");
+                    $(element).css("background", "lightgreen");
+                }
+            }
+
+            purlColumn.keyup(function(){
+                checkIfUsed(this);
+            });
+            $(document).ready(function(){
+                purlColumn.each(function(){
+                    checkIfUsed(this);
+                });
+
+            });
+//      }
     </script>
+
+    <body>
+        <?php var_dump($objectGetArray->getArrayPURLs()); ?>
+    </body>
 </html>

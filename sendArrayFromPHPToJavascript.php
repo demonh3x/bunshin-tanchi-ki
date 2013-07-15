@@ -2,31 +2,46 @@
 
 class Arrays {
 
-    public $array_php = array(
-        array(
-            "Column 1" => "1",
-            "Column 2" => "2",
-            "Column 3" => "3",
-            "Column 4" => "4",
-        ),
-        array(
-            "Column 1" => "A",
-            "Column 2" => "B",
-            "Column 3" => "C",
-            "Column 4" => "D",
-        ),
-        array(
-            "Column 1" => "I",
-            "Column 2" => "II",
-            "Column 3" => "III",
-            "Column 4" => "IV",
-        )
-    );
+    public $arrayRows = array(),
+           $arrayPURLs = array();
 
 
-    function getArray(){
-        $this->array_php = json_encode($this->array_php);
-        return $this->array_php;
+    function __construct(){
+        $this->arrayRows  = array(
+            array(
+                "Name" => "Maria",
+                "Surname" => "Torremolinos",
+                "Telf" => "56454565",
+                "PURL" => "MariaT",
+            ),
+            array(
+                "Name" => "Mateu",
+                "Surname" => "Charlott",
+                "Telf" => "85552555",
+                "PURL" => "MCharlott",
+            ),
+            array(
+                "Name" => "Mary",
+                "Surname" => "Charlott",
+                "Telf" => "69156565",
+                "PURL" => "MCharlott",
+            )
+        );
+
+
+        for ($i = 0; $i < 100000; $i++)
+        {
+            $this->arrayPURLs["MCharlott".$i] = "0";
+        }
+
+    }
+
+    function getArrayRows(){
+        return json_encode($this->arrayRows);
+    }
+
+    function getArrayPURLs(){
+        return json_encode($this->arrayPURLs);
     }
 
 }
