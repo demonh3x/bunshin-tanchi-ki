@@ -76,6 +76,21 @@
                 arrayRow.push(arrayColumns);
             })
             console.log(arrayRow);
+            convertJavascriptArrayToPHP(arrayRow);
+        }
+
+        function convertJavascriptArrayToPHP(array){
+                document.write("<form action=\"getArrayFromJavascriptToPHP.php\" method=post name=sendArrayToPHP>" +
+                                    "<input id=\"arrayAsString\" name=\"arrayAsString\" type=hidden>" +
+                               "</form>");
+
+                var arv = JSON.stringify(array);
+                document.sendArrayToPHP.arrayAsString.value = arv;
+                document.sendArrayToPHP.submit();
+        }
+
+        function sendArrayToPHP(){
+
         }
 
 
