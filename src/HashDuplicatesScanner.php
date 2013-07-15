@@ -123,7 +123,7 @@ class HashDuplicatesScanner {
 
     private function writeUniques(){
         foreach ($this->uniqueRowIndexes as $rowIndex){
-            $row = $this->reader->readRow($rowIndex);
+            $row = $this->readRowData($rowIndex);
             $this->uniqueWriter->writeRow($row);
         }
     }
