@@ -2,11 +2,13 @@
 
 include_once("RandomReaders/RandomReader.php");
 include_once("HashCalculators/HashCalculator.php");
+include_once("HashCalculators/NullHashCalculator.php");
 
 include_once("Writers/Writer.php");
 include_once("Writers/WriterFactory.php");
 
 include_once("HashList.php");
+include_once("Row.php");
 
 class HashDuplicatesExporter {
     private $reader, $hashCalculator;
@@ -141,33 +143,3 @@ class NullWriterFactory implements WriterFactory{
     }
 }
 
-class Row {
-    private $data, $hash, $hashCalculator;
-
-    function __construct(){
-        $this->hashCalculator = new NullHashCalculator();
-    }
-
-    function setHashCalculator(HashCalculator $hashCalculator){
-        $this->hashCalculator = $hashCalculator;
-    }
-
-    function setData($data){
-        $this->data = $data;
-        $this->hash = $this->hashCalculator->calculate($this->data);
-    }
-
-    function getData(){
-        return $this->data;
-    }
-
-    function getHash(){
-        return $this->hash;
-    }
-}
-
-class NullHashCalculator implements HashCalculator{
-    function calculate($data){
-        throw new Exception("No hash calculator has been set!");
-    }
-}
