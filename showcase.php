@@ -10,7 +10,9 @@
 </head>
 <body>
 <?php
-    include_once("src/HashDuplicatesScanner.php");
+    set_time_limit(0);
+
+    include_once("src/HashDuplicatesExporter.php");
     include_once("src/RandomReaders/CsvRandomReader.php");
     include_once("src/HashCalculators/StringHashCalculator.php");
     foreach (glob("src/HashCalculators/Filters/*.php") as $filename){
@@ -30,7 +32,7 @@
 
     $startTime = microtime(true);
 
-    $scanner = new HashDuplicatesScanner();
+    $scanner = new HashDuplicatesExporter();
 
     $reader = new CsvRandomReader();
     /*$reader->open("test/sampleFiles/15000rows.csv");*/

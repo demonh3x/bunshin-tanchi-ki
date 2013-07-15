@@ -8,7 +8,7 @@ include_once("Writers/WriterFactory.php");
 
 include_once("HashList.php");
 
-class HashDuplicatesScanner {
+class HashDuplicatesExporter {
     private $reader, $hashCalculator;
     private $uniqueWriter, $duplicatesWriterFactory;
 

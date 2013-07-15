@@ -1,7 +1,7 @@
 <?php
 namespace Enhance;
 
-include_once(__ROOT_DIR__ . "src/HashDuplicatesScanner.php");
+include_once(__ROOT_DIR__ . "src/HashDuplicatesExporter.php");
 include_once(__ROOT_DIR__ . "src/HashCalculators/StringHashCalculator.php");
 
 include_once(__ROOT_DIR__ . "test/mocks/NotReadyMockReader.php");
@@ -9,7 +9,7 @@ include_once(__ROOT_DIR__ . "test/mocks/NotReadyMockReader.php");
 include_once(__ROOT_DIR__ . "src/RandomReaders/RamRandomReader.php");
 include_once(__ROOT_DIR__ . "src/Writers/RamWriter.php");
 
-class TestHashDuplicatesScanner extends TestFixture{
+class TestHashDuplicatesExporter extends TestFixture{
     public function setUp(){
     }
 
@@ -17,7 +17,7 @@ class TestHashDuplicatesScanner extends TestFixture{
     }
 
     private function createScanner(){
-        return Core::getCodeCoverageWrapper('HashDuplicatesScanner');
+        return Core::getCodeCoverageWrapper('HashDuplicatesExporter');
     }
 
     function testRaiseExceptionWhenSettingAReaderNotReady(){
