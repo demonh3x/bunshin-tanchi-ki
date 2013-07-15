@@ -1,6 +1,7 @@
 <?php
 
 include_once("HashCalculators/HashCalculator.php");
+include_once("RandomReaders/RandomReader.php");
 
 include_once("HashList.php");
 include_once("Row.php");
@@ -15,6 +16,7 @@ class HashUniquesScanner {
     function __construct(HashCalculator $calculator){
         $this->calculator = $calculator;
         $this->appearedRows = new HashList();
+        $this->reader = new NullRandomReader();
     }
 
     function setReader(RandomReader $reader){
@@ -27,9 +29,9 @@ class HashUniquesScanner {
     }
 
     private function processAllInputRows(){
-            for ($rowIndex = 0; $rowIndex < $this->reader->getRowCount(); $rowIndex++) {
-                $this->processRow($rowIndex);
-            }
+        for ($rowIndex = 0; $rowIndex < $this->reader->getRowCount(); $rowIndex++) {
+            $this->processRow($rowIndex);
+        }
     }
 
     private function processRow($rowIndex){
@@ -196,5 +198,22 @@ class RowCollection implements Iterator{
 
     public function rewind(){
         reset($this->indexes);
+    }
+}
+
+class NullRandomReader implements RandomReader{
+    function open($path){
+    }
+
+    function isReady(){
+        return true;
+    }
+
+    function readRow($index){
+        return array();
+    }
+
+    function getRowCount(){
+        return 0;
     }
 }

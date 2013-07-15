@@ -35,13 +35,13 @@ class TestHashUniquesScanner extends TestFixture{
         Assert::isTrue($exceptionRaised);
     }*/
 
-/*    function testGetUniquesNoReaders(){
+    function testGetUniquesNoReaders(){
         $scanner = $this->createScanner();
 
-        $actualData = $scanner->getUniques();
+        $actualData = $this->getResultsArray($scanner->getUniques());
 
         Assert::areIdentical(array(), $actualData);
-    }*/
+    }
 
     private function createDefaultScanner($readerData){
         $scanner = $this->createScanner();
@@ -222,7 +222,7 @@ class TestHashUniquesScanner extends TestFixture{
         $this->assertUniques($input, $uniques);
     }
 
-    function testGettingUniquesTwoInputs(){
+/*    function testGettingUniquesTwoInputs(){
         $inputA = array(
             array(
                 "Column1" => "Foo"
@@ -261,7 +261,7 @@ class TestHashUniquesScanner extends TestFixture{
         $actual = $this->getResultsArray($scanner->getUniques());
 
         Assert::areIdentical($expected, $actual);
-    }
+    }*/
 /*
     function testGettingDuplicatesWhenNoDuplicatesOneColumn(){
         $input = array(
