@@ -17,8 +17,8 @@
         var arrayPURLs = new Array();
         arrayPURLs = JSON.parse( <?php echo json_encode($objectGetArray->getArrayPURLs()) ?> );
 
-        // Transform the arrayPHPToJavascript Array to a table
-        document.write("<form name=\"duplicates\" onSubmit=saveModifiedDuplicates()><table id=list_of_duplicates border=1>");
+        // Show the arrayPHPToJavascript Array in a table
+        document.write("<form name=\"duplicates\"><table id=list_of_duplicates border=1>");
 
             document.write("<tr><td style=\"background-color: grey;\"></td>");
 
@@ -44,6 +44,7 @@
 
         document.write("</table>" +
             "<input type=\"button\" value=\"Show me checked with current values\" onclick=getCheckedCurrentValue()>" +
+            "<input type=\"button\" value=\"Ready to send?\" onclick=checkIfReadyToSend()>" +
             "</form>");
 
         function getCheckedCurrentValue(){
@@ -80,44 +81,80 @@
                 document.sendArrayToPHP.submit();
         }
 
-        /*function checkIfPURLExists () {*/
-            var purlColumnIndex = 5;
-            var purlColumn = $("#list_of_duplicates tr:gt(0) td:nth-child(" + purlColumnIndex + ") input[type=text]");
-            var arrayModifiedPURLs = new Array();
+        function transformAllRowsToArray () {
+            var allButFirstRow = $("#list_of_duplicates tr:gt(0)".find("td");
+
+        }
 
 
-            purlColumn.css("background", "lightgreen");
-
-            purlColumn.each(function(index, element){
-                arrayModifiedPURLs[index] = $(element).val();
-            });
-
-            console.log(arrayModifiedPURLs);
+        var purlColumnIndex = 5;
+        var purlColumn = $("#list_of_duplicates tr:gt(0) td:nth-child(" + purlColumnIndex + ") input[type=text]");
+        var arrayModifiedPURLs = new Array();
 
 
-            function checkIfUsed(element){
-                if ($(element).val() in arrayPURLs)
-                {
-                    console.log("--" + $(element).val() + "-- is ALREADY defined.");
-                    $(element).css("background", "red");
-                }
-                else
-                {
-                    console.log("--" + $(element).val() + "-- is NOT yet defined.");
-                    $(element).css("background", "lightgreen");
-                }
+
+        console.log(arrayModifiedPURLs);
+
+
+
+        function checkIfPURLIsBeingUsed(element){
+            var purlUsed = false;
+
+            if ($(element).val() in arrayPURLs)
+            {
+                console.log("--" + $(element).val() + "-- is ALREADY defined.");
+                $(element).css("background", "red");
+                purlUsed = true;
+            }
+            else
+            {
+                console.log("--" + $(element).val() + "-- is NOT yet defined.");
+                $(element).css("background", "lightgreen");
             }
 
-            purlColumn.keyup(function(){
-                checkIfUsed(this);
+            purlColumn.each(function(index){
+                console.log(arrayModifiedPURLs[index]);
+                if (arrayModifiedPURLs[index] == $(element).val());
+                {
+                    var repeatedPURLField = $("#list_of_duplicates tr:nth-child("+ index +") td:nth-child(" +
+                                     purlColumnIndex + ") input[type=text]");
+                    repeatedPURLField.css("background", "red");
+                }
             });
-            $(document).ready(function(){
-                purlColumn.each(function(){
-                    checkIfUsed(this);
-                });
 
+            return purlUsed;
+        }
+
+        purlColumn.keyup(function(){
+            checkIfPURLIsBeingUsed(this);
+
+        });
+        $(document).ready(function(){
+            purlColumn.each(function(){
+                checkIfPURLIsBeingUsed(this);
             });
-//      }
+
+        });
+
+
+        function checkIfReadyToSend () {
+            var readyToSave = true;
+
+            purlColumn.each(function(){
+                if (checkIfPURLIsBeingUsed(this)){
+                    readyToSave = false;
+                }
+            });
+
+            if (readyToSave)
+            {
+                alert("You can send the file. There are no PURL duplicates.")
+            }
+            else
+            {
+                alert("You can not send the file. Duplicates were found. They are highlighted in red.")
+            }
+        }
     </script>
 
     <body>

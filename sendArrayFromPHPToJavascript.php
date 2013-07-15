@@ -18,7 +18,7 @@ class Arrays {
                 "Name" => "Mateu",
                 "Surname" => "Charlott",
                 "Telf" => "85552555",
-                "PURL" => "MCharlott",
+                "PURL" => "MCharlott0",
             ),
             array(
                 "Name" => "Mary",
