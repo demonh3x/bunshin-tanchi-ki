@@ -56,7 +56,9 @@ class TestHashDuplicatesScanner extends TestFixture{
     }
 
     function testRaiseExceptionWhenScanningAndHashCalculatorNotSet(){
-        $scanner = $this->createScannerWithReader(array());
+        $scanner = $this->createScannerWithReader(array(
+            "asdf"
+        ));
         $exceptionRaised = false;
 
         try {
