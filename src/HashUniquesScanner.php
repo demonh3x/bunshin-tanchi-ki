@@ -8,19 +8,28 @@ include_once("Row.php");
 
 include_once("RowCollection.php");
 
+include_once("DuplicatesListener.php");
+
 class HashUniquesScanner {
     private $calculator, $readers = array();
 
     private $appearedRows;
     private $uniqueRows = array();
 
+    private $duplicatesListener;
+
     function __construct(HashCalculator $calculator){
         $this->calculator = $calculator;
         $this->appearedRows = new HashList();
+        $this->setDuplicatesListener(new NullDuplicatesListener());
     }
 
     function addReader(RandomReader $reader){
         $this->readers[] = $reader;
+    }
+
+    function setDuplicatesListener(DuplicatesListener $listener){
+        $this->duplicatesListener = $listener;
     }
 
     function getUniques(){
@@ -36,20 +45,18 @@ class HashUniquesScanner {
         }
     }
 
-    private function processRow($reader, $rowIndex){
+    private function processRow(RandomReader $reader, $rowIndex){
         $row = $this->readRow($reader, $rowIndex);
 
         if ($this->isDuplicate($row)) {
-            /*$this->copyFromUniquesToDuplicates($row);*/
-            $this->removeUnique($row);
-
-            /*$this->writeDuplicate($row);*/
+            $this->removeUniqueAndSendItAsDuplicate($row);
+            $this->sendDuplicate($row);
         } else {
             $this->addUnique($row);
         }
     }
 
-    private function readRow($reader, $rowIndex){
+    private function readRow(RandomReader $reader, $rowIndex){
         $row = new Row($reader, $rowIndex);
         $row->setHashCalculator($this->calculator);
 
@@ -58,6 +65,21 @@ class HashUniquesScanner {
 
     private function isDuplicate(Row $row){
         return $this->appearedRows->contains($row->getHash());
+    }
+
+    private function removeUniqueAndSendItAsDuplicate(Row $row){
+        if ($this->isInUniqueRows($row)){
+            $this->sendUniqueAsDuplicate($row);
+            $this->removeUnique($row);
+        }
+    }
+
+    private function isInUniqueRows(Row $row){
+        return isset($this->uniqueRows[$row->getHash()]);
+    }
+
+    private function sendUniqueAsDuplicate(Row $row){
+        $this->sendDuplicate($this->uniqueRows[$row->getHash()]);
     }
 
     private function removeUnique(Row $row){
@@ -72,4 +94,12 @@ class HashUniquesScanner {
     private function createResultsIterator() {
         return new RowCollection($this->uniqueRows);
     }
+
+    private function sendDuplicate(Row $row){
+        $this->duplicatesListener->receiveDuplicate($row);
+    }
+}
+
+class NullDuplicatesListener implements DuplicatesListener{
+    function receiveDuplicate(Row $row){}
 }
