@@ -7,47 +7,96 @@
 
     <script type="text/javascript" src="js/jquery.js"></script>
     <script type="text/javascript">
+
+        // Execute--------------------------------------------------------------------------------------------
+
         <?php
             include_once ("sendArrayFromPHPToJavascript.php");
             $objectGetArray = new Arrays();
         ?>
 
-        var arrayPHPToJavascript = new Array();
-        arrayPHPToJavascript = JSON.parse( <?php echo json_encode($objectGetArray->getArrayRows()) ?> );
-        var arrayPURLs = new Array();
-        arrayPURLs = JSON.parse( <?php echo json_encode($objectGetArray->getArrayPURLs()) ?> );
+        var arrayPHPToJavascript = convertPHPArrayToJavascript( <?php echo json_encode($objectGetArray->getArrayRows()) ?> );
+        var arrayPURLs = convertPHPArrayToJavascript( <?php echo json_encode($objectGetArray->getArrayPURLs()) ?> );
 
-        // Show the arrayPHPToJavascript Array in a table
-        document.write("<form name=\"duplicates\"><table id=list_of_duplicates border=1>");
+        writeForm();
 
-            document.write("<tr><td style=\"background-color: grey;\"></td>");
+
+        var purlColumnIndex = 5;
+        var purlColumn = $("#list_of_duplicates tr:gt(0) td:nth-child(" + purlColumnIndex + ") input[type=text]");
+
+
+        $(document).ready(function(){
+            purlColumn.each(function(){
+                checkIfPURLIsBeingUsed(this, getArrayOfRepeatedIndexes());
+            });
+            console.log("--------------------------------------------------------------------------------------------");
+        });
+
+        purlColumn.keyup(function(){
+            purlColumn.each(function(){
+                checkIfPURLIsBeingUsed(this, getArrayOfRepeatedIndexes());
+            });
+            console.log("--------------------------------------------------------------------------------------------");
+        });
+
+
+        // Functions--------------------------------------------------------------------------------------------
+
+        function convertPHPArrayToJavascript ( phpArrayAsString )
+        {
+            var arrayInJavascript = JSON.parse(phpArrayAsString);
+            return arrayInJavascript;
+        }
+
+        function convertJavascriptArrayToPHP(array){
+            document.write("<form action=\"getArrayFromJavascriptToPHP.php\" method=post name=sendArrayToPHP>" +
+                "<input id=\"arrayAsString\" name=\"arrayAsString\" type=hidden>" +
+                "</form>");
+
+            var arv = JSON.stringify(array);
+            document.sendArrayToPHP.arrayAsString.value = arv;
+            document.sendArrayToPHP.submit();
+        }
+
+        function writeForm () {
+            // Show the arrayPHPToJavascript Array in a table
+            document.write("<form name=\"duplicates\"><table id=list_of_duplicates border=1>");
+
+            document.write(     "<tr><td style=\"background-color: grey;\"></td>");
 
             for (var columnName in arrayPHPToJavascript[0])
             {
-                document.write("<td id style=\"color: white; width: 100px; text-align: center; font-weight: 900; background-color: grey;\"><span>" +
-                columnName + "</span></td>");
+                document.write(     "<td id style=\"color: white; width: 100px; text-align: center; font-weight: 900; background-color: grey;\">" +
+                                        "<span>" + columnName + "</span>" +
+                                    "</td>");
             }
-            document.write("</tr>");
+            document.write(     "</tr>");
 
-        for (var i = 0; i < arrayPHPToJavascript.length; i++)
+            for (var i = 0; i < arrayPHPToJavascript.length; i++)
             {
-                document.write("<tr>" + "<td style=\"width: 25px; text-align: center; background-color: grey;\">" +
-                    "<input type=checkbox name=\"checkboxlist\" />" + "</td>");
+                document.write( "<tr>" +
+                                    "<td style=\"width: 25px; text-align: center; background-color: grey;\">" +
+                                        "<input type=checkbox name=\"checkboxlist\" />" +
+                                    "</td>");
 
-                for (var k in arrayPHPToJavascript[i])
-                {
-                    document.write("<td style=\"width: 100px;\">" +
-                        "<input type=text value=\""+ arrayPHPToJavascript[i][k] +"\"></td>");
-                }
-                document.write("</tr>");
+            for (var k in arrayPHPToJavascript[i])
+            {
+                document.write(     "<td style=\"width: 100px;\">" +
+                                        "<input type=text value=\""+ arrayPHPToJavascript[i][k] +"\">" +
+                                    "</td>");
+            }
+            document.write(     "</tr>");
             }
 
-        document.write("</table>" +
-            "<input type=\"button\" value=\"Show me checked with current values\" onclick=getCheckedCurrentValue()>" +
-            "<input type=\"button\" value=\"Ready to send?\" onclick=checkIfReadyToSend()>" +
-            "</form>");
+            document.write( "</table>" +
+                            "<input type=\"button\" value=\"Show me checked with current values\"" +
+                            " onclick=sendCheckedRowsToPHP()>" +
+                            //"<input type=\"button\" value=\"Ready to send?\" onclick=checkIfReadyToSend()>" +
+                        "</form>");
+        }
 
-        function getCheckedCurrentValue(){
+
+        function sendCheckedRowsToPHP(){
             var checkedCheckboxes = $("input[type=checkbox]:checked");
             var arrayRow = new Array();
 
@@ -71,45 +120,33 @@
             convertJavascriptArrayToPHP(arrayRow);
         }
 
-        function convertJavascriptArrayToPHP(array){
-                document.write("<form action=\"getArrayFromJavascriptToPHP.php\" method=post name=sendArrayToPHP>" +
-                                    "<input id=\"arrayAsString\" name=\"arrayAsString\" type=hidden>" +
-                               "</form>");
-
-                var arv = JSON.stringify(array);
-                document.sendArrayToPHP.arrayAsString.value = arv;
-                document.sendArrayToPHP.submit();
-        }
-
-
-        var purlColumnIndex = 5;
-        var purlColumn = $("#list_of_duplicates tr:gt(0) td:nth-child(" + purlColumnIndex + ") input[type=text]");
-
-        function arrayOfRepeatedIndexes () {
-            var arrayModifyingPURLs = new Array();
+        function getArrayOfRepeatedIndexes () {
+            var arrayRepeatedIndexes = new Array();
 
             purlColumn.each(function(){
-                arrayModifyingPURLs[$(this).val()] = new Array();
+                arrayRepeatedIndexes[$(this).val()] = new Array();
             });
 
             purlColumn.each(function(){
-                if ($(this).val() in arrayModifyingPURLs)
+                if ($(this).val() in arrayRepeatedIndexes)
                 {
                     console.log("Index of " + $(this).val() + " is " + $(this).parent().parent().index());
-                    arrayModifyingPURLs[$(this).val()].push($(this).parent().parent().index() + 1);
+                    arrayRepeatedIndexes[$(this).val()].push($(this).parent().parent().index() + 1);
                 }
 
-                console.log("LENGTH OF " + $(this).val() + " SUBARRAY ->" + arrayModifyingPURLs[$(this).val()].length);
+                console.log("LENGTH OF " + $(this).val() + " SUBARRAY ->" + arrayRepeatedIndexes[$(this).val()].length);
             });
 
-            return arrayModifyingPURLs;
+            return arrayRepeatedIndexes;
         }
 
         function checkIfPURLIsBeingUsed(element, arrayModifyingPURLs){
             var purlUsed = false;
 
             purlColumn.each(function(){
-                if ( ($(element).val() in arrayPURLs) || (arrayModifyingPURLs[$(element).val()].length > 1))
+                if (    ($(element).val() in arrayPURLs)
+                    ||  (arrayModifyingPURLs[$(element).val()].length > 1)
+                    ||  ($(element).val() == ""))
                 {
                     for (var value in arrayModifyingPURLs[$(element).val()])
                     {
@@ -125,41 +162,17 @@
                 }
                 else
                 {
-                    for (var value in arrayModifyingPURLs[$(element).val()])
-                    {
-
-                        var rowNum = arrayModifyingPURLs[$(element).val()][value];
-
-                        console.log("INDEXES TO GREEN ->" + arrayModifyingPURLs[$(element).val()][value]);
-                        $("#list_of_duplicates tr:nth-child(" + rowNum + ")" +
-                            " td:nth-child(" + purlColumnIndex + ") input[type=text]").css("background", "green");
-                    }
                     console.log("--" + $(element).val() + "-- is NOT yet defined.");
                     $(element).css("background", "lightgreen");
                 }
 
             });
 
+            console.log(purlUsed);
             return purlUsed;
         }
 
-        purlColumn.keyup(function(){
-            purlColumn.each(function(){
-                checkIfPURLIsBeingUsed(this, arrayOfRepeatedIndexes());
-            });
-            console.log("--------------------------------------------------------------------------------------------");
-        });
-
-
-
-        $(document).ready(function(){
-            purlColumn.each(function(){
-                checkIfPURLIsBeingUsed(this, arrayOfRepeatedIndexes());
-            });
-            console.log("--------------------------------------------------------------------------------------------");
-        });
-
-        function checkIfReadyToSend () {
+        /*function checkIfReadyToSend () {
             var readyToSave = true;
 
             purlColumn.each(function(){
@@ -176,7 +189,9 @@
             {
                 alert("You can not send the file. Duplicates were found. They are highlighted in red.")
             }
-        }
+        }*/
+
+
     </script>
 
     <body>
