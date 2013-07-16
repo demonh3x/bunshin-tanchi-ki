@@ -2,13 +2,15 @@
 
 include_once("RandomReaders/RandomReader.php");
 include_once("HashCalculators/HashCalculator.php");
+include_once("HashCalculators/NullHashCalculator.php");
 
 include_once("Writers/Writer.php");
 include_once("Writers/WriterFactory.php");
 
 include_once("HashList.php");
+include_once("Row.php");
 
-class HashDuplicatesScanner {
+class HashDuplicatesExporter {
     private $reader, $hashCalculator;
     private $uniqueWriter, $duplicatesWriterFactory;
 
@@ -71,11 +73,8 @@ class HashDuplicatesScanner {
     }
 
     private function readRow($rowIndex){
-        $row = new Row();
+        $row = new Row($this->reader, $rowIndex);
         $row->setHashCalculator($this->hashCalculator);
-
-        $data = $this->readRowData($rowIndex);
-        $row->setData($data);
 
         return $row;
     }
@@ -91,11 +90,8 @@ class HashDuplicatesScanner {
     private function copyFromUniquesToDuplicates(Row $row){
         $rowIndex = &$this->uniqueRowIndexes[$row->getHash()];
         if (isset($rowIndex)) {
-            $pointedRow = new Row();
+            $pointedRow = new Row($this->reader, $rowIndex);
             $pointedRow->setHashCalculator($this->hashCalculator);
-
-            $pointedRowData = $this->readRowData($rowIndex);
-            $pointedRow->setData($pointedRowData);
 
             $this->writeDuplicate($pointedRow);
         }
@@ -123,7 +119,7 @@ class HashDuplicatesScanner {
 
     private function writeUniques(){
         foreach ($this->uniqueRowIndexes as $rowIndex){
-            $row = $this->reader->readRow($rowIndex);
+            $row = $this->readRowData($rowIndex);
             $this->uniqueWriter->writeRow($row);
         }
     }
@@ -141,33 +137,3 @@ class NullWriterFactory implements WriterFactory{
     }
 }
 
-class Row {
-    private $data, $hash, $hashCalculator;
-
-    function __construct(){
-        $this->hashCalculator = new NullHashCalculator();
-    }
-
-    function setHashCalculator(HashCalculator $hashCalculator){
-        $this->hashCalculator = $hashCalculator;
-    }
-
-    function setData($data){
-        $this->data = $data;
-        $this->hash = $this->hashCalculator->calculate($this->data);
-    }
-
-    function getData(){
-        return $this->data;
-    }
-
-    function getHash(){
-        return $this->hash;
-    }
-}
-
-class NullHashCalculator implements HashCalculator{
-    function calculate($data){
-        throw new Exception("No hash calculator has been set!");
-    }
-}
