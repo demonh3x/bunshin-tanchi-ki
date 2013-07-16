@@ -81,61 +81,83 @@
                 document.sendArrayToPHP.submit();
         }
 
-        function transformAllRowsToArray () {
-            var allButFirstRow = $("#list_of_duplicates tr:gt(0)".find("td");
-
-        }
-
 
         var purlColumnIndex = 5;
         var purlColumn = $("#list_of_duplicates tr:gt(0) td:nth-child(" + purlColumnIndex + ") input[type=text]");
-        var arrayModifiedPURLs = new Array();
 
+        function arrayOfRepeatedIndexes () {
+            var arrayModifyingPURLs = new Array();
 
+            purlColumn.each(function(){
+                arrayModifyingPURLs[$(this).val()] = new Array();
+            });
 
-        console.log(arrayModifiedPURLs);
+            purlColumn.each(function(){
+                if ($(this).val() in arrayModifyingPURLs)
+                {
+                    console.log("Index of " + $(this).val() + " is " + $(this).parent().parent().index());
+                    arrayModifyingPURLs[$(this).val()].push($(this).parent().parent().index() + 1);
+                }
 
+                console.log("LENGTH OF " + $(this).val() + " SUBARRAY ->" + arrayModifyingPURLs[$(this).val()].length);
+            });
 
+            return arrayModifyingPURLs;
+        }
 
-        function checkIfPURLIsBeingUsed(element){
+        function checkIfPURLIsBeingUsed(element, arrayModifyingPURLs){
             var purlUsed = false;
 
-            if ($(element).val() in arrayPURLs)
-            {
-                console.log("--" + $(element).val() + "-- is ALREADY defined.");
-                $(element).css("background", "red");
-                purlUsed = true;
-            }
-            else
-            {
-                console.log("--" + $(element).val() + "-- is NOT yet defined.");
-                $(element).css("background", "lightgreen");
-            }
-
-            purlColumn.each(function(index){
-                console.log(arrayModifiedPURLs[index]);
-                if (arrayModifiedPURLs[index] == $(element).val());
+            purlColumn.each(function(){
+                if ( ($(element).val() in arrayPURLs) || (arrayModifyingPURLs[$(element).val()].length > 1))
                 {
-                    var repeatedPURLField = $("#list_of_duplicates tr:nth-child("+ index +") td:nth-child(" +
-                                     purlColumnIndex + ") input[type=text]");
-                    repeatedPURLField.css("background", "red");
+                    for (var value in arrayModifyingPURLs[$(element).val()])
+                    {
+                        var rowNum = arrayModifyingPURLs[$(element).val()][value];
+
+                        console.log("INDEXES TO RED ->" + arrayModifyingPURLs[$(element).val()][value]);
+                        $("#list_of_duplicates tr:nth-child(" + rowNum + ")" +
+                            " td:nth-child(" + purlColumnIndex + ") input[type=text]").css("background", "red");
+                    }
+
+                    console.log("--" + $(element).val() + "-- is ALREADY defined.");
+                    purlUsed = true;
                 }
+                else
+                {
+                    for (var value in arrayModifyingPURLs[$(element).val()])
+                    {
+
+                        var rowNum = arrayModifyingPURLs[$(element).val()][value];
+
+                        console.log("INDEXES TO GREEN ->" + arrayModifyingPURLs[$(element).val()][value]);
+                        $("#list_of_duplicates tr:nth-child(" + rowNum + ")" +
+                            " td:nth-child(" + purlColumnIndex + ") input[type=text]").css("background", "green");
+                    }
+                    console.log("--" + $(element).val() + "-- is NOT yet defined.");
+                    $(element).css("background", "lightgreen");
+                }
+
             });
 
             return purlUsed;
         }
 
         purlColumn.keyup(function(){
-            checkIfPURLIsBeingUsed(this);
-
+            purlColumn.each(function(){
+                checkIfPURLIsBeingUsed(this, arrayOfRepeatedIndexes());
+            });
+            console.log("--------------------------------------------------------------------------------------------");
         });
+
+
+
         $(document).ready(function(){
             purlColumn.each(function(){
-                checkIfPURLIsBeingUsed(this);
+                checkIfPURLIsBeingUsed(this, arrayOfRepeatedIndexes());
             });
-
+            console.log("--------------------------------------------------------------------------------------------");
         });
-
 
         function checkIfReadyToSend () {
             var readyToSave = true;
