@@ -20,7 +20,6 @@
 
         writeForm();
 
-
         var purlColumnIndex = 5;
         var purlColumn = $("#list_of_duplicates tr:gt(0) td:nth-child(" + purlColumnIndex + ") input[type=text]");
 
@@ -32,11 +31,21 @@
             console.log("--------------------------------------------------------------------------------------------");
         });
 
+        /*var delay = (function(){
+            var timer = 0;
+            return function(callback, ms){
+                clearTimeout (timer);
+                timer = setTimeout(callback, ms);
+            };
+        })();*/
+
         purlColumn.keyup(function(){
-            purlColumn.each(function(){
-                checkIfPURLIsBeingUsed(this, getArrayOfRepeatedIndexes());
-            });
-            console.log("--------------------------------------------------------------------------------------------");
+            /*delay(function(){*/
+                purlColumn.each(function(){
+                    checkIfPURLIsBeingUsed(this, getArrayOfRepeatedIndexes());
+                });
+                console.log("--------------------------------------------------------------------------------------------");
+            /*}, 1500 );*/
         });
 
 
@@ -141,7 +150,7 @@
         }
 
         function checkIfPURLIsBeingUsed(element, arrayModifyingPURLs){
-            var purlUsed = false;
+            //var purlUsed = false;
 
             purlColumn.each(function(){
                 if (    ($(element).val() in arrayPURLs)
@@ -158,7 +167,7 @@
                     }
 
                     console.log("--" + $(element).val() + "-- is ALREADY defined.");
-                    purlUsed = true;
+                    //purlUsed = true;
                 }
                 else
                 {
@@ -168,8 +177,8 @@
 
             });
 
-            console.log(purlUsed);
-            return purlUsed;
+            /*console.log(purlUsed);
+            return purlUsed;*/
         }
 
         /*function checkIfReadyToSend () {
