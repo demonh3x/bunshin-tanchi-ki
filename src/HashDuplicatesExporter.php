@@ -73,11 +73,8 @@ class HashDuplicatesExporter {
     }
 
     private function readRow($rowIndex){
-        $row = new Row();
+        $row = new Row($this->reader, $rowIndex);
         $row->setHashCalculator($this->hashCalculator);
-
-        $data = $this->readRowData($rowIndex);
-        $row->setData($data);
 
         return $row;
     }
@@ -93,11 +90,8 @@ class HashDuplicatesExporter {
     private function copyFromUniquesToDuplicates(Row $row){
         $rowIndex = &$this->uniqueRowIndexes[$row->getHash()];
         if (isset($rowIndex)) {
-            $pointedRow = new Row();
+            $pointedRow = new Row($this->reader, $rowIndex);
             $pointedRow->setHashCalculator($this->hashCalculator);
-
-            $pointedRowData = $this->readRowData($rowIndex);
-            $pointedRow->setData($pointedRowData);
 
             $this->writeDuplicate($pointedRow);
         }
