@@ -2,12 +2,13 @@
 
 class NullHashCalculator implements HashCalculator{
     function calculate($data){
-        if (is_string($data)){
-            return $data;
+        if (is_object($data)){
+            return spl_object_hash($data);
         }
+
         if (is_array($data)){
-            return  hash('md4',serialize($data));
+            $data = serialize($data);
         }
-        return spl_object_hash($data);
+        return hash('md4',$data);
     }
 }
