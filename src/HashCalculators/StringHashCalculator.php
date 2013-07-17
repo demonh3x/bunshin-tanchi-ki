@@ -42,6 +42,16 @@ class StringHashCalculator implements HashCalculator{
     }
 
     function setFilter(Filter $filter, $column){
+        if (is_array($column)){
+            foreach ($column as $col){
+                $this->setFilterToColumn($filter, $col);
+            }
+        } else {
+            $this->setFilterToColumn($filter, $column);
+        }
+    }
+
+    private function setFilterToColumn(Filter $filter, $column){
         $this->columnFilters[$column] = $filter;
     }
 
