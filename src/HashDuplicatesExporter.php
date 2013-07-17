@@ -6,6 +6,7 @@ include_once("HashCalculators/NullHashCalculator.php");
 
 include_once("Writers/Writer.php");
 include_once("Writers/WriterFactory.php");
+include_once("Writers/NullWriterFactory.php");
 
 include_once("HashList.php");
 include_once("Row.php");
@@ -124,16 +125,3 @@ class HashDuplicatesExporter {
         }
     }
 }
-
-class NullWriter implements Writer{
-    function create($path){}
-    function isReady(){}
-    function writeRow($data){}
-}
-
-class NullWriterFactory implements WriterFactory{
-    function createWriter($id){
-        return new NullWriter();
-    }
-}
-
