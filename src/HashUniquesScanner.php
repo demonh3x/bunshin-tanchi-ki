@@ -28,7 +28,7 @@ class HashUniquesScanner {
 
     function getUniques(){
         $this->processAllInputRows();
-        return new ReaderRowCollection($this->reader, $this->pointersToUniques);
+        return $this->createResultsIterator();
     }
 
     private function processAllInputRows(){
@@ -46,16 +46,13 @@ class HashUniquesScanner {
 
             /*$this->writeDuplicate($row);*/
         } else {
-            $this->addUnique($row, $rowIndex);
+            $this->addUnique($row);
         }
     }
 
     private function readRow($rowIndex){
-        $row = new Row();
+        $row = new Row($this->reader, $rowIndex);
         $row->setHashCalculator($this->calculator);
-
-        $data = $this->reader->readRow($rowIndex);
-        $row->setData($data);
 
         return $row;
     }
@@ -64,45 +61,18 @@ class HashUniquesScanner {
         return $this->appearedRows->contains($row->getHash());
     }
 
-/*    private function copyFromUniquesToDuplicates(Row $row){
-        $rowIndex = &$this->pointersToUniques[$row->getHash()];
-        if (isset($rowIndex)) {
-            $pointedRow = new Row();
-            $pointedRow->setHashCalculator($this->hashCalculator);
-
-            $pointedRowData = $this->readRowData($rowIndex);
-            $pointedRow->setData($pointedRowData);
-
-            $this->writeDuplicate($pointedRow);
-        }
-    }*/
-
-/*    private function writeDuplicate(Row $row){
-        $this->getDuplicatesWriter($row)->writeRow($row->getData());
-    }*/
-
-/*    private function getDuplicatesWriter(Row $row) {
-        if (!isset($this->duplicatesWriters[$row->getHash()])) {
-            $this->duplicatesWriters[$row->getHash()] = $this->duplicatesWriterFactory->createWriter($row->getHash());
-        }
-        return $this->duplicatesWriters[$row->getHash()];
-    }*/
-
     private function removeUnique(Row $row){
         unset($this->pointersToUniques[$row->getHash()]);
     }
 
-    private function addUnique(Row $row, $rowIndex) {
+    private function addUnique(Row $row) {
         $this->appearedRows->add($row->getHash());
-        $this->pointersToUniques[$row->getHash()] = $rowIndex;
+        $this->pointersToUniques[$row->getHash()] = $row->getIndex();
     }
 
-/*    private function writeUniques(){
-        foreach ($this->pointersToUniques as $rowIndex){
-            $row = $this->readRowData($rowIndex);
-            $this->uniqueWriter->writeRow($row);
-        }
-    }*/
+    private function createResultsIterator() {
+        return new ReaderRowCollection($this->reader, $this->pointersToUniques);
+    }
 }
 
 class NullRandomReader implements RandomReader{
