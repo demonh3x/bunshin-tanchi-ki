@@ -55,21 +55,6 @@ class TestHashDuplicatesExporter extends TestFixture{
         return $exporter;
     }
 
-    function testRaiseExceptionWhenScanningAndHashCalculatorNotSet(){
-        $exporter = $this->createExporterWithReader(array(
-            "asdf"
-        ));
-        $exceptionRaised = false;
-
-        try {
-            $exporter->scan();
-        } catch(\Exception $e){
-            $exceptionRaised = true;
-        }
-
-        Assert::isTrue($exceptionRaised);
-    }
-
     private function createExporterrWithReaderAndHashCalculator($readerData){
         $exporter = $this->createExporterWithReader($readerData);
 
