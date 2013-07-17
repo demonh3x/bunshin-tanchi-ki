@@ -10,7 +10,7 @@ class Row {
         $this->reader = $reader;
         $this->index = $index;
 
-        $this->hashCalculator = new NullHashCalculator();
+        $this->setHashCalculator(new NullHashCalculator());
     }
 
     function setHashCalculator(HashCalculator $hashCalculator){
