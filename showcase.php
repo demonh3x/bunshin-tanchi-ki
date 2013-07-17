@@ -13,6 +13,7 @@
     set_time_limit(0);
 
     include_once("src/HashDuplicatesExporter.php");
+    include_once("src/HashUniquesExporter.php");
     include_once("src/RandomReaders/CsvRandomReader.php");
     include_once("src/HashCalculators/StringHashCalculator.php");
     foreach (glob("src/HashCalculators/Filters/*.php") as $filename){
@@ -32,28 +33,36 @@
 
     $startTime = microtime(true);
 
-    $scanner = new HashDuplicatesExporter();
+    $scanner = new HashUniquesExporter();
 
     $reader = new CsvRandomReader();
     /*$reader->open("test/sampleFiles/15000rows.csv");*/
-    $reader->open("test/sampleFiles/45000rows.csv");
+    /*$reader->open("test/sampleFiles/45000rows.csv");*/
     /*$reader->open("test/sampleFiles/100000rows.csv");*/
+    /*$reader->open("test/sampleFiles/realData/CR_data_batch-Master.csv");*/
+    $reader->open("test/sampleFiles/realData/field7Uniques.csv");
     $scanner->setReader($reader);
 
     $calculator = new StringHashCalculator();
+
     $calculator->setGlobalFilter(FilterGroup::create(
-        new TrimFilter(),
-        new CutFromFirstSpaceFilter()
+        new TrimFilter()
     ));
+
+    $firstname = "3";
+    $surname = "4";
+    $city = "13";
+    $field8 = "34";
     $calculator->setFilter(FilterGroup::create(
-        new OnlyLettersFilter(),
+        new CutFromFirstSpaceFilter(),
         new UppercaseFirstLetterFilter()
-    ), "3");
+    ), array($firstname, $surname));
     $calculator->setFilter(FilterGroup::create(
-        new OnlyLettersFilter(),
-        new UppercaseFirstLetterFilter()
-    ), "4");
-    $calculator->watchColumns(array("3", "4"));
+        new LowercaseFilter(),
+        new OnlyLettersFilter()
+    ), $city);
+    $calculator->watchColumns(array($firstname, $surname, $city));
+
     $scanner->setHashCalculator($calculator);
 
     $uniquesWriter = new CsvWriter();
