@@ -6,24 +6,21 @@ include_once("RandomReaders/RandomReader.php");
 include_once("HashList.php");
 include_once("Row.php");
 
-include_once("ReaderRowCollection.php");
-include_once("IteratorGroup.php");
+include_once("RowCollection.php");
 
 class HashUniquesScanner {
-    private $calculator, $reader;
+    private $calculator, $readers = array();
 
     private $appearedRows;
-
-    private $pointersToUniques = array();
+    private $uniqueRows = array();
 
     function __construct(HashCalculator $calculator){
         $this->calculator = $calculator;
         $this->appearedRows = new HashList();
-        $this->reader = new NullRandomReader();
     }
 
-    function setReader(RandomReader $reader){
-        $this->reader = $reader;
+    function addReader(RandomReader $reader){
+        $this->readers[] = $reader;
     }
 
     function getUniques(){
@@ -32,8 +29,10 @@ class HashUniquesScanner {
     }
 
     private function processAllInputRows(){
-        for ($rowIndex = 0; $rowIndex < $this->reader->getRowCount(); $rowIndex++) {
-            $this->processRow($this->reader, $rowIndex);
+        foreach ($this->readers as $reader){
+            for ($rowIndex = 0; $rowIndex < $reader->getRowCount(); $rowIndex++) {
+                $this->processRow($reader, $rowIndex);
+            }
         }
     }
 
@@ -62,32 +61,15 @@ class HashUniquesScanner {
     }
 
     private function removeUnique(Row $row){
-        unset($this->pointersToUniques[$row->getHash()]);
+        unset($this->uniqueRows[$row->getHash()]);
     }
 
-    private function addUnique(Row $row) {
+    private function addUnique(Row $row){
         $this->appearedRows->add($row->getHash());
-        $this->pointersToUniques[$row->getHash()] = $row->getIndex();
+        $this->uniqueRows[$row->getHash()] = $row;
     }
 
     private function createResultsIterator() {
-        return new ReaderRowCollection($this->reader, $this->pointersToUniques);
-    }
-}
-
-class NullRandomReader implements RandomReader{
-    function open($path){
-    }
-
-    function isReady(){
-        return true;
-    }
-
-    function readRow($index){
-        return array();
-    }
-
-    function getRowCount(){
-        return 0;
+        return new RowCollection($this->uniqueRows);
     }
 }

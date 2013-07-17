@@ -27,7 +27,7 @@ class TestHashUniquesScanner extends TestFixture{
         $exceptionRaised = false;
 
         try {
-            $scanner->setReader(new NotReadyMockReader());
+            $scanner->addReader(new NotReadyMockReader());
         } catch(\Exception $e){
             $exceptionRaised = true;
         }
@@ -50,7 +50,7 @@ class TestHashUniquesScanner extends TestFixture{
         unset($GLOBALS[$ramId]);
 
         $reader = $this->createRamReader($readerData, $ramId);
-        $scanner->setReader($reader);
+        $scanner->addReader($reader);
 
         return $scanner;
     }
@@ -143,7 +143,7 @@ class TestHashUniquesScanner extends TestFixture{
 
     private function getResultsArray($results){
         $actualData = array();
-        foreach ($results as $key => $value) {
+        foreach ($results as $value) {
             $actualData[] = $value;
         }
         return $actualData;
@@ -222,7 +222,7 @@ class TestHashUniquesScanner extends TestFixture{
         $this->assertUniques($input, $uniques);
     }
 
-/*    function testGettingUniquesTwoInputs(){
+    function testGettingUniquesTwoInputs(){
         $inputA = array(
             array(
                 "Column1" => "Foo"
@@ -245,7 +245,7 @@ class TestHashUniquesScanner extends TestFixture{
         );
 
         $scanner = $this->createDefaultScanner($inputA);
-        $scanner->setReader($this->createRamReader($inputB, "testGettingUniquesTwoInputsDataB"));
+        $scanner->addReader($this->createRamReader($inputB, "testGettingUniquesTwoInputsDataB"));
 
         $expected = array(
             array(
@@ -261,108 +261,5 @@ class TestHashUniquesScanner extends TestFixture{
         $actual = $this->getResultsArray($scanner->getUniques());
 
         Assert::areIdentical($expected, $actual);
-    }*/
-/*
-    function testGettingDuplicatesWhenNoDuplicatesOneColumn(){
-        $input = array(
-            array(
-                "Column1" => "Foo"
-            ),
-            array(
-                "Column1" => "Bar"
-            ),
-            array(
-                "Column1" => "Asdf"
-            )
-        );
-
-        $expected = array();
-
-        $this->assertDuplicates($input, $expected);
     }
-
-    function testGettingDuplicatesWhenTwoDuplicatesOneColumn(){
-        $input = array(
-            array(
-                "Column1" => "Foo"
-            ),
-            array(
-                "Column1" => "Bar"
-            ),
-            array(
-                "Column1" => "Bar"
-            )
-        );
-
-        $expected = array(
-            array(
-                array(
-                    "Column1" => "Bar"
-                ),
-                array(
-                    "Column1" => "Bar"
-                )
-            )
-        );
-
-        $this->assertDuplicates($input, $expected);
-    }
-
-    private function assertDuplicates($input, $expectedOutput){
-        $exporter = $this->createScannerWithReaderAndHashCalculator($input);
-
-        $factory = new MockRamWriterFactory();
-
-        $exporter->setDuplicatesWriterFactory($factory);
-        $exporter->scan();
-
-        $allDuplicates = array();
-        foreach ($factory->createdWriters as $id => $writer){
-            $allDuplicates[] = $this->readRamData($id);
-        }
-
-        Assert::areIdentical($expectedOutput, $allDuplicates);
-    }
-
-    function testGettingDuplicatesWhenDuplicatesThreeColumns(){
-        $input = array(
-            array(
-                "Column1" => "Foo", "Column2" => "asdf", "Column3" => "qwer"
-            ),
-            array(
-                "Column1" => "Foo", "Column2" => "asdf", "Column3" => "qwer"
-            ),
-            array(
-                "Column1" => "Bar", "Column2" => "asdf", "Column3" => "qwer"
-            ),
-            array(
-                "Column1" => "Bar", "Column2" => "asdf", "Column3" => "qwer"
-            ),
-            array(
-                "Column1" => "Asdf", "Column2" => "asdf", "Column3" => "qwer"
-            )
-        );
-
-        $uniques = array(
-            array(
-                array(
-                    "Column1" => "Foo", "Column2" => "asdf", "Column3" => "qwer"
-                ),
-                array(
-                    "Column1" => "Foo", "Column2" => "asdf", "Column3" => "qwer"
-                )
-            ),
-            array(
-                array(
-                    "Column1" => "Bar", "Column2" => "asdf", "Column3" => "qwer"
-                ),
-                array(
-                    "Column1" => "Bar", "Column2" => "asdf", "Column3" => "qwer"
-                )
-            )
-        );
-        $this->assertDuplicates($input, $uniques);
-    }*/
-
-
 }

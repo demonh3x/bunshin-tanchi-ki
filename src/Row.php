@@ -4,23 +4,24 @@ include_once ("HashCalculators/NullHashCalculator.php");
 
 class Row {
     private $reader, $index;
-    private $data, $hash, $hashCalculator;
+    private $hash, $hashCalculator;
 
     function __construct(RandomReader $reader, $index){
         $this->reader = $reader;
         $this->index = $index;
-        $this->data = $reader->readRow($index);
 
         $this->hashCalculator = new NullHashCalculator();
     }
 
     function setHashCalculator(HashCalculator $hashCalculator){
         $this->hashCalculator = $hashCalculator;
-        $this->hash = $this->hashCalculator->calculate($this->data);
+        $this->hash = $this->hashCalculator->calculate(
+            $this->getData()
+        );
     }
 
     function getData(){
-        return $this->data;
+        return $this->reader->readRow($this->index);
     }
 
     function getHash(){
