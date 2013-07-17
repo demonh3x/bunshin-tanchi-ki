@@ -33,12 +33,12 @@ class HashUniquesScanner {
 
     private function processAllInputRows(){
         for ($rowIndex = 0; $rowIndex < $this->reader->getRowCount(); $rowIndex++) {
-            $this->processRow($rowIndex);
+            $this->processRow($this->reader, $rowIndex);
         }
     }
 
-    private function processRow($rowIndex){
-        $row = $this->readRow($rowIndex);
+    private function processRow($reader, $rowIndex){
+        $row = $this->readRow($reader, $rowIndex);
 
         if ($this->isDuplicate($row)) {
             /*$this->copyFromUniquesToDuplicates($row);*/
@@ -50,8 +50,8 @@ class HashUniquesScanner {
         }
     }
 
-    private function readRow($rowIndex){
-        $row = new Row($this->reader, $rowIndex);
+    private function readRow($reader, $rowIndex){
+        $row = new Row($reader, $rowIndex);
         $row->setHashCalculator($this->calculator);
 
         return $row;
