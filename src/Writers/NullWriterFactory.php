@@ -1,6 +1,7 @@
 <?php
 
 include_once("WriterFactory.php");
+include_once("NullWriter.php");
 
 class NullWriterFactory implements WriterFactory{
     function createWriter($id){
@@ -8,8 +9,3 @@ class NullWriterFactory implements WriterFactory{
     }
 }
 
-class NullWriter implements Writer{
-    function create($path){}
-    function isReady(){}
-    function writeRow($data){}
-}
