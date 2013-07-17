@@ -2,22 +2,22 @@
 
 class SQL
 {
-    static function insert($tabla, $datos){
-        $sql = "insert into $tabla(";
-        $sql .= implode(",", array_keys($datos));
+    static function insert($table, $data){
+        $sql = "insert into $table(";
+        $sql .= implode(",", array_keys($data));
         $sql .= ") values ('";
-        $sql .= implode("','", array_values($datos));
+        $sql .= implode("','", array_values($data));
         $sql .= "')";
 
         return $sql;
     }
 
-    private static function where($condiciones){
+    private static function where($conditions){
         $str_condiciones = "";
 
-        if (count($condiciones) > 0){
+        if (count($conditions) > 0){
             $array_condiciones = [];
-            foreach ($condiciones as $clave => $valor){
+            foreach ($conditions as $clave => $valor){
                 $array_condiciones[] = "$clave = '$valor'";
             }
 
@@ -28,46 +28,46 @@ class SQL
         return $str_condiciones;
     }
 
-    static function select($tabla, $columnas = null, $condiciones = null){
+    static function select($table, $columns = null, $conditions = null){
         $sql = "select ";
 
-        if (empty($columnas)){
+        if (empty($columns)){
             $sql .= "*";
         } else {
-            if (is_array($columnas)){
-                $sql .= implode(",", $columnas);
+            if (is_array($columns)){
+                $sql .= implode(",", $columns);
             } else {
-                $sql .= $columnas;
+                $sql .= $columns;
             }
         }
 
-        $sql .= " from $tabla";
-        $sql .= static::where($condiciones);
+        $sql .= " from $table";
+        $sql .= static::where($conditions);
 
         return $sql;
     }
 
-    static function delete($tabla, $condiciones){
-        if ($condiciones == null){
-            $sql = "truncate $tabla";
+    static function delete($table, $conditions){
+        if ($conditions == null){
+            $sql = "truncate $table";
         } else {
-            $sql = "delete from $tabla";
-            $sql .= static::where($condiciones);
+            $sql = "delete from $table";
+            $sql .= static::where($conditions);
         }
 
         return $sql;
     }
 
-    static function update($tabla, $datos, $condiciones){
-        $sql = "update $tabla set ";
+    static function update($table, $data, $conditions){
+        $sql = "update $table set ";
 
         $datos_procesados = [];
-        foreach ($datos as $columna => $valor){
+        foreach ($data as $columna => $valor){
             $datos_procesados[] = "$columna='$valor'";
         }
         $sql .= implode(", ", $datos_procesados);
 
-        $sql .= static::where($condiciones);
+        $sql .= static::where($conditions);
 
         return $sql;
     }

@@ -1,12 +1,12 @@
 <?php
-class BD
+class DB
 {
     public static $base1;
 
     private $mysqli;
 
-    function __construct($ip, $usuario, $contrasenya, $schema){
-        $this->mysqli = new mysqli($ip, $usuario, $contrasenya, $schema);
+    function __construct($ip, $user, $password, $schema){
+        $this->mysqli = new mysqli($ip, $user, $password, $schema);
     }
 
     function __destruct(){
@@ -23,7 +23,7 @@ class BD
      * @throws Exception
      * Si ha ocurrido un error en la consulta.
      */
-    function consulta($sql){
+    function query($sql){
         $correcto = $this->mysqli->real_query($sql);
 
         if($correcto){
@@ -46,10 +46,10 @@ class BD
      * @return array
      * Un array de strings con los nombres de las tablas.
      */
-    function tablas(){
+    function tables(){
         $retorno = [];
 
-        $resultados = $this->consulta("show tables");
+        $resultados = $this->query("show tables");
 
         for($i = 0; $i < count($resultados); $i++){
             $retorno[] = array_values($resultados[$i])[0];
@@ -58,5 +58,3 @@ class BD
         return $retorno;
     }
 }
-
-BD::$base1 = new BD("localhost", "root", "", "base1");
