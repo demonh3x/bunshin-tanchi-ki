@@ -24,3 +24,24 @@ function getNotExistingDedupDirName(){
 function getViewDedupLink($dirToDedup){
     return  __VIEW_DEDUP_FILE__ . "?dir=" . $dirToDedup;
 }
+
+function showUniquesFile(){
+    $uniques_file_match = $_REQUEST["dir"] . "/" . __UNIQUES_FILE__;
+    $uniques_files = glob($uniques_file_match);
+    $file = $uniques_files[0];
+
+    $uniquesLink = HTML::a($file, $file);
+
+    echo $uniquesLink;
+}
+
+function showInputFiles(){
+    $input_file_match = $_REQUEST["dir"] . "/" . __INPUTS_FOLDER__ . "*";
+    $input_files = glob($input_file_match);
+
+    foreach ($input_files as $id => $input_file){
+        $input_files[$id] = HTML::a($input_file, $input_file);
+    }
+
+    echo HTML::ul($input_files);
+}
