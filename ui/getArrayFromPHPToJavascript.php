@@ -5,7 +5,7 @@
         <title></title>
     </head>
 
-    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="../js/jquery.js"></script>
     <script type="text/javascript">
 
         // Execute--------------------------------------------------------------------------------------------
@@ -100,7 +100,7 @@
             document.write( "</table>" +
                             "<input type=\"button\" value=\"Show me checked with current values\"" +
                             " onclick=sendCheckedRowsToPHP()>" +
-                            //"<input type=\"button\" value=\"Ready to send?\" onclick=checkIfReadyToSend()>" +
+                            "<input type=\"button\" value=\"Check if ready\" onclick=checkIfReadyToSend()>" +
                         "</form>");
         }
 
@@ -150,7 +150,7 @@
         }
 
         function checkIfPURLIsBeingUsed(element, arrayModifyingPURLs){
-            //var purlUsed = false;
+            var purlUsed = false;
 
             purlColumn.each(function(){
                 if (    ($(element).val() in arrayPURLs)
@@ -167,7 +167,7 @@
                     }
 
                     console.log("--" + $(element).val() + "-- is ALREADY defined.");
-                    //purlUsed = true;
+                    purlUsed = true;
                 }
                 else
                 {
@@ -177,15 +177,15 @@
 
             });
 
-            /*console.log(purlUsed);
-            return purlUsed;*/
+            console.log(purlUsed);
+            return purlUsed;
         }
 
-        /*function checkIfReadyToSend () {
+        function checkIfReadyToSend () {
             var readyToSave = true;
 
             purlColumn.each(function(){
-                if (checkIfPURLIsBeingUsed(this)){
+                if (checkIfPURLIsBeingUsed(this, getArrayOfRepeatedIndexes())){
                     readyToSave = false;
                 }
             });
@@ -198,7 +198,7 @@
             {
                 alert("You can not send the file. Duplicates were found. They are highlighted in red.")
             }
-        }*/
+        }
 
 
     </script>
