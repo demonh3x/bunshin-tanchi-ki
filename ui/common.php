@@ -10,6 +10,7 @@ define("__DEDUP_DIR__", __ROOT_DIR__ . "deduplications/");
 define("__VIEW_UNIQUES_FILE__", "uniques.php");
 define("__VIEW_DEDUPS_FILE__", "deduplications.php");
 define("__VIEW_DEDUP_FILE__", "dedup.php");
+define("__READ_DUPS_GROUP__", "readDupsGroup.php");
 
 include_once("HTML.php");
 
@@ -23,4 +24,8 @@ function getNotExistingDedupDirName(){
 
 function getViewDedupLink($dirToDedup){
     return  __VIEW_DEDUP_FILE__ . "?dir=" . $dirToDedup;
+}
+
+function getViewDupsGroupLink($file){
+    return  __READ_DUPS_GROUP__ . "?dupsGroup=" . $file;
 }

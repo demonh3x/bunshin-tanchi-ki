@@ -11,7 +11,7 @@
         // Execute--------------------------------------------------------------------------------------------
 
         <?php
-            include_once ("sendArrayFromPHPToJavascript.php");
+            include_once ("readDupsGroup.php");
             $objectGetArray = new Arrays();
         ?>
 

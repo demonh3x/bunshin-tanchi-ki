@@ -2,6 +2,8 @@
 
 class Arrays {
 
+    //$_REQUEST["dir"];
+
     public $arrayRows = array(),
            $arrayPURLs = array();
 
