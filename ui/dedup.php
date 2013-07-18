@@ -45,6 +45,23 @@
             $(".columnsToWatch .remove").on("click", function(){
                 removeLastLi($(".columnsToWatch ul"));
             })
+
+            function getUlElements(ul){
+                var columns = [];
+                $(ul).find("li").each(function(){
+                    columns.push($(this).text());
+                });
+                return columns;
+            }
+
+            $(".scanForm input[type=submit]").on("click", function(){
+                $(".scanForm input[name=compareColumns]").val(
+                    JSON.stringify(getUlElements(".columnsToWatch"))
+                );
+                $(".scanForm input[name=globalFilters]").val(
+                    JSON.stringify(getUlElements(".activeGlobalFilters"))
+                );
+            })
         });
     </script>
 </head>
@@ -61,12 +78,13 @@
     <?= getInputFilesListHTML() ?>
     <h4>Input files preview:</h4>
     <?= getInputFilePreviewHTML(getInputFiles(), 3); ?>
+<!--
+    <h3>Identifying column (PURL):</h3>
+    --><?/*= HTML::select(getInputFileColumns(getInputFiles()[0])) */?>
 
     <h3>Columns to compare:</h3>
     <div class="columnsToWatch">
-        <ul>
-
-        </ul>
+        <ul></ul>
         <?= HTML::select(getInputFileColumns(getInputFiles()[0])) ?>
         <input class="add" type="button" value="Add column"/>
         <input class="remove" type="button" value="Remove last column"/>
@@ -86,15 +104,20 @@
     </ul>
     <form action="">
         <input class="globalFilterRemover" type="button" value="Remove last filter"/>
-        <input type="button" value="Try filters"/>
+        <!--<input type="button" value="Try filters"/>-->
     </form>
-
+<!--
     <h3>Apply column comparing filters:</h3>
     <ul class="columnGroup">
 
-    </ul>
+    </ul>-->
 
-    <form action="">
+    <h3>Scan:</h3>
+    <form class="scanForm" method="POST" action="scan.php">
+        <input type="hidden" name="dir" value='<?= json_encode($_REQUEST["dir"]) ?>'/>
+        <input type="hidden" name="inputFiles" value='<?= json_encode(getInputFiles()) ?>'/>
+        <input type="hidden" name="compareColumns" value=""/>
+        <input type="hidden" name="globalFilters" value=""/>
         <input type="submit" value="Scan input files for duplicates"/>
     </form>
 
@@ -102,7 +125,7 @@
     <h3>Uniques:</h3>
     <?php showUniquesFile(); ?>
 
-    <h3>Duplicates:</h3>
+    <h3>Duplicate groups:</h3>
     <?php showDupGroups(); ?>
 </body>
 </html>
