@@ -53,6 +53,18 @@ function showInputFiles(){
     echo HTML::ul($input_files);
 }
 
+function showDupGroups(){
+    $dedups_match = $_REQUEST["dir"] . "/" . __DUPLICATES_FOLDER__ . "*";
+    $dedups = glob($dedups_match);
+
+    foreach ($dedups as $id => $dedup){
+        $link = getViewDupsGroupLink($dedup);
+        $dedups[$id] = HTML::a($dedup, $link);
+    }
+
+    echo HTML::ul($dedups);
+}
+
 function getAvailableFilters(){
     $filters_match = __ROOT_DIR__ . "src/HashCalculators/Filters/*Filter.php";
     $filters = glob($filters_match);
