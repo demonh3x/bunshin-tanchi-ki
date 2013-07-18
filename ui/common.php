@@ -7,6 +7,8 @@ define("__DEDUP_DIR__", __ROOT_DIR__ . "deduplications/");
         define("__DUPLICATES_FOLDER__", "duplicates/");
         define("__INPUTS_FOLDER__", "input/");
 
+define("__FILTERS_DIR__", __ROOT_DIR__ . "src/HashCalculators/Filters/");
+
 define("__VIEW_UNIQUES_FILE__", "uniques.php");
 define("__VIEW_DEDUPS_FILE__", "deduplications.php");
 define("__VIEW_DEDUP_FILE__", "dedup.php");
@@ -66,8 +68,9 @@ function showDupGroups(){
 }
 
 function getAvailableFilters(){
-    $filters_match = __ROOT_DIR__ . "src/HashCalculators/Filters/*Filter.php";
+    $filters_match = __FILTERS_DIR__ . "*Filter.php";
     $filters = glob($filters_match);
+    $excludedFilters = array("No", "");
 
     foreach ($filters as $key => $filter){
         $parts = explode("/", $filter);
@@ -75,7 +78,11 @@ function getAvailableFilters(){
         $parts = explode("Filter.php", $filter);
         $filter = $parts[0];
 
-        $filters[$key] = $filter;
+        if (in_array($filter, $excludedFilters)){
+            unset($filters[$key]);
+        } else {
+            $filters[$key] = $filter;
+        }
     }
 
     return $filters;
