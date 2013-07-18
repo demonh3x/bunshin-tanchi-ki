@@ -20,33 +20,30 @@
 
         writeForm();
 
-        var purlColumnIndex = 5;
-        var purlColumn = $("#list_of_duplicates tr:gt(0) td:nth-child(" + purlColumnIndex + ") input[type=text]");
-
+        var purlColumn= $("#list_of_duplicates tr:gt(0) td:nth-child(" + 3 + ") input[type=text]");
 
         $(document).ready(function(){
+            purlColumn = $("#list_of_duplicates tr:gt(0) td:nth-child(" + getPurlColumnIndex() + ") input[type=text]");
             purlColumn.each(function(){
                 checkIfPURLIsBeingUsed(this, getArrayOfRepeatedIndexes());
             });
             console.log("--------------------------------------------------------------------------------------------");
         });
 
-        /*var delay = (function(){
-            var timer = 0;
-            return function(callback, ms){
-                clearTimeout (timer);
-                timer = setTimeout(callback, ms);
-            };
-        })();*/
-
-        purlColumn.keyup(function(){
-            /*delay(function(){*/
+        $("#purlColumnName").change(function(){
+            purlColumn = $("#list_of_duplicates tr:gt(0) td:nth-child(" + getPurlColumnIndex() + ") input[type=text]");
+            purlColumn.keyup(function(){
                 purlColumn.each(function(){
                     checkIfPURLIsBeingUsed(this, getArrayOfRepeatedIndexes());
                 });
                 console.log("--------------------------------------------------------------------------------------------");
-            /*}, 1500 );*/
-        });
+            });
+            $("#list_of_duplicates tr:gt(0) td:gt(0) input[type=text]").css("background", "white");
+            purlColumn.each(function(){
+                checkIfPURLIsBeingUsed(this, getArrayOfRepeatedIndexes());
+            });
+            console.log("--------------------------------------------------------------------------------------------");
+        })
 
 
         // Functions--------------------------------------------------------------------------------------------
@@ -58,7 +55,8 @@
         }
 
         function convertJavascriptArrayToPHP(array){
-            document.write("<form action=\"saveDupsGroup.php\" method=post name=sendArrayToPHP>" +
+            var fileToDelete = <?= $_REQUEST["dupsGroup"] ?> ;
+            document.write("<form action=\"saveDupsGroup.php?fileToDelete=" + fileToDelete + "\" method=post name=sendArrayToPHP>" +
                 "<input id=\"arrayAsString\" name=\"arrayAsString\" type=hidden>" +
                 "</form>");
 
@@ -68,7 +66,6 @@
         }
 
         function writeForm () {
-            // Show the arrayPHPToJavascript Array in a table
             document.write("<form name=\"duplicates\"><table id=list_of_duplicates border=1>");
 
             document.write(     "<tr><td style=\"background-color: grey;\"></td>");
@@ -97,36 +94,76 @@
             document.write(     "</tr>");
             }
 
-            document.write( "</table>" +
-                            "<input type=\"button\" value=\"Show me checked with current values\"" +
+
+            document.write( "</table>");
+
+            var totalColumns = $("#list_of_duplicates tr:nth-child(1)").children().length;
+
+            document.write("Purl Column Name:" +
+                                "<select id=\"purlColumnName\" >");
+            document.write(         "<option selected> CHOOSE </option>");
+            for (var i = 2; i < totalColumns; i++)
+            {
+                var actualColumnName = $("#list_of_duplicates tr:nth-child(1) td:nth-child(" + i + ") span").text();
+                document.write(     "<option>" + actualColumnName + "</option>");
+            }
+            document.write(     "</select><br>" +
+
+                            "<input type=\"button\" value=\"Merge To Uniques File\"" +
                             " onclick=sendCheckedRowsToPHP()>" +
-                            "<input type=\"button\" value=\"Check if ready\" onclick=checkIfReadyToSend()>" +
                         "</form>");
         }
 
+        function getPurlColumnIndex() {
+            var selectedPurl = $("#purlColumnName option:selected").index() + 1;
+
+            console.log(selectedPurl);
+
+            return selectedPurl;
+        }
 
         function sendCheckedRowsToPHP(){
             var checkedCheckboxes = $("input[type=checkbox]:checked");
-            var arrayRow = new Array();
-
-            var arrayColumnTitles = new Array();
-
-            for (var titleText in arrayPHPToJavascript[0])
-            {
-                arrayColumnTitles.push(titleText);
-            }
-
+            var checkedRowsNumber = 0;
             checkedCheckboxes.each(function(){
-                var columnsInSelectedRow = $(this).parent().parent().find("input[type=text]");
-                var arrayColumns = {};
-                columnsInSelectedRow.each ( function(indexCols, element) {
-                        arrayColumns[arrayColumnTitles[indexCols]] = ($(element).val());
-                        console.log(arrayColumns);
+                checkedRowsNumber = checkedRowsNumber + 1;
+            });
+            console.log(checkedRowsNumber);
+
+            var readyToSave = checkIfReadyToSend();
+
+            if (checkedRowsNumber == 0)
+            {
+                alert("There are no rows to save checked.");
+            }
+            else if ((checkedRowsNumber == 1) || (readyToSave == true))
+            {
+                var checkedCheckboxes = $("input[type=checkbox]:checked");
+                var arrayRow = new Array();
+
+                var arrayColumnTitles = new Array();
+
+                for (var titleText in arrayPHPToJavascript[0])
+                {
+                    arrayColumnTitles.push(titleText);
+                }
+
+                checkedCheckboxes.each(function(){
+                    var columnsInSelectedRow = $(this).parent().parent().find("input[type=text]");
+                    var arrayColumns = {};
+                    columnsInSelectedRow.each ( function(indexCols, element) {
+                            arrayColumns[arrayColumnTitles[indexCols]] = ($(element).val());
+                            console.log(arrayColumns);
+                    })
+                    arrayRow.push(arrayColumns);
                 })
-                arrayRow.push(arrayColumns);
-            })
-            console.log(arrayRow);
-            convertJavascriptArrayToPHP(arrayRow);
+                console.log(arrayRow);
+                convertJavascriptArrayToPHP(arrayRow);
+            }
+            else if (!readyToSave)
+            {
+                alert("You can not send the file. Duplicates were found. They are highlighted in red.");
+            }
         }
 
         function getArrayOfRepeatedIndexes () {
@@ -163,7 +200,7 @@
 
                         console.log("INDEXES TO RED ->" + arrayModifyingPURLs[$(element).val()][value]);
                         $("#list_of_duplicates tr:nth-child(" + rowNum + ")" +
-                            " td:nth-child(" + purlColumnIndex + ") input[type=text]").css("background", "red");
+                            " td:nth-child(" + getPurlColumnIndex() + ") input[type=text]").css("background", "red");
                     }
 
                     console.log("--" + $(element).val() + "-- is ALREADY defined.");
@@ -190,14 +227,7 @@
                 }
             });
 
-            if (readyToSave)
-            {
-                alert("You can send the file. There are no PURL duplicates.")
-            }
-            else
-            {
-                alert("You can not send the file. Duplicates were found. They are highlighted in red.")
-            }
+            return readyToSave;
         }
 
 
