@@ -42,4 +42,20 @@ class HTML {
 
         return $html;
     }
+
+    static function select($array){
+        if (count($array) == 0) {
+            return "";
+        }
+
+        $html = "<select>";
+
+        foreach ($array as $value){
+            $html .= "<option value='$value'>$value</option>";
+        }
+
+        $html .= "</select>";
+
+        return $html;
+    }
 }

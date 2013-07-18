@@ -82,6 +82,17 @@ function getInputFilePreviewHTML($inputFiles, $rowCount){
     return $html;
 }
 
+function getInputFileColumns($inputFile){
+    $reader = new CsvRandomReader();
+    $reader->open($inputFile);
+    if ($reader->getRowCount() > 0){
+        $row = $reader->readRow(0);
+        return array_keys($row);
+    } else {
+        return array();
+    }
+}
+
 function showDupGroups(){
     $dedups_match = $_REQUEST["dir"] . "/" . __DUPLICATES_FOLDER__ . "*";
     $dedups = glob($dedups_match);

@@ -11,6 +11,10 @@
         h3 {
             color: gray;
         }
+
+        table tr:first-child {
+            background: lightgrey;
+        }
         table td{
             border: 1px solid;
         }
@@ -19,27 +23,28 @@
     <script type="text/javascript" src="js/jquery.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
-            function addGlobalFilter(filterName){
-                var activeGlobalFiltersClass = "activeGlobalFilters";
-                $("." + activeGlobalFiltersClass).append($("<li>" + filterName + "</li>"));
+            function addLi(ul, value){
+                $(ul).append($("<li>" + value + "</li>"));
+            }
+            function removeLastLi(ul){
+                $(ul).find("li").last().remove();
             }
 
-            function removeLastGlobalFilter(){
-                var activeGlobalFiltersClass = "activeGlobalFilters";
-                $("." + activeGlobalFiltersClass + " li").last().remove();
-            }
-
-            var globalFilterAdderClass = "globalFiltersAdder";
-            var globalFilterAdderButtons = $("." + globalFilterAdderClass + " input[type='button']");
-            var globalFilterRemoverClass = "globalFilterRemover";
-
-            globalFilterAdderButtons.on("click", function(){
-                addGlobalFilter(this.value);
+            $(".globalFiltersAdder input[type='button']").on("click", function(){
+                addLi($(".activeGlobalFilters"), this.value);
             });
 
-            $("." + globalFilterRemoverClass).on("click", function(){
-                removeLastGlobalFilter();
+            $(".globalFilterRemover").on("click", function(){
+                removeLastLi($(".activeGlobalFilters"));
             });
+
+            $(".columnsToWatch .add").on("click", function(){
+                addLi($(".columnsToWatch ul"), $(".columnsToWatch select").find(":selected").text());
+            })
+
+            $(".columnsToWatch .remove").on("click", function(){
+                removeLastLi($(".columnsToWatch ul"));
+            })
         });
     </script>
 </head>
@@ -54,10 +59,18 @@
 
     <h3>Input files:</h3>
     <?= getInputFilesListHTML() ?>
-
-    <h3>Columns to compare:</h3>
     <h4>Input files preview:</h4>
     <?= getInputFilePreviewHTML(getInputFiles(), 3); ?>
+
+    <h3>Columns to compare:</h3>
+    <div class="columnsToWatch">
+        <ul>
+
+        </ul>
+        <?= HTML::select(getInputFileColumns(getInputFiles()[0])) ?>
+        <input class="add" type="button" value="Add column"/>
+        <input class="remove" type="button" value="Remove last column"/>
+    </div>
 
     <h3>Apply global comparing filters:</h3>
     <form action="" class="globalFiltersAdder">
