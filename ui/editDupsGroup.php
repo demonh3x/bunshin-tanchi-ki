@@ -20,11 +20,10 @@
 
         writeForm();
 
-        
-        var purlColumn = $("#list_of_duplicates tr:gt(0) td:nth-child(" + getPurlColumnIndex() + ") input[type=text]");
-
+        var purlColumn= $("#list_of_duplicates tr:gt(0) td:nth-child(" + 3 + ") input[type=text]");
 
         $(document).ready(function(){
+            purlColumn = $("#list_of_duplicates tr:gt(0) td:nth-child(" + getPurlColumnIndex() + ") input[type=text]");
             purlColumn.each(function(){
                 checkIfPURLIsBeingUsed(this, getArrayOfRepeatedIndexes());
             });
@@ -39,17 +38,20 @@
             };
         })();*/
 
-        purlColumn.keyup(function(){
-            /*delay(function(){*/
+
+
+        $("#purlColumnName").change(function(){
+            purlColumn = $("#list_of_duplicates tr:gt(0) td:nth-child(" + getPurlColumnIndex() + ") input[type=text]");
+            purlColumn.keyup(function(){
+                /*delay(function(){*/
+                purlColumn = $("#list_of_duplicates tr:gt(0) td:nth-child(" + getPurlColumnIndex() + ") input[type=text]");
                 purlColumn.each(function(){
                     checkIfPURLIsBeingUsed(this, getArrayOfRepeatedIndexes());
                 });
                 console.log("--------------------------------------------------------------------------------------------");
-            /*}, 1500 );*/
-        });
-
-        $("#purlColumnName").change(function(){
-            purlColumn = $("#list_of_duplicates tr:gt(0) td:nth-child(" + getPurlColumnIndex() + ") input[type=text]");
+                /*}, 1500 );*/
+            });
+            $("#list_of_duplicates tr:gt(0) td:gt(0) input[type=text]").css("background", "white");
             purlColumn.each(function(){
                 checkIfPURLIsBeingUsed(this, getArrayOfRepeatedIndexes());
             });
@@ -130,7 +132,6 @@
             var selectedPurl = $("#purlColumnName option:selected").index() + 1;
 
             console.log(selectedPurl);
-
 
             return selectedPurl;
         }
