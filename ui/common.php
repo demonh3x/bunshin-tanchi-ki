@@ -32,11 +32,13 @@ function getViewDupsGroupLink($file){
 function showUniquesFile(){
     $uniques_file_match = $_REQUEST["dir"] . "/" . __UNIQUES_FILE__;
     $uniques_files = glob($uniques_file_match);
-    $file = $uniques_files[0];
 
-    $uniquesLink = HTML::a($file, $file);
+    if (isset($uniques_files[0])){
+        $file = $uniques_files[0];
+        $uniquesLink = HTML::a($file, $file);
 
-    echo $uniquesLink;
+        echo $uniquesLink;
+    }
 }
 
 function showInputFiles(){
