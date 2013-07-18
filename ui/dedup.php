@@ -11,6 +11,11 @@
     <h1>Dedup work at [<?=$_REQUEST["dir"]?>]</h1>
 
     <h2>Scan for Dups:</h2>
+    <h3>Global Filters:</h3>
+    <?php
+        echo HTML::ul(getAvailableFilters());
+    ?>
+
     <h3>Input Files:</h3>
     <?php
         showInputFiles();

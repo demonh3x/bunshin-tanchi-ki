@@ -51,3 +51,19 @@ function showInputFiles(){
 
     echo HTML::ul($input_files);
 }
+
+function getAvailableFilters(){
+    $filters_match = __ROOT_DIR__ . "src/HashCalculators/Filters/*Filter.php";
+    $filters = glob($filters_match);
+
+    foreach ($filters as $key => $filter){
+        $parts = explode("/", $filter);
+        $filter = $parts[count($parts)-1];
+        $parts = explode("Filter.php", $filter);
+        $filter = $parts[0];
+
+        $filters[$key] = $filter;
+    }
+
+    return $filters;
+}
