@@ -58,7 +58,7 @@
         }
 
         function convertJavascriptArrayToPHP(array){
-            document.write("<form action=\"getArrayFromJavascriptToPHP.php\" method=post name=sendArrayToPHP>" +
+            document.write("<form action=\"saveDupsGroup.php\" method=post name=sendArrayToPHP>" +
                 "<input id=\"arrayAsString\" name=\"arrayAsString\" type=hidden>" +
                 "</form>");
 
@@ -202,8 +202,4 @@
 
 
     </script>
-
-    <body>
-        <?php var_dump($objectGetArray->getArrayPURLs()); ?>
-    </body>
 </html>

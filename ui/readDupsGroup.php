@@ -1,15 +1,23 @@
 <?php
 
+include_once("../src/RandomReaders/CsvRandomReader.php");
+
 class Arrays {
 
-    //$_REQUEST["dir"];
-
-    public $arrayRows = array(),
-           $arrayPURLs = array();
-
+    public  $arrayRows = array(),
+            $arrayPURLs = array();
 
     function __construct(){
-        for ($i = 0; $i < 5; $i++){
+        $dupsGroupPath = $_REQUEST["dupsGroup"];
+
+        $CsvRandomReader = new CsvRandomReader();
+        $CsvRandomReader->open($dupsGroupPath);
+        for ($i = 0; $i < $CsvRandomReader->getRowCount(); $i++)
+        {
+            array_push( $this->arrayRows, $CsvRandomReader->readRow($i) );
+        }
+
+        /*for ($i = 0; $i < 5; $i++){
             array_push( $this->arrayRows,
                         array(
                             "Name" => "Maria",
@@ -30,7 +38,7 @@ class Arrays {
                             "PURL" => "MCharlott",
                         )
             );
-        }
+        }*/
 
         for ($i = 0; $i < 100000; $i++)
         {
