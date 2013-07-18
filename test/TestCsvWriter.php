@@ -65,4 +65,46 @@ class TestCsvWriter extends TestFixture{
         $writer->create($path);
         Assert::isTrue($writer->isReady());
     }
+
+    function testAppending(){
+        $writer = $this->createWriter();
+
+        $path = "sampleFiles/test_csv_writer_append.csv";
+        $this->deleteFile($path);
+
+        $writer->create($path);
+        $inputRow1 = array(
+            "0" => "Foo",
+            "1" => "Bar"
+        );
+        $writer->writeRow($inputRow1);
+
+        $writer2 = $this->createWriter();
+        $writer2->create($path);
+        $inputRow2 = array(
+            "0" => "Bar",
+            "1" => "Foo"
+        );
+        $writer2->writeRow($inputRow2);
+
+        $reader = new \CsvReader();
+        $reader->open($path);
+        $current = array();
+        while(!$reader->isEof()){
+            $current[] = $reader->readRow();
+        }
+
+        $expected = array(
+            array(
+                "0" => "Foo",
+                "1" => "Bar"
+            ),
+            array(
+                "0" => "Bar",
+                "1" => "Foo"
+            )
+        );
+
+        Assert::areIdentical($expected, $current);
+    }
 }
