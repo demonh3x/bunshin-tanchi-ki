@@ -20,8 +20,8 @@
 
         writeForm();
 
-        var purlColumnIndex = 5;
-        var purlColumn = $("#list_of_duplicates tr:gt(0) td:nth-child(" + purlColumnIndex + ") input[type=text]");
+        
+        var purlColumn = $("#list_of_duplicates tr:gt(0) td:nth-child(" + getPurlColumnIndex() + ") input[type=text]");
 
 
         $(document).ready(function(){
@@ -47,6 +47,14 @@
                 console.log("--------------------------------------------------------------------------------------------");
             /*}, 1500 );*/
         });
+
+        $("#purlColumnName").change(function(){
+            purlColumn = $("#list_of_duplicates tr:gt(0) td:nth-child(" + getPurlColumnIndex() + ") input[type=text]");
+            purlColumn.each(function(){
+                checkIfPURLIsBeingUsed(this, getArrayOfRepeatedIndexes());
+            });
+            console.log("--------------------------------------------------------------------------------------------");
+        })
 
 
         // Functions--------------------------------------------------------------------------------------------
@@ -97,13 +105,35 @@
             document.write(     "</tr>");
             }
 
-            document.write( "</table>" +
+
+            document.write( "</table>");
+
+            var totalColumns = $("#list_of_duplicates tr:nth-child(1)").children().length;
+
+            document.write("Purl Column Name:" +
+                                "<select id=\"purlColumnName\" >");
+            document.write(         "<option selected> CHOOSE </option>");
+            for (var i = 2; i < totalColumns; i++)
+            {
+                var actualColumnName = $("#list_of_duplicates tr:nth-child(1) td:nth-child(" + i + ") span").text();
+                document.write(     "<option>" + actualColumnName + "</option>");
+            }
+            document.write(     "</select><br>" +
+
                             "<input type=\"button\" value=\"Show me checked with current values\"" +
                             " onclick=sendCheckedRowsToPHP()>" +
                             "<input type=\"button\" value=\"Check if ready\" onclick=checkIfReadyToSend()>" +
                         "</form>");
         }
 
+        function getPurlColumnIndex() {
+            var selectedPurl = $("#purlColumnName option:selected").index() + 1;
+
+            console.log(selectedPurl);
+
+
+            return selectedPurl;
+        }
 
         function sendCheckedRowsToPHP(){
             var checkedCheckboxes = $("input[type=checkbox]:checked");
@@ -163,7 +193,7 @@
 
                         console.log("INDEXES TO RED ->" + arrayModifyingPURLs[$(element).val()][value]);
                         $("#list_of_duplicates tr:nth-child(" + rowNum + ")" +
-                            " td:nth-child(" + purlColumnIndex + ") input[type=text]").css("background", "red");
+                            " td:nth-child(" + getPurlColumnIndex() + ") input[type=text]").css("background", "red");
                     }
 
                     console.log("--" + $(element).val() + "-- is ALREADY defined.");
