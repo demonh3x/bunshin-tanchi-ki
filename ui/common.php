@@ -15,6 +15,7 @@ define("__VIEW_DEDUP_FILE__", "dedup.php");
 define("__VIEW_DUPS_GROUP_FILE__", "editDupsGroup.php");
 
 include_once("HTML.php");
+include_once(__ROOT_DIR__ . "src/RandomReaders/CsvRandomReader.php");
 
 function getNotExistingDedupDirName(){
     $i = 0;
@@ -44,15 +45,41 @@ function showUniquesFile(){
     }
 }
 
-function showInputFiles(){
+function getInputFiles(){
     $input_file_match = $_REQUEST["dir"] . "/" . __INPUTS_FOLDER__ . "*";
     $input_files = glob($input_file_match);
 
+    return $input_files;
+}
+
+function getInputFilesListHTML(){
+    $input_files = getInputFiles();
     foreach ($input_files as $id => $input_file){
         $input_files[$id] = HTML::a($input_file, $input_file);
     }
 
-    echo HTML::ul($input_files);
+    return HTML::ul($input_files);
+}
+
+function getInputFilePreviewHTML($inputFiles, $rowCount){
+    if (!is_array($inputFiles)){
+        $inputFiles = array($inputFiles);
+    }
+
+    $html = "";
+    foreach ($inputFiles as $file){
+        $reader = new CsvRandomReader();
+        $reader->open($file);
+
+        $rows = array();
+        for ($i = 0; $i < $rowCount && $reader->getRowCount() > $i; $i++){
+            $rows[] = $reader->readRow($i);
+        }
+
+        $html .= HTML::table($rows);
+    }
+
+    return $html;
 }
 
 function showDupGroups(){
