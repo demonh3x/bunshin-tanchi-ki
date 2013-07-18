@@ -14,7 +14,7 @@
             $dedups = glob($dedups_match);
 
             foreach ($dedups as $id => $dedup){
-                $link = __VIEW_DEDUP_FILE__ . "?dir=$dedup";
+                $link = getViewDedupLink($dedup);
                 $dedups[$id] = HTML::a($dedup, $link);
             }
 
