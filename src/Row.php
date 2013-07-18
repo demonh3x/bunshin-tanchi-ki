@@ -11,8 +11,6 @@ class Row {
         $this->reader = $reader;
         $this->index = $index;
 
-        $this->data = $reader->readRow($index);
-
         $this->setHashCalculator(new NullHashCalculator());
     }
 
@@ -24,7 +22,7 @@ class Row {
     }
 
     function getData(){
-        return $this->data;
+        return $this->reader->readRow($this->index);
     }
 
     function getHash(){

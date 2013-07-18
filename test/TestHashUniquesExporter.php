@@ -5,6 +5,7 @@ include_once(__ROOT_DIR__ . "src/HashUniquesExporter.php");
 include_once(__ROOT_DIR__ . "src/HashCalculators/StringHashCalculator.php");
 
 include_once(__ROOT_DIR__ . "test/mocks/NotReadyMockReader.php");
+include_once(__ROOT_DIR__ . "test/mocks/MockRamWriterFactory.php");
 
 include_once(__ROOT_DIR__ . "src/RandomReaders/RamRandomReader.php");
 include_once(__ROOT_DIR__ . "src/Writers/RamWriter.php");
@@ -303,24 +304,5 @@ class TestHashUniquesExporter extends TestFixture{
             )
         );
         $this->assertDuplicates($input, $uniques);
-    }
-}
-
-class MockRamWriterFactory implements \WriterFactory{
-    public $createdWriters = array();
-
-    function createWriter($id){
-        $ramId = "testMockRamWriterFactory_$id";
-        unset($GLOBALS[$ramId]);
-
-        $writer = new \RamWriter();
-        $writer->create($ramId);
-        if (!$writer->isReady()){
-            throw new \Exception("The MockRamWriterFactory couldn't create a Writer with the id: [$id]");
-        }
-
-        $this->createdWriters[$ramId] = &$writer;
-
-        return $this->createdWriters[$ramId];
     }
 }
