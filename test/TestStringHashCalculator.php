@@ -110,6 +110,25 @@ class TestStringHashCalculator extends TestFixture{
         Assert::areIdentical("3Bar1foo", $calculator->calculate($data));
     }
 
+    function testFilteringMultipleColumnsAtOnce(){
+        $calculator = $this->createHashCalculator();
+
+        $data = array(
+            "0" => "asdf",
+            "1" => "Foo",
+            "2" => "qwer",
+            "3" => "Bar"
+        );
+
+        $calculator->watchColumns(array("3", "1"));
+        $calculator->setFilter(
+            new LowercaseMockFilter(),
+            array("1", "3")
+        );
+
+        Assert::areIdentical("3bar1foo", $calculator->calculate($data));
+    }
+
     function testSelectingNonExistingColumns(){
         $calculator = $this->createHashCalculator();
 
