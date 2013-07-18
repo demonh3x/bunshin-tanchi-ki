@@ -7,7 +7,7 @@ class CsvWriter implements Writer{
         $fp;
 
     function create($path) {
-        $this->fp = fopen($path, 'w');
+        $this->fp = fopen($path, 'a');
         if ((bool) $this->fp)
         {
             $this->ready=true;
