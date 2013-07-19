@@ -144,11 +144,20 @@
             checkedCheckboxes.each(function(){
                 checkedRowsNumber = checkedRowsNumber + 1;
             });
-            console.log(checkedRowsNumber);
+
+            var purlColumnSelected = false;
+            if (getPurlColumnIndex() != 1)
+            {
+                purlColumnSelected = true;
+            }
 
             var readyToSave = checkIfReadyToSend();
 
-            if (checkedRowsNumber == 0)
+            if (purlColumnSelected == false)
+            {
+                alert("There is any Purl Column selected to check.");
+            }
+            else if (checkedRowsNumber == 0)
             {
                 alert("There are no rows to save checked.");
             }
