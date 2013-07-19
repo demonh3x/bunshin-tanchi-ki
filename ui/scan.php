@@ -128,6 +128,10 @@
             global $IDENTIFYING_VALUES_FILE, $IDENTIFYING_COLUMN;
             global $UNIQUES_FILE;
 
+            if (is_file($IDENTIFYING_VALUES_FILE)){
+                unlink($IDENTIFYING_VALUES_FILE);
+            }
+
             $reader = new CsvRandomReader();
             $reader->open($UNIQUES_FILE);
 
