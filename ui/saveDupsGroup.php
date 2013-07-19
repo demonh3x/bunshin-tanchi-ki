@@ -14,8 +14,14 @@
     echo "<h1>Merging data:</h1>";
     print_r($arrayFromJavascript);
 
-    echo "<h1>" . $_REQUEST["identifyingColumn"] . "</h1>";
-/*
+    $identifyingColumn = $_REQUEST["identifyingColumn"];
+    echo "<h1>Identifying Column: $identifyingColumn</h1>";
+
+    $dedupDirParts = explode(__DUPLICATES_FOLDER__, $dupsGroupFile);
+    $dedupDir = substr($dedupDirParts[0], 0, -1);
+    $identifyingValuesFile = $dedupDir . "/" . __IDENTIFYING_VALUES_FILE__;
+    echo "<h1>Identifying Values File: $identifyingValuesFile</h1>";
+
     $writer = new CsvWriter();
 
     $writer->create($uniquesFilePath);
@@ -47,10 +53,18 @@
         throw new Exception("Could not write all the rows to the uniques file!");
     }
 
+    echo "<h1>Updating Identifying Values File: $identifyingValuesFile</h1>";
+    $identifyingFileWriter = new CsvWriter();
+    $identifyingFileWriter->create($identifyingValuesFile);
+    if (!$identifyingFileWriter->isReady()){
+        throw new Exception("Could not read the identifying values file! [$identifyingValuesFile]");
+    }
+    foreach ($arrayFromJavascript as $row){
+        $identifyingFileWriter->writeRow(array($row[$identifyingColumn]));
+    }
+
     echo "<h1>Deleting DupsGroup File: $dupsGroupFile</h1>";
     unlink($dupsGroupFile);
 
 
-    $dedupDirParts = explode(__DUPLICATES_FOLDER__, $dupsGroupFile);
-    $dedupDir = substr($dedupDirParts[0], 0, -1);
-    header('Location: ' . getViewDedupLink($dedupDir));*/
+    header('Location: ' . getViewDedupLink($dedupDir));
