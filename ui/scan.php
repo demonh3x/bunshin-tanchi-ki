@@ -46,6 +46,8 @@
         $WATCH_COLUMNS = getPostVar("compareColumns");
         $UNIQUES_FILE = __DEDUP_DIR__ . getPostVar("dir") .  "/" . "uniques.csv";
         $DUPS_DIR = __DEDUP_DIR__ . getPostVar("dir") . "/" . __DUPLICATES_FOLDER__ ;
+        $IDENTIFYING_COLUMN = getPostVar("identifyingColumn");
+        $IDENTIFYING_VALUES_FILE = __DEDUP_DIR__ . getPostVar("dir") . "/" . __IDENTIFYING_VALUES_FILE__;
 
         if (is_dir($DUPS_DIR)){
             rmdir_recursive($DUPS_DIR);
@@ -74,6 +76,7 @@
 
         $reader = new CsvRandomReader();
         $reader->open($INPUT_FILES[0]);
+
         $scanner->setReader($reader);
 
         $calculator = new StringHashCalculator();
@@ -120,6 +123,25 @@
         echo "<h1>Execution Time: $executionTime seconds</h1>";
         echo "<h1>Memory Usage: $memoryUsage MB</h1>";
 
+        echo "<h1>Creating identifying data</h1>";
+        function createIdentifyingFile(){
+            global $IDENTIFYING_VALUES_FILE, $IDENTIFYING_COLUMN;
+            global $UNIQUES_FILE;
+
+            $reader = new CsvRandomReader();
+            $reader->open($UNIQUES_FILE);
+
+            $writer = new CsvWriter();
+            $writer->create($IDENTIFYING_VALUES_FILE);
+
+            for ($rowIndex = 0; $rowIndex < $reader->getRowCount(); $rowIndex++){
+                $row = $reader->readRow($rowIndex);
+                $identifyingData = array($row[$IDENTIFYING_COLUMN]);
+                $writer->writeRow($identifyingData);
+            }
+        }
+        createIdentifyingFile();
+        echo "<h1>Finished!</h1>";
 
         header('Location: ' . getViewDedupLink(__DEDUP_DIR__ . getPostVar("dir") ));
     ?>

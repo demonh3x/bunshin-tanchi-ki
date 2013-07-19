@@ -9,6 +9,8 @@ class Arrays {
 
     function __construct(){
         $dupsGroupPath = $_REQUEST["dupsGroup"];
+        $identifyingFile = $this->getIdentifyingValuesFile($dupsGroupPath);
+
 
         $CsvRandomReader = new CsvRandomReader();
         $CsvRandomReader->open($dupsGroupPath);
@@ -17,11 +19,20 @@ class Arrays {
             array_push( $this->arrayRows, $CsvRandomReader->readRow($i) );
         }
 
-        for ($i = 0; $i < 100000; $i++)
+        $identifyingFileReader = new CsvRandomReader();
+        $identifyingFileReader->open($identifyingFile);
+        for ($i = 0; $i < $identifyingFileReader->getRowCount(); $i++)
         {
-            $this->arrayPURLs["MCharlott".$i] = "0";
+            $value = $identifyingFileReader->readRow($i);
+            $this->arrayPURLs[$value[0]] = "";
         }
+    }
 
+    private function getIdentifyingValuesFile($dupsGroup){
+        $parts = explode(__DUPLICATES_FOLDER__, $dupsGroup);
+        $identifyingFile = $parts[0] . __IDENTIFYING_VALUES_FILE__;
+
+        return $identifyingFile;
     }
 
     function getArrayRows(){

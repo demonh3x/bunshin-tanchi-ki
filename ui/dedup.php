@@ -61,6 +61,9 @@
                 $(".scanForm input[name=globalFilters]").val(
                     JSON.stringify(getUlElements(".activeGlobalFilters"))
                 );
+                $(".scanForm input[name=identifyingColumn]").val(
+                    $(".identifyingColumn select").find(":selected").text()
+                );
             })
         });
     </script>
@@ -78,9 +81,11 @@
     <?= getInputFilesListHTML() ?>
     <h4>Input files preview:</h4>
     <?= getInputFilePreviewHTML(getInputFiles(), 3); ?>
-<!--
+
     <h3>Identifying column (PURL):</h3>
-    --><?/*= HTML::select(getInputFileColumns(getInputFiles()[0])) */?>
+    <div class="identifyingColumn">
+        <?= HTML::select(getInputFileColumns(getInputFiles()[0])) ?>
+    </div>
 
     <h3>Columns to compare:</h3>
     <div class="columnsToWatch">
@@ -116,6 +121,7 @@
     <form class="scanForm" method="POST" action="scan.php">
         <input type="hidden" name="dir" value='<?= json_encode($_REQUEST["dir"]) ?>'/>
         <input type="hidden" name="inputFiles" value='<?= json_encode(getInputFiles()) ?>'/>
+        <input type="hidden" name="identifyingColumn" value=""/>
         <input type="hidden" name="compareColumns" value=""/>
         <input type="hidden" name="globalFilters" value=""/>
         <input type="submit" value="Scan input files for duplicates"/>

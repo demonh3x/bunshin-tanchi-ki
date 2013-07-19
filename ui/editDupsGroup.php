@@ -68,6 +68,7 @@
             document.write("<form action=\"saveDupsGroup.php\" method=\"post\" name=\"sendArrayToPHP\">" +
                 "<input type=\"hidden\" name=\"uniquesFilePath\" value=\"<?= $uniquesFilePath ?>\">" +
                 "<input type=\"hidden\" name=\"dupsGroupFilePath\" value=\"<?= $dupsGroupPath ?>\">" +
+                "<input type=\"hidden\" name=\"identifyingColumn\" value=\"" + getPurlColumnName() + "\">" +
                 "<input type=\"hidden\" id=\"arrayAsString\" name=\"arrayAsString\">" +
                 "</form>");
 
@@ -131,6 +132,10 @@
             console.log(selectedPurl);
 
             return selectedPurl;
+        }
+
+        function getPurlColumnName(){
+            return $("#list_of_duplicates tr:nth-child(1) td:nth-child(" + getPurlColumnIndex() + ") span").text();
         }
 
         function sendCheckedRowsToPHP(){

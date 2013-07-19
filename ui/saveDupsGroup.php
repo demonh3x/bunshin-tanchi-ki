@@ -14,6 +14,8 @@
     echo "<h1>Merging data:</h1>";
     print_r($arrayFromJavascript);
 
+    echo "<h1>" . $_REQUEST["identifyingColumn"] . "</h1>";
+/*
     $writer = new CsvWriter();
 
     $writer->create($uniquesFilePath);
@@ -51,4 +53,4 @@
 
     $dedupDirParts = explode(__DUPLICATES_FOLDER__, $dupsGroupFile);
     $dedupDir = substr($dedupDirParts[0], 0, -1);
-    header('Location: ' . getViewDedupLink($dedupDir));
+    header('Location: ' . getViewDedupLink($dedupDir));*/

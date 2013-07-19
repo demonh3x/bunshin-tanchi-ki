@@ -6,6 +6,7 @@ define("__DEDUP_DIR__", __ROOT_DIR__ . "deduplications/");
         define("__UNIQUES_FILE__", "uniques.*");
         define("__DUPLICATES_FOLDER__", "duplicates/");
         define("__INPUTS_FOLDER__", "input/");
+        define("__IDENTIFYING_VALUES_FILE__", "identifyingValues.csv");
 
 define("__FILTERS_DIR__", __ROOT_DIR__ . "src/HashCalculators/Filters/");
 
