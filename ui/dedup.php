@@ -132,6 +132,6 @@
     <?= getUniquesFileLinkHTML(); ?>
 
     <h3>Duplicate groups:</h3>
-    <?php showDupGroups(); ?>
+    <?= getDupGroupsHTML(); ?>
 </body>
 </html>

@@ -14,6 +14,7 @@ define("__VIEW_UNIQUES_FILE__", "uniques.php");
 define("__VIEW_DEDUPS_FILE__", "deduplications.php");
 define("__VIEW_DEDUP_FILE__", "dedup.php");
 define("__VIEW_DUPS_GROUP_FILE__", "editDupsGroup.php");
+define("__GENERATE_FIELDS_FILE__", "generateFields.php");
 
 include_once("HTML.php");
 include_once(__ROOT_DIR__ . "src/RandomReaders/CsvRandomReader.php");
@@ -32,6 +33,10 @@ function getViewDedupLink($dirToDedup){
 
 function getViewDupsGroupLink($file){
     return  __VIEW_DUPS_GROUP_FILE__ . "?dupsGroup=" . $file;
+}
+
+function getGeneratePurlsLink($file){
+    return __GENERATE_FIELDS_FILE__ . "?file=" . $file;
 }
 
 function getUniquesFile(){
@@ -98,16 +103,23 @@ function getInputFileColumns($inputFile){
     }
 }
 
-function showDupGroups(){
+function getDupGroups(){
     $dedups_match = $_REQUEST["dir"] . "/" . __DUPLICATES_FOLDER__ . "*";
     $dedups = glob($dedups_match);
 
+    return $dedups;
+}
+
+function getDupGroupsHTML(){
+    $dedups = getDupGroups();
+
     foreach ($dedups as $id => $dedup){
         $link = getViewDupsGroupLink($dedup);
-        $dedups[$id] = HTML::a($dedup, $link);
+        $generateLink = getGeneratePurlsLink($dedup);
+        $dedups[$id] = HTML::a($dedup, $link) . " - [" . HTML::a("Generate Fields", $generateLink) . "]";
     }
 
-    echo HTML::ul($dedups);
+    return HTML::ol($dedups);
 }
 
 function getAvailableFilters(){

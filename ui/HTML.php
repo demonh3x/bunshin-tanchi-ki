@@ -2,11 +2,19 @@
 
 class HTML {
     static function ul($list){
-        $html = "<ul>";
+        return static::undefinedList("ul", $list);
+    }
+
+    static function ol($list){
+        return static::undefinedList("ol", $list);
+    }
+
+    static function undefinedList($type, $list){
+        $html = "<$type>";
         foreach ($list as $li){
             $html .= "<li>$li</li>";
         }
-        $html .= "</ul>";
+        $html .= "</$type>";
 
         return $html;
     }
