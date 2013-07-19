@@ -12,6 +12,7 @@
 
         <?php
             include_once ("readDupsGroup.php");
+            include_once ("common.php");
             $objectGetArray = new Arrays();
         ?>
 
@@ -55,9 +56,19 @@
         }
 
         function convertJavascriptArrayToPHP(array){
-            var fileToDelete = <?= $_REQUEST["dupsGroup"] ?> ;
-            document.write("<form action=\"saveDupsGroup.php?fileToDelete=" + fileToDelete + "\" method=post name=sendArrayToPHP>" +
-                "<input id=\"arrayAsString\" name=\"arrayAsString\" type=hidden>" +
+            <?php
+                $dupsGroupPath = $_REQUEST["dupsGroup"];
+                $separateDupsGroupPath = explode(__DUPLICATES_FOLDER__, $dupsGroupPath);
+
+                $dedupDir = substr($separateDupsGroupPath[0], 0, -1);
+                $_REQUEST["dir"] = $dedupDir;
+
+                $uniquesFilePath = getUniquesFile();
+            ?>
+            document.write("<form action=\"saveDupsGroup.php\" method=\"post\" name=\"sendArrayToPHP\">" +
+                "<input type=\"hidden\" name=\"uniquesFilePath\" value=\"<?= $uniquesFilePath ?>\">" +
+                "<input type=\"hidden\" name=\"dupsGroupFilePath\" value=\"<?= $dupsGroupPath ?>\">" +
+                "<input type=\"hidden\" id=\"arrayAsString\" name=\"arrayAsString\">" +
                 "</form>");
 
             var arv = JSON.stringify(array);
