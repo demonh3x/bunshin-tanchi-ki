@@ -119,6 +119,9 @@
 
         echo "<h1>Execution Time: $executionTime seconds</h1>";
         echo "<h1>Memory Usage: $memoryUsage MB</h1>";
+
+
+        header('Location: ' . getViewDedupLink(__DEDUP_DIR__ . getPostVar("dir") ));
     ?>
 </body>
 </html>
