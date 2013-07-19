@@ -33,16 +33,20 @@ function getViewDupsGroupLink($file){
     return  __VIEW_DUPS_GROUP_FILE__ . "?dupsGroup=" . $file;
 }
 
-function showUniquesFile(){
+function getUniquesFile(){
     $uniques_file_match = $_REQUEST["dir"] . "/" . __UNIQUES_FILE__;
     $uniques_files = glob($uniques_file_match);
 
-    if (isset($uniques_files[0])){
-        $file = $uniques_files[0];
-        $uniquesLink = HTML::a($file, $file);
+    $file =isset($uniques_files[0])? $uniques_files[0]: "";
 
-        echo $uniquesLink;
-    }
+    return $file;
+}
+
+function getUniquesFileLinkHTML(){
+    $file = getUniquesFile();
+    $uniquesLink = HTML::a($file, $file);
+
+    return $uniquesLink;
 }
 
 function getInputFiles(){

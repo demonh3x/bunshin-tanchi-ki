@@ -123,7 +123,7 @@
 
     <h2>Results:</h2>
     <h3>Uniques:</h3>
-    <?php showUniquesFile(); ?>
+    <?= getUniquesFileLinkHTML(); ?>
 
     <h3>Duplicate groups:</h3>
     <?php showDupGroups(); ?>
