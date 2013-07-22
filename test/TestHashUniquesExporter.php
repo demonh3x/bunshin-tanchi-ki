@@ -10,6 +10,8 @@ include_once(__ROOT_DIR__ . "test/mocks/MockRamWriterFactory.php");
 include_once(__ROOT_DIR__ . "src/RandomReaders/RamRandomReader.php");
 include_once(__ROOT_DIR__ . "src/Writers/RamWriter.php");
 
+include_once("mocks/LowercaseMockFilter.php");
+
 class TestHashUniquesExporter extends TestFixture{
     public function setUp(){
     }
@@ -285,7 +287,7 @@ class TestHashUniquesExporter extends TestFixture{
             )
         );
 
-        $uniques = array(
+        $duplicates = array(
             array(
                 array(
                     "Column1" => "Foo", "Column2" => "asdf", "Column3" => "qwer"
@@ -303,6 +305,33 @@ class TestHashUniquesExporter extends TestFixture{
                 )
             )
         );
-        $this->assertDuplicates($input, $uniques);
+        $this->assertDuplicates($input, $duplicates);
+    }
+
+    function testFilteringTheOutputUniquesData(){
+/*        $input = array(
+            array(
+                "Column1" => "Foo", "Column2" => "bar", "Column3" => "Hi"
+            )
+        );
+
+        $exporter = $this->createExporterrWithReaderAndHashCalculator($input);
+
+        $ramId = "testHashDuplicatesExporterAssertUniques";
+        unset($GLOBALS[$ramId]);
+
+        $exporter->setUniquesWriter($this->getRamWriter($ramId));
+        $exporter->scan();
+
+        $actualData = $this->readRamData($ramId);
+
+        $uniquesOutput = array(
+            array(
+                "Column1" => "foo", "Column2" => "bar", "Column3" => "hi"
+            )
+        );
+
+        Assert::areIdentical($uniquesOutput, $actualData);*/
+        Assert::fail();
     }
 }
