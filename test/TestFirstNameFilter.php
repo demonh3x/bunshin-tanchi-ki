@@ -38,8 +38,8 @@ class TestFirstNameFilter extends TestFixture{
     }
 
     function testAllTheLettersFollowingTheFirstLetterAfterTheHyphenMustBeLowercase(){
-        $this->assertExpected("Marie-Charlotte", "MarIe-CharLOtte");
-        $this->assertExpected("Marie-charlotte", "MarIe-charLOtte");
+        $this->assertExpected("Marie-Charlotte", "Marie-CharLOtte");
+        $this->assertExpected("Marie-charlotte", "Marie-charLOtte");
     }
 
     function testAccentedCharactersAreAllowed(){
