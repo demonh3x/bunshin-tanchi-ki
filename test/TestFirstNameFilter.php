@@ -45,4 +45,8 @@ class TestFirstNameFilter extends TestFixture{
     function testAccentedCharactersAreAllowed(){
         $this->assertExpected("Márïe-Chàrlôtte", "Márïe-Chàrlôtte");
     }
+
+    function testCompositeNamesShouldRemainUnaltered(){
+        $this->assertExpected("MacDow", "MacDow");
+    }
 }
