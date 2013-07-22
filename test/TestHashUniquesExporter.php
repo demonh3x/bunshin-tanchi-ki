@@ -309,7 +309,7 @@ class TestHashUniquesExporter extends TestFixture{
     }
 
     function testFilteringTheOutputUniquesData(){
-/*        $input = array(
+        $input = array(
             array(
                 "Column1" => "Foo", "Column2" => "bar", "Column3" => "Hi"
             )
@@ -317,10 +317,13 @@ class TestHashUniquesExporter extends TestFixture{
 
         $exporter = $this->createExporterrWithReaderAndHashCalculator($input);
 
-        $ramId = "testHashDuplicatesExporterAssertUniques";
+        $ramId = "testFilteringTheOutputUniquesData";
         unset($GLOBALS[$ramId]);
 
-        $exporter->setUniquesWriter($this->getRamWriter($ramId));
+        $rowFilter = new \RowFilter();
+        $rowFilter->setGlobalFilter(new LowercaseMockFilter());
+        $exporter->setUniquesWriter($this->getRamWriter($ramId), $rowFilter);
+
         $exporter->scan();
 
         $actualData = $this->readRamData($ramId);
@@ -331,7 +334,63 @@ class TestHashUniquesExporter extends TestFixture{
             )
         );
 
-        Assert::areIdentical($uniquesOutput, $actualData);*/
-        Assert::fail();
+        Assert::areIdentical($uniquesOutput, $actualData);
+    }
+
+    function testFilteringTheOutputDuplicatesData(){
+        $input = array(
+            array(
+                "Column1" => "Foo", "Column2" => "bar"
+            ),
+            array(
+                "Column1" => "Foo", "Column2" => "bar"
+            ),
+            array(
+                "Column1" => "Bar", "Column2" => "bar"
+            ),
+            array(
+                "Column1" => "Bar", "Column2" => "bar"
+            ),
+            array(
+                "Column1" => "Hi", "Column2" => "bar"
+            )
+        );
+
+        $expectedOutput = array(
+            array(
+                array(
+                    "Column1" => "foo", "Column2" => "bar"
+                ),
+                array(
+                    "Column1" => "foo", "Column2" => "bar"
+                )
+            ),
+            array(
+                array(
+                    "Column1" => "bar", "Column2" => "bar"
+                ),
+                array(
+                    "Column1" => "bar", "Column2" => "bar"
+                )
+            )
+        );
+
+        $exporter = $this->createExporterrWithReaderAndHashCalculator($input);
+
+        $rowFilter = new \RowFilter();
+        $rowFilter->setGlobalFilter(new LowercaseMockFilter());
+
+        $factory = new MockRamWriterFactory();
+        $exporter->setDuplicatesWriterFactory($factory, $rowFilter);
+
+        $exporter->scan();
+
+        $allDuplicates = array();
+        foreach ($factory->createdWriters as $id => $writer){
+            $allDuplicates[] = $this->readRamData($id);
+        }
+
+
+        Assert::areIdentical($expectedOutput, $allDuplicates);
     }
 }

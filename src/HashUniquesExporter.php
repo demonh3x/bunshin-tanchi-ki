@@ -6,13 +6,18 @@ include_once("RandomReaders/RandomReader.php");
 include_once("Writers/Writer.php");
 include_once("Writers/NullWriter.php");
 
+include_once("HashCalculators/RowFilter.php");
+
 class HashUniquesExporter{
     private $scanner;
     private $reader;
     private $uniquesWriter;
 
+    private $uniquesRowFilter;
+
     function __construct(){
         $this->uniquesWriter = new NullWriter();
+        $this->uniquesRowFilter = new RowFilter();
     }
 
     function setReader(RandomReader $reader){
@@ -22,16 +27,23 @@ class HashUniquesExporter{
         $this->reader = $reader;
     }
 
-    function setUniquesWriter(Writer $uniques){
+    function setUniquesWriter(Writer $uniques, RowFilter $uniquesRowFilter = null){
         if (!$uniques->isReady()){
             throw new Exception("The uniques writer is not ready!");
         }
         $this->uniquesWriter = $uniques;
+
+        if (!is_null($uniquesRowFilter)){
+            $this->uniquesRowFilter = $uniquesRowFilter;
+        }
     }
 
-    function setDuplicatesWriterFactory(WriterFactory $factory){
+    function setDuplicatesWriterFactory(WriterFactory $factory, RowFilter $duplicatesRowFilter = null){
         $this->scanner->setDuplicatesListener(
-            new DuplicatesExporter($factory)
+            new DuplicatesExporter(
+                $factory,
+                is_null($duplicatesRowFilter)? new RowFilter(): $duplicatesRowFilter
+            )
         );
     }
 
@@ -43,7 +55,8 @@ class HashUniquesExporter{
     function scan(){
         $uniques = $this->scanner->getUniques();
         foreach ($uniques as $unique){
-            $this->uniquesWriter->writeRow($unique);
+            $filteredUniqueRow = $this->uniquesRowFilter->applyTo($unique);
+            $this->uniquesWriter->writeRow($filteredUniqueRow);
         }
     }
 }
@@ -53,13 +66,17 @@ class DuplicatesExporter implements DuplicatesListener{
     private $factory;
     private $writers = array();
 
-    function __construct(WriterFactory $factory){
+    private $rowFilter;
+
+    function __construct(WriterFactory $factory, RowFilter $rowFilter){
         $this->factory = $factory;
+        $this->rowFilter = $rowFilter;
     }
 
     function receiveDuplicate(Row $row){
+        $filteredRow = $this->rowFilter->applyTo($row->getData());
         $writer = $this->getWriter($row->getHash());
-        $writer->writeRow($row->getData());
+        $writer->writeRow($filteredRow);
     }
 
     private function getWriter($hash){
