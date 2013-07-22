@@ -28,8 +28,8 @@ class TestFirstNameFilter extends TestFixture{
         $this->assertExpected("Marie", "marie");
     }
 
-    function testAfterTheFirstCapitalLetterMustBeAllLowercase(){
-        $this->assertExpected("Marie", "MARiE");
+    function testWhenAllUppercaseAfterTheFirstCapitalLetterMustBeAllLowercase(){
+        $this->assertExpected("Marie", "MARIE");
     }
 
     function testFollowingLetterOfAHyphenCouldBeUpperOrLowercase(){
