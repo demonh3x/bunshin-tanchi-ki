@@ -17,11 +17,11 @@ class RegexHashCalculator extends StringHashCalculator implements HashCalculator
         $rowColumns = array_keys($row);
         $columns = $this->areColumnsDefined()? $this->columnsToScan : $rowColumns;
 
+        $filteredRow = $this->rowFilter->applyTo($row);
+
         foreach ($columns as $column){
             if (isset($row[$column])){
-                $value = $row[$column];
-                $value = $this->applyGlobalFilterTo($value);
-                $value = $this->applyFilterTo($column, $value);
+                $value = $filteredRow[$column];
 
                 if (preg_match($this->regex, $value)){
                     $hash = "Found";
