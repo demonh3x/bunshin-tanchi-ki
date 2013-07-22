@@ -1,9 +1,9 @@
 <?php
 namespace Enhance;
 
-include_once(__ROOT_DIR__ . "src/HashCalculators/RegexBooleanHashCalculator.php");
+include_once(__ROOT_DIR__ . "src/HashCalculators/RegexHashCalculator.php");
 
-class TestRegexBooleanHashCalculator extends TestFixture{
+class TestRegexHashCalculator extends TestFixture{
 
     private $TRUE_VALUE = "Found";
 
