@@ -63,7 +63,8 @@
 
             $filters = FilterGroup::create(
                 new TrimFilter(),
-                new CutFromFirstSpaceFilter()
+                new CutFromFirstSpaceFilter(),
+                new UppercaseFirstLetterFilter()
             );
             $firsName = $filters->applyTo($row[$firstNameColumn]);
             $lastName = $filters->applyTo($row[$lastNameColumn]);
