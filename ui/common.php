@@ -5,6 +5,7 @@ define("__DEDUP_DIR__", __ROOT_DIR__ . "deduplications/");
     define("__DEDUPS_DIRS__", "dedup*");
         define("__UNIQUES_FILE__", "uniques.*");
         define("__DUPLICATES_FOLDER__", "duplicates/");
+            define("__MERGED_FOLDER__", "merged/");
         define("__INPUTS_FOLDER__", "input/");
         define("__IDENTIFYING_VALUES_FILE__", "identifyingValues.csv");
 
@@ -106,6 +107,12 @@ function getInputFileColumns($inputFile){
 function getDupGroups(){
     $dedups_match = $_REQUEST["dir"] . "/" . __DUPLICATES_FOLDER__ . "*";
     $dedups = glob($dedups_match);
+
+    foreach ($dedups as $key => $dedup){
+        if (is_dir($dedup)){
+            unset($dedups[$key]);
+        }
+    }
 
     return $dedups;
 }

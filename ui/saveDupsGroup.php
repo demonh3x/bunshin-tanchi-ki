@@ -63,8 +63,18 @@
         $identifyingFileWriter->writeRow(array($row[$identifyingColumn]));
     }
 
-    echo "<h1>Deleting DupsGroup File: $dupsGroupFile</h1>";
-    unlink($dupsGroupFile);
 
+    $fileParts = explode("/", $dupsGroupFile);
+    $fileName = $fileParts[count($fileParts)-1];
+    $targetDir = $dedupDir . "/" . __DUPLICATES_FOLDER__ . __MERGED_FOLDER__;
+    if (!is_dir($targetDir)){
+        mkdir($targetDir);
+    }
+    $target = $targetDir . $fileName;
+    echo "<h1>Moving DupsGroup File: $dupsGroupFile to: $target</h1>";
+    rename($dupsGroupFile, $target);
+    if (!is_file($target)){
+        throw new Exception("Could not flag the dups group as merged!");
+    }
 
     header('Location: ' . getViewDedupLink($dedupDir));
