@@ -1,20 +1,28 @@
 <?php
 namespace Enhance;
+?>
 
-define("__ROOT_DIR__", "../");
+<html>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
 
-include_once('EnhanceTestFramework.php');
-$filterRegex =  "//";
-$excludeRegex = "//";
+    <?php
+        define("__ROOT_DIR__", "../");
 
-foreach (glob("Test*.php") as $filename)
-{
-    if ($excludeRegex !== "//" && preg_match($excludeRegex, $filename)){
-        continue;
-    }
-    if (preg_match($filterRegex, $filename)){
-        include_once($filename);
-    }
-}
+        include_once('EnhanceTestFramework.php');
+        $filterRegex =  "//";
+        $excludeRegex = "//";
 
-Core::runTests();
+        foreach (glob("Test*.php") as $filename)
+        {
+            if ($excludeRegex !== "//" && preg_match($excludeRegex, $filename)){
+                continue;
+            }
+            if (preg_match($filterRegex, $filename)){
+                include_once($filename);
+            }
+        }
+
+        Core::runTests();
+    ?>
+
+</html>
