@@ -4,8 +4,8 @@ include_once("Filters/Filter.php");
 include_once("HashCalculator.php");
 
 class StringHashCalculator implements HashCalculator{
-    private $columnsToScan = array();
-    private $globalFilter, $columnFilters;
+    protected $columnsToScan = array();
+    protected $globalFilter, $columnFilters;
 
     function watchColumns($columns){
         $this->columnsToScan = $columns;
@@ -29,11 +29,11 @@ class StringHashCalculator implements HashCalculator{
         return $hash;
     }
 
-    private function areColumnsDefined(){
+    protected function areColumnsDefined(){
         return !empty($this->columnsToScan);
     }
 
-    private function applyGlobalFilterTo($text){
+    protected function applyGlobalFilterTo($text){
         return $this->isGlobalFilterSet()? $this->globalFilter->applyTo($text) : $text;
     }
 
@@ -51,19 +51,19 @@ class StringHashCalculator implements HashCalculator{
         }
     }
 
-    private function setFilterToColumn(Filter $filter, $column){
+    protected function setFilterToColumn(Filter $filter, $column){
         $this->columnFilters[$column] = $filter;
     }
 
-    private function isGlobalFilterSet(){
+    protected function isGlobalFilterSet(){
         return isset($this->globalFilter);
     }
 
-    private function applyFilterTo($column, $text){
+    protected function applyFilterTo($column, $text){
         return $this->isFilterSet($column)? $this->columnFilters[$column]->applyTo($text) : $text;
     }
 
-    private function isFilterSet($column){
+    protected function isFilterSet($column){
         return isset($this->columnFilters[$column]);
     }
 }
