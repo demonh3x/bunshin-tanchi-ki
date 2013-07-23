@@ -55,6 +55,56 @@ class TestCsvWriter extends TestFixture{
         Assert::areIdentical($inputRow, $outputRow);
     }
 
+    function testColumnNamesNotWriting(){
+        $writer = $this->createWriter();
+
+        $path = "sampleFiles/test_csv_writer_write.csv";
+        $this->deleteFile($path);
+
+        $writer->create($path);
+        $inputRow = array(
+            "0" => "Foo",
+            "1" => "Bar",
+            "Foo" => "Hi"
+        );
+        $writer->writeRow($inputRow);
+
+        $reader = new \CsvReader();
+        $reader->open($path);
+        $outputRow = $reader->readRow();
+
+        $expected = array(
+            "0" => "Foo",
+            "1" => "Bar",
+            "2" => "Hi"
+        );
+
+        Assert::areIdentical($expected, $outputRow);
+    }
+
+    function testWritingUTF8Characters(){
+        $writer = $this->createWriter();
+
+        $path = "sampleFiles/test_csv_writer_write.csv";
+        $this->deleteFile($path);
+
+        $writer->create($path);
+        $inputRow = array(
+            "0" => "₤☻£﷼"
+        );
+        $writer->writeRow($inputRow);
+
+        $reader = new \CsvReader();
+        $reader->open($path);
+        $outputRow = $reader->readRow();
+
+        $expected = array(
+            "0" => "₤☻£﷼"
+        );
+
+        Assert::areIdentical($expected, $outputRow);
+    }
+
     function testIsReady(){
         $writer = $this->createWriter();
         Assert::isFalse($writer->isReady());
