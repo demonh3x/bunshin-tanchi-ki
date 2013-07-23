@@ -1,5 +1,7 @@
 <?php
 
+include_once("Row.php");
+
 class RowCollection implements Iterator{
     private $rows;
 
