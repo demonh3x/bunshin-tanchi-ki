@@ -1,5 +1,7 @@
 <?php
 
+include_once("HashCalculator.php");
+
 class NullHashCalculator implements HashCalculator{
     function calculate($data){
         if (is_object($data)){
