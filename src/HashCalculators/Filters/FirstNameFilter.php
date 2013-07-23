@@ -67,7 +67,7 @@ class FirstNameFilter implements Filter{
 
         $firstLetterUppercase = $this->stringToUppercase(mb_substr($delimitedNameByHyphens[0], 0, 1, 'utf-8'));
 
-        $allButTheFirstCharacter = mb_substr($delimitedNameByHyphens[0], 1, null, 'utf-8');
+        $allButTheFirstCharacter = mb_substr($delimitedNameByHyphens[0], 1, mb_strlen($delimitedNameByHyphens[0]), 'utf-8');
 
         $foundUppers = $this->UpperCount($delimitedNameByHyphens[0]);
 
@@ -80,7 +80,7 @@ class FirstNameFilter implements Filter{
         {
             $delimitedNameByHyphens[0] = mb_strtolower($delimitedNameByHyphens[0], "utf-8");
 
-            $delimitedNameByHyphens[0] = $firstLetterUppercase . mb_substr($delimitedNameByHyphens[0], 1, null, 'utf-8');
+            $delimitedNameByHyphens[0] = $firstLetterUppercase . mb_substr($delimitedNameByHyphens[0], 1, mb_strlen($delimitedNameByHyphens[0]), 'utf-8');
             $text = $delimitedNameByHyphens[0];
         }
 
