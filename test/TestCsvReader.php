@@ -54,7 +54,7 @@ class TestCsvReader extends TestFixture{
             "6" => "www.amayadesign.co.uk/",
             "7" => "AdamHunter",
             "8" => "Y",
-            "9" => ""
+            "9" => "£"
         );
         Assert::areIdentical($result, $reader->readRow());
     }
@@ -66,12 +66,12 @@ class TestCsvReader extends TestFixture{
             array(
                 "0" => "", "1" => "Luxlo", "2" => "Property", "3" => "Amit", "4" => "Chadha",
                 "5" => "www.amayadesign.co.uk/AmitChadha", "6" => "www.amayadesign.co.uk/",
-                "7" => "AmitChadha", "8" => "Y", "9" => ""
+                "7" => "AmitChadha", "8" => "Y", "9" => "£"
             ),
             array(
                 "0" => "", "1" => "タマ", "2" => "いぬ", "3" => "", "4" => "",
                 "5" => "", "6" => "",
-                "7" => "", "8" => "", "9" => ""
+                "7" => "", "8" => "", "9" => "£"
             )
         );
 
