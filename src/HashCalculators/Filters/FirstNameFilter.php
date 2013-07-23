@@ -52,25 +52,42 @@ class FirstNameFilter implements Filter{
         return $string;
     }
 
+    private function UpperCount($string){
+        $string = preg_match_all('/([A-ZÀÁÂÃÄÅÆÉÈËÊÍÌÏÎÓÒÖÔÕØÚÙÜÛÑÇÐÝŸÞ]{1})/',$string,$foo);
+        return $string;
+    }
+
     function applyTo($text){
 
-        header("Content-Type: text/html; charset=utf-8");
 
         $delimitedNameBySpaces = mb_split(" ", $text);
         $text = $delimitedNameBySpaces[0];
 
         $delimitedNameByHyphens = mb_split("-", $text);
 
-
-        $delimitedNameByHyphens[0] = mb_strtolower($delimitedNameByHyphens[0], "utf-8");
         $firstLetterUppercase = $this->stringToUppercase(mb_substr($delimitedNameByHyphens[0], 0, 1, 'utf-8'));
 
-        $delimitedNameByHyphens[0] = $firstLetterUppercase . mb_substr($delimitedNameByHyphens[0], 1, null, 'utf-8');
-        $text = $delimitedNameByHyphens[0];
+        $allButTheFirstCharacter = mb_substr($delimitedNameByHyphens[0], 1, null, 'utf-8');
+
+        $foundUppers = $this->UpperCount($delimitedNameByHyphens[0]);
+
+        if ($foundUppers == 2)
+        {
+            $delimitedNameByHyphens[0] =  $firstLetterUppercase . $allButTheFirstCharacter;
+            $text = $delimitedNameByHyphens[0];
+        }
+        else
+        {
+            $delimitedNameByHyphens[0] = mb_strtolower($delimitedNameByHyphens[0], "utf-8");
+
+            $delimitedNameByHyphens[0] = $firstLetterUppercase . mb_substr($delimitedNameByHyphens[0], 1, null, 'utf-8');
+            $text = $delimitedNameByHyphens[0];
+        }
+
 
         if (count($delimitedNameByHyphens) > 1)
         {
-            $firstCharacterAfterHyphen = $delimitedNameByHyphens[1][0];
+            $firstCharacterAfterHyphen = $this->stringToUppercase(mb_substr($delimitedNameByHyphens[1], 0, 1, 'utf-8'));
 
             $remainingCharacters = mb_strtolower(substr($delimitedNameByHyphens[1], 1), "utf-8");
             $text = $text . "-" . $firstCharacterAfterHyphen . $remainingCharacters;
