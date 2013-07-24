@@ -255,6 +255,10 @@
             return readyToSave;
         }
 
+        $(document).ready(function(){
+            $("#purlColumnName").val(7);
+            $("#purlColumnName").change();
+        })
 
     </script>
 </html>
