@@ -94,7 +94,7 @@
             {
                 document.write( "<tr>" +
                                     "<td style=\"width: 25px; text-align: center; background-color: grey;\">" +
-                                        "<input type=checkbox name=\"checkboxlist\" />" +
+                                        "<input type=checkbox checked=\"checked\" name=\"checkboxlist\" />" +
                                     "</td>");
 
             for (var k in arrayPHPToJavascript[i])
