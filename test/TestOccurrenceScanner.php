@@ -42,13 +42,13 @@ class TestOccurrenceScanner extends TestFixture{
 
     function testGetResultsReturnsAnInstanceOfIterator(){
         $scanner = $this->createScanner(array(), "//");
-        Assert::isTrue($scanner->getResults() instanceof \Iterator);
+        Assert::isTrue($scanner->getOccurrences() instanceof \Iterator);
     }
 
     private function assertOccurrences($input, $expected, $regex, $columns = array(), $rowFilter = null){
         $scanner = $this->createScanner($input, $regex, $columns, $rowFilter);
 
-        $output = $scanner->getResults();
+        $output = $scanner->getOccurrences();
         $outputArray = array();
         foreach ($output as $row){
             $outputArray[] = $row;

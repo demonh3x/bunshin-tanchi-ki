@@ -2,6 +2,6 @@
 
 include_once("Row.php");
 
-interface DuplicatesListener {
+interface RowListener {
     function receiveDuplicate(Row $row);
 }

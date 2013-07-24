@@ -8,7 +8,7 @@ include_once("Row.php");
 
 include_once("RowCollection.php");
 
-include_once("DuplicatesListener.php");
+include_once("RowListener.php");
 
 class HashUniquesScanner {
     private $calculator, $readers = array();
@@ -21,14 +21,14 @@ class HashUniquesScanner {
     function __construct(HashCalculator $calculator){
         $this->calculator = $calculator;
         $this->appearedRows = new HashList();
-        $this->setDuplicatesListener(new NullDuplicatesListener());
+        $this->setDuplicatesListener(new NullRowListener());
     }
 
     function addReader(RandomReader $reader){
         $this->readers[] = $reader;
     }
 
-    function setDuplicatesListener(DuplicatesListener $listener){
+    function setDuplicatesListener(RowListener $listener){
         $this->duplicatesListener = $listener;
     }
 
@@ -100,6 +100,6 @@ class HashUniquesScanner {
     }
 }
 
-class NullDuplicatesListener implements DuplicatesListener{
+class NullRowListener implements RowListener{
     function receiveDuplicate(Row $row){}
 }

@@ -288,7 +288,7 @@ class TestHashUniquesScanner extends TestFixture{
         $scanner = $this->createDefaultScanner($inputA);
         $scanner->addReader($this->createRamReader($inputB, "testReceivingDuplicatesDataB"));
 
-        $duplicatesListener = new MockDuplicatesListener();
+        $duplicatesListener = new MockRowListener();
 
         $scanner->setDuplicatesListener($duplicatesListener);
         $scanner->getUniques();
@@ -313,8 +313,8 @@ class TestHashUniquesScanner extends TestFixture{
     }
 }
 
-include_once(__ROOT_DIR__ . "src/DuplicatesListener.php");
-class MockDuplicatesListener implements \DuplicatesListener{
+include_once(__ROOT_DIR__ . "src/RowListener.php");
+class MockRowListener implements \RowListener{
     public $duplicates = array();
 
     function receiveDuplicate(\Row $row) {

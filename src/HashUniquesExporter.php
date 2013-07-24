@@ -40,7 +40,7 @@ class HashUniquesExporter{
 
     function setDuplicatesWriterFactory(WriterFactory $factory, RowFilter $duplicatesRowFilter = null){
         $this->scanner->setDuplicatesListener(
-            new DuplicatesExporter(
+            new RowExporter(
                 $factory,
                 is_null($duplicatesRowFilter)? new RowFilter(): $duplicatesRowFilter
             )
@@ -62,7 +62,7 @@ class HashUniquesExporter{
 }
 
 include_once("Writers/WriterFactory.php");
-class DuplicatesExporter implements DuplicatesListener{
+class RowExporter implements RowListener{
     private $factory;
     private $writers = array();
 
