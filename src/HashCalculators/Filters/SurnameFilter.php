@@ -52,27 +52,27 @@ class SurnameFilter implements Filter{
         return $string;
     }
 
-    private function uppercasesSpacesAndHyphenCount($string){
-        $string = preg_match_all('/([A-ZÀÁÂÃÄÅÆÉÈËÊÍÌÏÎÓÒÖÔÕØÚÙÜÛÑÇÐÝŸÞ -]{1})/',$string,$foo);
+    private function uppercasesSpacesApostrophesAndHyphensCount($string){
+        $string = preg_match_all("/([A-ZÀÁÂÃÄÅÆÉÈËÊÍÌÏÎÓÒÖÔÕØÚÙÜÛÑÇÐÝŸÞ' -]{1})/",$string,$foo);
         return $string;
     }
 
-    private function lowercasesSpacesAndHyphenCount($string){
-        $string = preg_match_all('/([a-zàáâãäåæéèëêíìïîóòöôõøúùüûñçðýÿþ -]{1})/',$string,$foo);
+    private function lowercasesSpacesApostrophesAndHyphensCount($string){
+        $string = preg_match_all("/([a-zàáâãäåæéèëêíìïîóòöôõøúùüûñçðýÿþ' -]{1})/",$string,$foo);
         return $string;
     }
 
     function applyTo($text){
         $allButTheFirstCharacter = mb_substr($text, 1, mb_strlen($text), 'utf-8');
-        $foundUppers = $this->uppercasesSpacesAndHyphenCount($text);
-        $foundLowers = $this->lowercasesSpacesAndHyphenCount($text);
+        $countUppers = $this->uppercasesSpacesApostrophesAndHyphensCount($text);
+        $countLowers = $this->lowercasesSpacesApostrophesAndHyphensCount($text);
         $firstLetterUppercase = $this->stringToUppercase(mb_substr($text, 0, 1, 'utf-8'));
 
-        if ($foundUppers == mb_strlen($text))
+        if ($countUppers == mb_strlen($text))
         {
             $text = $firstLetterUppercase . mb_strtolower($allButTheFirstCharacter, "utf-8");
         }
-        if ($foundLowers == mb_strlen($text))
+        if ($countLowers == mb_strlen($text))
         {
             $text = $firstLetterUppercase . $allButTheFirstCharacter;
         }
