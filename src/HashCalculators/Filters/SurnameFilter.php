@@ -67,7 +67,6 @@ class SurnameFilter implements Filter{
         $foundUppers = $this->uppercasesSpacesAndHyphenCount($text);
         $foundLowers = $this->lowercasesSpacesAndHyphenCount($text);
         $firstLetterUppercase = $this->stringToUppercase(mb_substr($text, 0, 1, 'utf-8'));
-        //echo $firstLetterUppercase;
 
         if ($foundUppers == mb_strlen($text))
         {
