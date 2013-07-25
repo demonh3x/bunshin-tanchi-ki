@@ -16,7 +16,7 @@ class OccurrenceScanner {
         $this->rowFilter = is_null($rowFilter)? new RowFilter(): $rowFilter;
     }
 
-    function getResults(){
+    function getOccurrences(){
         $this->processAllRows();
         return $this->getResultsList();
     }
