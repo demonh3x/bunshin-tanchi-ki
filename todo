@@ -1,5 +1,34 @@
-User interface for selecting:
 PURL Combinations (Jamie)
     Multiple HashCalculators
-Filter Composite Names (ex: MacDow)
-Extract Row behaviour in HashDuplicatesScanner to a class named "Row"
+# Implement HashUniquesExporter
+Parse logical columns on CSV
+HashUniquesScanner handle Column Mappings
+MySQL Random reader
+MySQL Writer
+- XLS Random reader
+
+Documentation Random Reader
+#!! Clean output data (Applying filters to exit)
+!! Capital letters detector -> Regex
+!! OccurrencesScanner
+!! PurlGenerator
+#! Bugs: Pound symbol and null values on 32/Field 5
+#!! First Name Filter (Filter Composite Names (ex: MacDow))
+#!! Surname Filter
+
+! Remove RegexHashCalculator "Hack"
+    When HashUniquesScanner uses a RegexHashCalculator, creates a bug when only one result found.
+
+Unify the usage of the scanners (maybe an interface for scanners?)
+
+
+UI
+-----------------------------------------------------------------
+# UI
+# Unique PURLs
+# List of results and link to the page for editing dups group
+# Page to upload file, configure Scanner
+# Configure PURL Column
+# Append saving dups group to uniques
+Warnings when edditing a group of more than 2 rows
+Fatal error (manually thrown) when writing the dupsGroups to the uniques file more than once at a time.
