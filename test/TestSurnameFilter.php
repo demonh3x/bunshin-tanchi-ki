@@ -25,13 +25,25 @@ class TestSurnameFilter extends TestFixture{
         $this->assertExpected("MaRIe", "MaRIe");
     }
 
+    function testIfAllUppercaseWithSpacesShouldCapitalizeFirstLetter(){
+        $this->assertExpected("Jamie van-macdow", "JAMIE VAN-MACDOW");
+    }
+
     function testIfAllLowercaseShouldCapitalizeFirstLetter(){
         $this->assertExpected("Marie", "marie");
         $this->assertExpected("maRie", "maRie");
     }
 
-    function testSpacesAndHyphensRemainUnaltered(){
-        $this->assertExpected("Marie Charlotte", "Marie Charlotte");
-        $this->assertExpected("Marie-Charlotte", "Marie-Charlotte");
+    function testIfAllLowercaseWithSpacesShouldCapitalizeFirstLetter(){
+        $this->assertExpected("Jamie van macdow", "jamie van macdow");
+    }
+
+    function testIfNotAllUppercaseWithSpacesLeaveItAsItIs(){
+        $this->assertExpected("JAmie VAN-MacDow", "JAmie VAN-MacDow");
+    }
+
+    function testAccentsRemainUnaltered(){
+        $this->assertExpected("Áarön", "áarön");
+        $this->assertExpected("Áarön", "ÁARÖN");
     }
 }
