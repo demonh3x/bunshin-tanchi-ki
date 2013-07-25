@@ -96,10 +96,10 @@ class HashUniquesScanner {
     }
 
     private function sendDuplicate(Row $row){
-        $this->duplicatesListener->receiveDuplicate($row);
+        $this->duplicatesListener->receiveRow($row);
     }
 }
 
 class NullRowListener implements RowListener{
-    function receiveDuplicate(Row $row){}
+    function receiveRow(Row $row){}
 }

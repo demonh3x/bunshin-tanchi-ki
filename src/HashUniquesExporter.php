@@ -73,7 +73,7 @@ class RowExporter implements RowListener{
         $this->rowFilter = $rowFilter;
     }
 
-    function receiveDuplicate(Row $row){
+    function receiveRow(Row $row){
         $filteredRow = $this->rowFilter->applyTo($row->getData());
         $writer = $this->getWriter($row->getHash());
         $writer->writeRow($filteredRow);

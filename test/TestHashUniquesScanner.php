@@ -317,7 +317,7 @@ include_once(__ROOT_DIR__ . "src/RowListener.php");
 class MockRowListener implements \RowListener{
     public $duplicates = array();
 
-    function receiveDuplicate(\Row $row) {
+    function receiveRow(\Row $row) {
         $this->duplicates[] = $row->getData();
     }
 }
