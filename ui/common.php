@@ -33,7 +33,7 @@ function getViewDedupLink($dirToDedup){
 }
 
 function getViewDupsGroupLink($file){
-    return  __VIEW_DUPS_GROUP_FILE__ . "?dupsGroup=" . $file;
+    return  __VIEW_DUPS_GROUP_FILE__ . "?dupsGroup=" . urlencode($file);
 }
 
 function getGeneratePurlsLink($file){
