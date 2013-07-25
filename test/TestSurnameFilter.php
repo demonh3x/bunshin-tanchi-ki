@@ -45,8 +45,8 @@ class TestSurnameFilter extends TestFixture{
         $this->assertExpected("JAmie VAN-MacDow", "JAmie VAN-MacDow");
     }
 
-    function testAccentsRemainUnaltered(){
-        $this->assertExpected("Áarön", "áarön");
-        $this->assertExpected("Áarön", "ÁARÖN");
+    function testAccentsAndSpecialCharactersRemainUnaltered(){
+        $this->assertExpected("Áarön'", "áarön'");
+        $this->assertExpected("Áarön'", "ÁARÖN'");
     }
 }
