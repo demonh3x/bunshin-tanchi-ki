@@ -124,4 +124,34 @@ class TestOccurrenceScanner extends TestFixture{
 
         $this->assertOccurrences($input, $expected, $regex, array(), $rowFilter);
     }
+
+    private function assertNotMatching($input, $expected, $regex, $columns = array(), $rowFilter = null){
+        $scanner = $this->createScanner($input, $regex, $columns, $rowFilter);
+
+        $listener = new NotMatchingReceiver();
+        $scanner->setNotMatchingListener($listener);
+
+        $scanner->getOccurrences();
+
+        Assert::areIdentical($expected, $listener->rows);
+    }
+
+    function testReceivingNotMatching(){
+        $input = array(
+            array("0" => "Foo"),
+            array("0" => "Bar")
+        );
+        $expected = array(
+            array("0" => "Bar")
+        );
+        $regex = "/^Foo/";
+
+        $this->assertNotMatching($input, $expected, $regex);
+    }
+}
+class NotMatchingReceiver implements \RowListener{
+    public $rows = array();
+    function receiveRow(\Row $row){
+        $this->rows[] = $row->getData();
+    }
 }
