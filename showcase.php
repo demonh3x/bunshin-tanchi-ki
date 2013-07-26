@@ -12,7 +12,6 @@
 <?php
     set_time_limit(0);
 
-    include_once("src/HashDuplicatesExporter.php");
     include_once("src/HashUniquesExporter.php");
     include_once("src/RandomReaders/CsvRandomReader.php");
     include_once("src/HashCalculators/StringHashCalculator.php");
@@ -39,8 +38,7 @@
     /*$reader->open("test/sampleFiles/15000rows.csv");*/
     /*$reader->open("test/sampleFiles/45000rows.csv");*/
     /*$reader->open("test/sampleFiles/100000rows.csv");*/
-    /*$reader->open("test/sampleFiles/realData/CR_data_batch-Master.csv");*/
-    $reader->open("test/sampleFiles/realData/field7Uniques.csv");
+    $reader->open("deduplications/dedup0/input/CR_data_batch-Master.csv");
     $scanner->setReader($reader);
 
     $calculator = new StringHashCalculator();
