@@ -1,25 +1,23 @@
-PURL Combinations (Jamie)
-    Multiple HashCalculators
 # Implement HashUniquesExporter
+Multiple HashCalculators to use one OR another to detect a duplicate
 Parse logical columns on CSV
 HashUniquesScanner handle Column Mappings
 MySQL Random reader
 MySQL Writer
 - XLS Random reader
 
+Refactor FirstName and Surname Filter
+
+Unify the usage of the scanners (maybe an interface for scanners?)
+
 Documentation Random Reader
 #!! Clean output data (Applying filters to exit)
-!! Capital letters detector -> Regex
-!! OccurrencesScanner
+#!! OccurrencesScanner (Capital letters detector -> Regex)
 !! PurlGenerator
+    PURL Combinations (Jamie)
 #! Bugs: Pound symbol and null values on 32/Field 5
 #!! First Name Filter (Filter Composite Names (ex: MacDow))
 #!! Surname Filter
-
-! Remove RegexHashCalculator "Hack"
-    When HashUniquesScanner uses a RegexHashCalculator, creates a bug when only one result found.
-
-Unify the usage of the scanners (maybe an interface for scanners?)
 
 
 UI
@@ -30,5 +28,5 @@ UI
 # Page to upload file, configure Scanner
 # Configure PURL Column
 # Append saving dups group to uniques
-Warnings when edditing a group of more than 2 rows
+# Warnings when edditing a group of more than 2 rows
 Fatal error (manually thrown) when writing the dupsGroups to the uniques file more than once at a time.
