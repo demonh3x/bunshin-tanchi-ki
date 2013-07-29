@@ -53,7 +53,6 @@ class TestLockingCsvWriter extends TestFixture{
 
         $writer = $this->createWriter();
         $writer->create($path);
-        $writer->__destruct();
         $writer = null;
 
         $writer2 = $this->createWriter();
