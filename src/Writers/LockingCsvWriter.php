@@ -1,5 +1,7 @@
 <?php
 
+include_once("CsvWriter.php");
+
 class LockingCsvWriter extends CsvWriter implements Writer{
     private function isLocked(){
         return file_exists($this->path . ".lock");
