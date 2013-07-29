@@ -253,8 +253,7 @@ function sendCheckedRowsToPHP(){
             arrayRow.push(arrayColumns);
         })
         console.log(arrayRow);
-        alert("Weee!");
-        //convertJavascriptArrayToPHP(arrayRow);
+        convertJavascriptArrayToPHP(arrayRow);
     }
 }
 
