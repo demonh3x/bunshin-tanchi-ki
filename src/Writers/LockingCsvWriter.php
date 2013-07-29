@@ -12,7 +12,7 @@ class LockingCsvWriter extends CsvWriter implements Writer{
     }
 
     private function unlock(){
-        if ($this->isLocked()){
+        if ($this->isThisFileLocking && $this->isLocked()){
             unlink($this->path . ".lock");
         }
     }
