@@ -12,7 +12,7 @@
     $stringFromJavascript = $_POST['arrayAsString'];
     $arrayFromJavascript = json_decode($stringFromJavascript, TRUE);
     $htmlInformation .= "<h1>Merging data:</h1>";
-    print_r($arrayFromJavascript);
+    $htmlInformation .= print_r($arrayFromJavascript, true);
 
     $identifyingColumn = $_REQUEST["identifyingColumn"];
     $htmlInformation .= "<h1>Identifying Column: $identifyingColumn</h1>";
