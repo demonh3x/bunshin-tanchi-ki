@@ -6,15 +6,12 @@ foreach (glob(__ROOT_DIR__ . "src/CellGenerators/PurlCalculators/*.php") as $fil
 }
 
 class UniquePURLGenerator {
-    private $firstnameField, $surnameField, $salutationField, $purlField;
+    private $purlField;
     private $hashList;
 
     private $purlCalculators = array();
 
     function __construct($firstnameField, $surnameField, $salutationField, $purlField, $usedPurls = array()){
-        /*$this->firstnameField = $firstnameField;
-        $this->surnameField = $surnameField;
-        $this->salutationField = $salutationField;*/
         $this->purlField = $purlField;
 
         $this->hashList = new HashList();

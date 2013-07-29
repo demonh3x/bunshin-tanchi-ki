@@ -12,7 +12,7 @@ class TestUniquePURLGenerator extends TestFixture{
     }
 
     private function createGenerator($usedPurls = array()){
-        return new \UniquePURLGenerator("2", "3", "1", "4", $usedPurls);
+        return Core::getCodeCoverageWrapper("UniquePURLGenerator", array("2", "3", "1", "4", $usedPurls));
     }
 
     private $testRow = array(
