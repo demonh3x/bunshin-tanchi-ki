@@ -1,5 +1,5 @@
 <?php
-    include_once("../src/Writers/CsvWriter.php");
+    include_once("../src/Writers/LockingCsvWriter.php");
     include_once("common.php");
 
     $htmlInformation = "";
@@ -22,18 +22,23 @@
     $identifyingValuesFile = $dedupDir . "/" . __IDENTIFYING_VALUES_FILE__;
     $htmlInformation .= "<h1>Identifying Values File: $identifyingValuesFile</h1>";
 
-    $writer = new CsvWriter();
+    $tryes = 0;
+    $writer = new LockingCsvWriter();
+    do {
+        usleep(rand(30, 100));
+        $writer->create($uniquesFilePath);
+        $tryes++;
+    } while ((!$writer->isReady()) && ($tryes < 10));
 
-    $writer->create($uniquesFilePath);
     if (!$writer->isReady()){
-        echo $htmlInformation;
+        beforeError();
         throw new Exception("Could not open the uniques file to write! [$uniquesFilePath]");
     }
 
     $uniquesReader = new CsvRandomReader();
     $uniquesReader->open($uniquesFilePath);
     if (!$uniquesReader->isReady()){
-        echo $htmlInformation;
+        beforeError();
         throw new Exception("Could not read the uniques file! [$uniquesFilePath]");
     }
     $initialRows = $uniquesReader->getRowCount();
@@ -47,13 +52,13 @@
     $uniquesReaderAfterWriting = new CsvRandomReader();
     $uniquesReaderAfterWriting->open($uniquesFilePath);
     if (!$uniquesReaderAfterWriting->isReady()){
-        echo $htmlInformation;
+        beforeError();
         throw new Exception("Could not read the uniques file to check the merge! [$uniquesFilePath]");
     }
     $finalRows = $uniquesReaderAfterWriting->getRowCount();
 
     if (($finalRows - $initialRows) !== count($arrayFromJavascript)){
-        echo $htmlInformation;
+        beforeError();
         throw new Exception("Could not write all the rows to the uniques file!");
     }
 
@@ -61,7 +66,7 @@
     $identifyingFileWriter = new CsvWriter();
     $identifyingFileWriter->create($identifyingValuesFile);
     if (!$identifyingFileWriter->isReady()){
-        echo $htmlInformation;
+        beforeError();
         throw new Exception("Could not read the identifying values file! [$identifyingValuesFile]");
     }
     foreach ($arrayFromJavascript as $row){
@@ -79,9 +84,16 @@
     $htmlInformation .= "<h1>Moving DupsGroup File: $dupsGroupFile to: $target</h1>";
     rename($dupsGroupFile, $target);
     if (!is_file($target)){
-        echo $htmlInformation;
+        beforeError();
         throw new Exception("Could not flag the dups group as merged!");
     }
 
     header('Location: ' . getViewDedupLink($dedupDir));
+    beforeError();
+
+
+function beforeError(){
+    global $htmlInformation, $writer;
     echo $htmlInformation;
+    $writer = null;
+}
