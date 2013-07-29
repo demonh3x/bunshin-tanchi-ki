@@ -5,8 +5,10 @@ include_once("RowCollection.php");
 
 include_once("HashCalculators/RowFilter.php");
 
+include_once("RowListener.php");
+
 class OccurrenceScanner {
-    protected $reader, $regex, $columnsToScan, $rowFilter;
+    protected $reader, $regex, $columnsToScan, $rowFilter, $notMatchingListener;
     protected $rowList = array();
 
     function __construct(RandomReader $reader, $regex, $columns = array(), RowFilter $rowFilter = null){
@@ -14,6 +16,11 @@ class OccurrenceScanner {
         $this->regex = $regex;
         $this->columnsToScan = $columns;
         $this->rowFilter = is_null($rowFilter)? new RowFilter(): $rowFilter;
+        $this->notMatchingListener = new NullRowListener();
+    }
+
+    function setNotMatchingListener(RowListener $listener){
+        $this->notMatchingListener = $listener;
     }
 
     function getOccurrences(){
@@ -41,6 +48,8 @@ class OccurrenceScanner {
                 return;
             }
         }
+
+        $this->sendNotMatching($row);
     }
 
     protected function areColumnsDefined(){
@@ -53,6 +62,10 @@ class OccurrenceScanner {
 
     protected function addOccurrence(Row $row){
         $this->rowList[] = $row;
+    }
+
+    protected function sendNotMatching(Row $row){
+        $this->notMatchingListener->receiveRow($row);
     }
 
     protected function getResultsList(){
