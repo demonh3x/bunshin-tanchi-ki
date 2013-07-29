@@ -157,15 +157,4 @@ class TestCsvWriter extends TestFixture{
 
         Assert::areIdentical($expected, $current);
     }
-
-    function testLockingFile(){
-        $writer = $this->createWriter();
-        $path = "sampleFiles/test_csv_writer_ready.csv";
-
-        $writer->create($path);
-
-        $writer2 = $this->createWriter();
-        $writer2->create($path);
-        Assert::isFalse($writer2->isReady());
-    }
 }
