@@ -13,7 +13,7 @@ include_once(__ROOT_DIR__ . "src/HashCalculators/Filters/NoSpacesFilter.php");
 class UniquePURLGenerator {
     private $purlField;
     private $hashList;
-    private $rowFilter;
+    private $cleaningFilter;
 
     private $purlCalculators = array();
 
@@ -25,8 +25,8 @@ class UniquePURLGenerator {
             $this->hashList->add($purl);
         }
 
-        $this->rowFilter = new RowFilter();
-        $this->rowFilter->setFilter(
+        $this->cleaningFilter = new RowFilter();
+        $this->cleaningFilter->setFilter(
             FilterGroup::create(
                 new SubstituteAccentsFilter(),
                 new OnlyLettersFilter(),
@@ -49,7 +49,7 @@ class UniquePURLGenerator {
 
         foreach ($this->purlCalculators as $calculator){
             $purl = $calculator->calculate(
-                $this->rowFilter->applyTo($row)
+                $this->cleaningFilter->applyTo($row)
             );
 
             if (!$this->hashList->contains($purl)){
