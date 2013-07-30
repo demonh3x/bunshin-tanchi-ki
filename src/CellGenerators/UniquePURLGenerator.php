@@ -5,9 +5,16 @@ foreach (glob(__ROOT_DIR__ . "src/CellGenerators/PurlCalculators/*.php") as $fil
     include_once($filename);
 }
 
+include_once(__ROOT_DIR__ . "src/HashCalculators/RowFilter.php");
+include_once(__ROOT_DIR__ . "src/HashCalculators/Filters/FilterGroup.php");
+foreach (glob(__ROOT_DIR__ . "src/HashCalculators/Filters/*Filter.php") as $filename){
+    include_once($filename);
+}
+
 class UniquePURLGenerator {
     private $purlField;
     private $hashList;
+    private $cleaningFilter;
 
     private $purlCalculators = array();
 
@@ -18,6 +25,16 @@ class UniquePURLGenerator {
         foreach ($usedPurls as $purl){
             $this->hashList->add($purl);
         }
+
+        $this->cleaningFilter = new RowFilter();
+        $this->cleaningFilter->setFilter(
+            FilterGroup::create(
+                new SubstituteAccentsFilter(),
+                new OnlyLettersFilter(),
+                new NoSpacesFilter()
+            ),
+            $surnameField
+        );
 
         $this->purlCalculators[] = new NameSurnameCalculator($firstnameField, $surnameField, $salutationField);
         $this->purlCalculators[] = new NameSCalculator($firstnameField, $surnameField, $salutationField);
@@ -32,7 +49,9 @@ class UniquePURLGenerator {
         $purlHasBeenGenerated = false;
 
         foreach ($this->purlCalculators as $calculator){
-            $purl = $calculator->calculate($row);
+            $purl = $calculator->calculate(
+                $this->cleaningFilter->applyTo($row)
+            );
 
             if (!$this->hashList->contains($purl)){
                 $return[$this->purlField] = $purl;

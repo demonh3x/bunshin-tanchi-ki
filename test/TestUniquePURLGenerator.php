@@ -87,4 +87,25 @@ class TestUniquePURLGenerator extends TestFixture{
         Assert::isTrue($exceptionTrown);
     }
 
+    function testCleaningSurname(){
+        $input = array(
+            "0" => "",
+            "1" => "Ms",
+            "2" => "Marie",
+            "3" => "Cha'r Lót-te",
+            "4" => "PURLGoingToBeOverwrited",
+        );
+
+        $expected = array(
+            "0" => "",
+            "1" => "Ms",
+            "2" => "Marie",
+            "3" => "Cha'r Lót-te",
+            "4" => "MarieCharLotte",
+        );
+
+        $generator = $this->createGenerator();
+        $actual = $generator->generate($input);
+        Assert::areIdentical($expected, $actual);
+    }
 }
