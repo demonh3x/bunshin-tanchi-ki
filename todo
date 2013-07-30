@@ -32,9 +32,9 @@ UI
 ~#Fatal error (manually thrown) when writing the dupsGroups to the uniques file more than once at a time.
 
 #Download link duplicates groups
-Generate Fields links in duplicates groups using the UniquePURLGenerator
-    - create generated file in the same folder as original
-    - move original file to merged folder
+#Generate Fields links in duplicates groups using the UniquePURLGenerator
+    #- create generated file in the same folder as original
+    #- move original file to merged folder
 
 Column specific filters
 Page for using OcurrenceScanner (similar to HashUniquesScanner)
