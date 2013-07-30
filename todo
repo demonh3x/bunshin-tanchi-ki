@@ -5,6 +5,7 @@ HashUniquesScanner handle Column Mappings
 MySQL Random reader
 MySQL Writer
 - XLS Random reader
+Extract RowFilter functionality outside StringHashCalculator
 
 Refactor FirstName and Surname Filter
 
@@ -13,8 +14,7 @@ Unify the usage of the scanners (maybe an interface for scanners?)
 Documentation Random Reader
 #!! Clean output data (Applying filters to exit)
 #!! OccurrencesScanner (Capital letters detector -> Regex)
-!! PurlGenerator
-    PURL Combinations (Jamie)
+#!! PurlGenerator - PURL Combinations (Jamie)
 #! Bugs: Pound symbol and null values on 32/Field 5
 #!! First Name Filter (Filter Composite Names (ex: MacDow))
 #!! Surname Filter
@@ -29,4 +29,4 @@ UI
 # Configure PURL Column
 # Append saving dups group to uniques
 # Warnings when edditing a group of more than 2 rows
-Fatal error (manually thrown) when writing the dupsGroups to the uniques file more than once at a time.
+~#Fatal error (manually thrown) when writing the dupsGroups to the uniques file more than once at a time.
