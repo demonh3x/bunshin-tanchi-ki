@@ -4,11 +4,12 @@ include_once(__ROOT_DIR__ . "src/HashList.php");
 foreach (glob(__ROOT_DIR__ . "src/CellGenerators/PurlCalculators/*.php") as $filename){
     include_once($filename);
 }
+
 include_once(__ROOT_DIR__ . "src/HashCalculators/RowFilter.php");
 include_once(__ROOT_DIR__ . "src/HashCalculators/Filters/FilterGroup.php");
-include_once(__ROOT_DIR__ . "src/HashCalculators/Filters/SubstituteAccentsFilter.php");
-include_once(__ROOT_DIR__ . "src/HashCalculators/Filters/OnlyLettersFilter.php");
-include_once(__ROOT_DIR__ . "src/HashCalculators/Filters/NoSpacesFilter.php");
+foreach (glob(__ROOT_DIR__ . "src/HashCalculators/Filters/*Filter.php") as $filename){
+    include_once($filename);
+}
 
 class UniquePURLGenerator {
     private $purlField;
