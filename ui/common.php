@@ -123,7 +123,8 @@ function getDupGroupsHTML(){
     foreach ($dedups as $id => $dedup){
         $link = getViewDupsGroupLink($dedup);
         $generateLink = getGeneratePurlsLink($dedup);
-        $dedups[$id] = HTML::a($dedup, $link) . " - [" . HTML::a("Generate Fields", $generateLink) . "]";
+        $dedups[$id] = HTML::a($dedup, $link) . " - [" . HTML::a("Generate Fields", $generateLink) . "]
+                       - [" . HTML::a("Download", $dedup) . "]";
     }
 
     return HTML::ol($dedups);
