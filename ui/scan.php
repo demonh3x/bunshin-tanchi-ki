@@ -38,16 +38,20 @@
         }
 
         function getPostVar($name){
-            return json_decode($_POST[$name]);
+            return json_decode($_POST[$name], true);
         }
 
         $INPUT_FILES = getPostVar("inputFiles");
-        $GLOBAL_FILTERS = getPostVar("globalFilters");
-        $WATCH_COLUMNS = getPostVar("compareColumns");
+
         $UNIQUES_FILE = __DEDUP_DIR__ . getPostVar("dir") .  "/" . "uniques.csv";
         $DUPS_DIR = __DEDUP_DIR__ . getPostVar("dir") . "/" . __DUPLICATES_FOLDER__ ;
+
         $IDENTIFYING_COLUMN = getPostVar("identifyingColumn");
         $IDENTIFYING_VALUES_FILE = __DEDUP_DIR__ . getPostVar("dir") . "/" . __IDENTIFYING_VALUES_FILE__;
+
+        $CLEANING_COLUMN_FILTERS = getPostVar("cleanFilters");
+        $COMPARING_COLUMN_FILTERS = getPostVar("compareFilters");
+        $WATCH_COLUMNS = array_keys($COMPARING_COLUMN_FILTERS);
 
         if (is_dir($DUPS_DIR)){
             rmdir_recursive($DUPS_DIR);
@@ -80,9 +84,12 @@
         $scanner->setReader($reader);
 
         $calculator = new StringHashCalculator();
-        $calculator->setGlobalFilter(
-            getFilterGroup($GLOBAL_FILTERS)
-        );
+        foreach ($COMPARING_COLUMN_FILTERS as $column => $filters){
+            $calculator->setFilter(
+                getFilterGroup($filters),
+                $column
+            );
+        }
 
         $calculator->watchColumns($WATCH_COLUMNS);
 
@@ -90,8 +97,16 @@
 
         $uniquesWriter = new CsvWriter();
         $uniquesWriter->create($UNIQUES_FILE);
-        $scanner->setUniquesWriter($uniquesWriter);
 
+        $cleaningFilters = new RowFilter();
+        foreach ($CLEANING_COLUMN_FILTERS as $column => $filters){
+            $cleaningFilters->setFilter(
+                getFilterGroup($filters),
+                $column
+            );
+        }
+
+        $scanner->setUniquesWriter($uniquesWriter, $cleaningFilters);
 
         class CustomWriterFactory implements WriterFactory{
             function createWriter($id){
@@ -105,7 +120,7 @@
                 return $writer;
             }
         }
-        $scanner->setDuplicatesWriterFactory(new CustomWriterFactory());
+        $scanner->setDuplicatesWriterFactory(new CustomWriterFactory(), $cleaningFilters);
 
         $memoryUsage = memory_get_usage(true) / 1024 / 1024;
         echo "<h1>Memory Usage: $memoryUsage MB</h1>";

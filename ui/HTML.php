@@ -51,12 +51,14 @@ class HTML {
         return $html;
     }
 
-    static function select($array){
+    static function select($array, $class = null){
         if (count($array) == 0) {
             return "";
         }
 
-        $html = "<select>";
+        $class = is_null($class)? "": $class;
+
+        $html = "<select class='$class'>";
 
         foreach ($array as $value){
             $html .= "<option value='$value'>$value</option>";
