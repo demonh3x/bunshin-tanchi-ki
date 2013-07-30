@@ -6,6 +6,7 @@ define("__DEDUP_DIR__", __ROOT_DIR__ . "deduplications/");
         define("__UNIQUES_FILE__", "uniques.*");
         define("__DUPLICATES_FOLDER__", "duplicates/");
             define("__MERGED_FOLDER__", "merged/");
+            define("__BEFORE_GENERATING_FOLDER__", "beforeGenerating/");
         define("__INPUTS_FOLDER__", "input/");
         define("__IDENTIFYING_VALUES_FILE__", "identifyingValues.csv");
 
@@ -117,14 +118,21 @@ function getDupGroups(){
     return $dedups;
 }
 
+function getRowLines($file){
+    $reader = new CsvRandomReader();
+    $reader->open($file);
+
+    return $reader->getRowCount();
+}
+
 function getDupGroupsHTML(){
     $dedups = getDupGroups();
 
     foreach ($dedups as $id => $dedup){
         $link = getViewDupsGroupLink($dedup);
         $generateLink = getGeneratePurlsLink($dedup);
-        $dedups[$id] = HTML::a($dedup, $link) . " - [" . HTML::a("Generate Fields", $generateLink) . "]
-                       - [" . HTML::a("Download", $dedup) . "]";
+        $dedups[$id] = HTML::a($dedup, $link) . " - [" . HTML::a("Generate PURL", $generateLink) . "]
+                       - [" . HTML::a("Download", $dedup) . "] - Rows: " . getRowLines(urldecode($dedup));
     }
 
     return HTML::ol($dedups);
