@@ -32,13 +32,16 @@ UI
 ~#Fatal error (manually thrown) when writing the dupsGroups to the uniques file more than once at a time.
 
 # Download link duplicates groups
-Generate Fields links in duplicates groups using the UniquePURLGenerator
+!! Generate Fields links in duplicates groups using the UniquePURLGenerator
     - create generated file in the same folder as original
-    - move original file to merged folder
+    - move original file to "before-generating" folder
 
-Column specific filters
+In dedup page, show the number of rows of every dups group.
+In dedup page, add the option to directly merge all the dups group.
+
+! Column specific filters
 Page for using OcurrenceScanner (similar to HashUniquesScanner)
 
-Cleaning Filters
+!! Cleaning Filters
 
-Auto-select the PURL column in editGroup page to the Identifying column selected when scanning.
+! Auto-select the PURL column in editGroup page to the Identifying column selected when scanning.
