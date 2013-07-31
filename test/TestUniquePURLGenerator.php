@@ -30,6 +30,17 @@ class TestUniquePURLGenerator extends TestFixture{
         "MsMarieCharlotte",
         "MsMarieC",
         "MsMCharlotte",
+
+        "Marie-Charlotte",
+        "Marie-C",
+        "M-Charlotte",
+        "MsMarie-Charlotte",
+        "MsMarie-C",
+        "MsM-Charlotte",
+
+        "Ms-Marie-Charlotte",
+        "Ms-Marie-C",
+        "Ms-M-Charlotte",
     );
 
     function testGenerateOneCell(){

@@ -26,6 +26,11 @@ class UniquePURLGenerator {
             $this->hashList->add($purl);
         }
 
+        $this->initCleaningFilters($firstnameField, $surnameField, $salutationField);
+        $this->initPurlCalculators($firstnameField, $surnameField, $salutationField);
+    }
+
+    private function initCleaningFilters($firstnameField, $surnameField, $salutationField){
         $this->cleaningFilter = new RowFilter();
         $this->cleaningFilter->setFilter(
             FilterGroup::create(
@@ -50,13 +55,30 @@ class UniquePURLGenerator {
             ),
             $surnameField
         );
+    }
 
-        $this->purlCalculators[] = new NameSurnameCalculator($firstnameField, $surnameField, $salutationField);
-        $this->purlCalculators[] = new NameSCalculator($firstnameField, $surnameField, $salutationField);
-        $this->purlCalculators[] = new NSurnameCalculator($firstnameField, $surnameField, $salutationField);
-        $this->purlCalculators[] = new SalutationNameSurnameCalculator($firstnameField, $surnameField, $salutationField);
-        $this->purlCalculators[] = new SalutationNameSCalculator($firstnameField, $surnameField, $salutationField);
-        $this->purlCalculators[] = new SalutationNSurnameCalculator($firstnameField, $surnameField, $salutationField);
+    private function initPurlCalculators($firstnameField, $surnameField, $salutationField){
+        $purlCalculators = array(
+            "NameSurnameCalculator",
+            "NameSCalculator",
+            "NSurnameCalculator",
+            "SalutationNameSurnameCalculator",
+            "SalutationNameSCalculator",
+            "SalutationNSurnameCalculator",
+            "Name_SurnameCalculator",
+            "Name_SCalculator",
+            "N_SurnameCalculator",
+            "SalutationName_SurnameCalculator",
+            "SalutationName_SCalculator",
+            "SalutationN_SurnameCalculator",
+            "Salutation_Name_SurnameCalculator",
+            "Salutation_Name_SCalculator",
+            "Salutation_N_SurnameCalculator"
+        );
+
+        foreach ($purlCalculators as $purlCalculator){
+            $this->purlCalculators[] = new $purlCalculator($firstnameField, $surnameField, $salutationField);
+        }
     }
 
     function generate($row){
