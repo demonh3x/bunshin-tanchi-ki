@@ -189,33 +189,8 @@ include_once("common.php");
     </div>
 
     <div class="comparing-section">
-        <!--<h3>Columns to compare:</h3>
-        <div class="columnsToWatch">
-            <ul></ul>
-            <?/*= HTML::select(getInputFileColumns(getInputFiles()[0])) */?>
-            <input class="add" type="button" value="Add column"/>
-            <input class="remove" type="button" value="Remove last column"/>
-        </div>-->
-
-        <!--<h3>Apply global <em>comparing</em> filters (Changes won't be saved in output files):</h3>
-        <ul class="activeGlobalFilters">
-
-        </ul>
-        <form action="" class="globalFiltersAdder">
-            <?php
-/*                foreach (getAvailableFilters() as $filter){
-                    $id = $filter . "GlobalFilter";
-                    echo "<input id='$id' type='button' name='globalFilters' value='$filter'/>";
-                }
-            */?>
-        </form>
-        <form action="">
-            <input class="globalFilterRemover" type="button" value="Remove last filter"/>
-            <input type="button" value="Try filters"/>
-        </form>-->
-
-        <h3>Apply column <em>comparing</em> filters:</h3>
-        <p>Changes made by this filters <em>won't be saved</em> in output files.</p>
+        <h3>Apply column <em>comparing</em> rules:</h3>
+        <p>Changes made by the filters <em>won't be saved</em> in output files.</p>
         <p>The scanner will use this columns to determine the uniqueness of a row.
             If no column is selected, it'll use all the columns.</p>
         <div class="columns-to-compare">
@@ -228,8 +203,8 @@ include_once("common.php");
     </div>
 
     <div class="cleaning-section">
-        <h3>Apply column <em>cleaning</em> filters:</h3>
-        <p>Changes made by this filters <em>will be saved</em> in output files.</p>
+        <h3>Apply column <em>cleaning</em> rules:</h3>
+        <p>Changes made by the filters <em>will be saved</em> in output files.</p>
         <p>The scanner will use this filters to clean the data.</p>
         <div class="columns-to-clean">
             <ul class="columns">
@@ -245,8 +220,6 @@ include_once("common.php");
         <input type="hidden" name="dir" value='<?= json_encode($_REQUEST["dir"]) ?>'/>
         <input type="hidden" name="inputFiles" value='<?= json_encode(getInputFiles()) ?>'/>
         <input type="hidden" name="identifyingColumn" value=""/>
-        <!--<input type="hidden" name="compareColumns" value=""/>-->
-        <!--<input type="hidden" name="globalFilters" value=""/>-->
         <input type="hidden" name="compareFilters" value=""/>
         <input type="hidden" name="cleanFilters" value=""/>
         <input type="submit" value="Scan input files for duplicates"/>
