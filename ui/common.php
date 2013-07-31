@@ -168,3 +168,20 @@ function getAvailableFilters(){
 
     return $filters;
 }
+
+function getPostVar($name){
+    return json_decode($_REQUEST[$name], true);
+}
+
+foreach (glob(__ROOT_DIR__ . "src/HashCalculators/Filters/*.php") as $filename){
+    include_once($filename);
+}
+
+function getFilterGroup($arrayNames){
+    $filters = array();
+    foreach ($arrayNames as $name){
+        $class = $name . "Filter";
+        $filters[] = new $class();
+    }
+    return FilterGroup::create($filters);
+}

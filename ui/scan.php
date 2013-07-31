@@ -16,9 +16,6 @@
         include_once(__ROOT_DIR__ . "src/HashUniquesExporter.php");
         include_once(__ROOT_DIR__ . "src/RandomReaders/CsvRandomReader.php");
         include_once(__ROOT_DIR__ . "src/HashCalculators/StringHashCalculator.php");
-        foreach (glob(__ROOT_DIR__ . "src/HashCalculators/Filters/*.php") as $filename){
-            include_once($filename);
-        }
         foreach (glob(__ROOT_DIR__ . "src/Writers/*.php") as $filename){
             include_once($filename);
         }
@@ -35,10 +32,6 @@
                 else unlink($file->getPathname());
             }
             rmdir($dir);
-        }
-
-        function getPostVar($name){
-            return json_decode($_POST[$name], true);
         }
 
         $INPUT_FILES = getPostVar("inputFiles");
@@ -60,15 +53,6 @@
 
         if (is_file($UNIQUES_FILE)){
             unlink($UNIQUES_FILE);
-        }
-
-        function getFilterGroup($arrayNames){
-            $filters = array();
-            foreach ($arrayNames as $name){
-                $class = $name . "Filter";
-                $filters[] = new $class();
-            }
-            return FilterGroup::create($filters);
         }
 
         $memoryUsage = memory_get_usage(true) / 1024 / 1024;
