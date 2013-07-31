@@ -19,6 +19,12 @@ class HTML {
         return $html;
     }
 
+    static function aNewPage($text, $url){
+        $html = "<a href='$url' target='_blank'>$text</a>";
+
+        return $html;
+    }
+
     static function a($text, $url){
         $html = "<a href='$url'>$text</a>";
 
