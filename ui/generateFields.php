@@ -7,12 +7,15 @@
     <?php
         include_once("common.php");
         include_once(__ROOT_DIR__ . "src/Writers/CsvWriter.php");
+        include_once(__ROOT_DIR__ . "src/RandomReaders/CsvRandomReader.php");
         include_once(__ROOT_DIR__ . "src/CellGenerators/UniquePURLGenerator.php");
         foreach (glob(__ROOT_DIR__ . "src/HashCalculators/Filters/*.php") as $filename){
             include_once($filename);
         }
 
         $file = $_REQUEST["file"];
+
+        var_dump($file);
         $deduplicationsWorkFolder = getDeduplicationsWorkFolder($file);
         /*$path = getPath($file);*/
 
@@ -52,7 +55,17 @@
 
         function getDeduplicationsWorkFolder($file) {
             $pathParts = explode("/", $file);
-            $deduplicationsWorkFolder = $pathParts[0] . "/" . $pathParts[1] . "/" . $pathParts[2] . "/";
+            $deduplicationsWorkFolder = "";
+            $i = 0;
+            $duplicatesFolderName = substr(__DUPLICATES_FOLDER__, 0, -1);
+            $pattern = "/^" . $duplicatesFolderName . "$/";
+
+            do{
+                $deduplicationsWorkFolder .= $pathParts[$i] . "/";
+                $i++;
+            }while (!preg_match($pattern, $pathParts[$i]));
+
+
             return $deduplicationsWorkFolder;
         }
 
@@ -111,10 +124,16 @@
         $beforeGeneratingDuplicatesFolder = getBeforeGeneratingDuplicatesFolder($deduplicationsWorkFolder) . $inputFileName;
 
         rename($file, $beforeGeneratingDuplicatesFolder);
+
+        header("Location: " . $_REQUEST["dedupsPageURL"]);
     ?>
 
     <h1>Generate fields from file: <?= $file ?> to <?= $outputFile ?></h1>
     <hr>
     <h1>Moving: <?= $file ?> to <?=$beforeGeneratingDuplicatesFolder ?></h1>
+    <hr>
+    <h1>Deduplications work folder:  <?=$deduplicationsWorkFolder ?></h1>
+    <hr>
+    <h1>Existing PURLs File path:  <?=$existingPurlsFile ?></h1>
 </body>
 </html>
