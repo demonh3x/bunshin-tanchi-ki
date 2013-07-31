@@ -46,5 +46,8 @@ Page for using OcurrenceScanner (similar to HashUniquesScanner)
 #!! Cleaning Filters
 
 ! Auto-select the PURL column in editGroup page to the Identifying column selected when scanning.
+! Try filters before applying them on the scanner.
 
 Bug when checking all rows in editDupsGroup with the upper-left checkbox. It'll save an additional empty row.
+
+Fix multiple "../deduplications/" appendings when redirecting.
