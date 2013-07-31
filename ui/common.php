@@ -52,7 +52,14 @@ function getUniquesFile(){
 
 function getUniquesFileLinkHTML(){
     $file = getUniquesFile();
-    $uniquesLink = HTML::a($file, $file);
+
+    $uniquesLink = "";
+    if (!empty($file)){
+        $reader = new CsvRandomReader();
+        $reader->open($file);
+
+        $uniquesLink = HTML::a($file, $file) . " - Rows: " . $reader->getRowCount();
+    }
 
     return $uniquesLink;
 }
@@ -67,7 +74,10 @@ function getInputFiles(){
 function getInputFilesListHTML(){
     $input_files = getInputFiles();
     foreach ($input_files as $id => $input_file){
-        $input_files[$id] = HTML::a($input_file, $input_file);
+        $reader = new CsvRandomReader();
+        $reader->open($input_file);
+
+        $input_files[$id] = HTML::a($input_file, $input_file) . " - Rows: " . $reader->getRowCount();
     }
 
     return HTML::ul($input_files);
