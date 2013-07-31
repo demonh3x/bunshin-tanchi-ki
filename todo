@@ -38,16 +38,16 @@ UI
 
 #In dedup page, show the number of rows of every dups group.
 #In dedup page, show the number of rows of uniques file and input files.
-In dedup page, add the option to directly merge all the dups group.
 
 #! Column specific filters
 Page for using OcurrenceScanner (similar to HashUniquesScanner)
 
 #!! Cleaning Filters
 
-! Auto-select the PURL column in editGroup page to the Identifying column selected when scanning.
-! Try filters before applying them on the scanner.
+Auto-select the PURL column in editGroup page to the Identifying column selected when scanning.
+Option to deactivate PURL checking
+#! Try filters before applying them on the scanner.
 
-Bug when checking all rows in editDupsGroup with the upper-left checkbox. It'll save an additional empty row.
+#Bug when checking all rows in editDupsGroup with the upper-left checkbox. It'll save an additional empty row.
 
 Fix multiple "../deduplications/" appendings when redirecting.
