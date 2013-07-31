@@ -164,5 +164,31 @@ class TestUniquePURLGenerator extends TestFixture{
         Assert::areIdentical($expected, $actual);
     }
 
+    function testHyphenSeparatedPurlWithHyphensInSurname(){
+        $input = array(
+            "0" => "",
+            "1" => "Ms",
+            "2" => "Marie",
+            "3" => "Char-Lotte",
+            "4" => "PURLGoingToBeOverwrited",
+        );
 
+        $expected = array(
+            "0" => "",
+            "1" => "Ms",
+            "2" => "Marie",
+            "3" => "Char-Lotte",
+            "4" => "Marie-CharLotte",
+        );
+
+        $usedPurls = array("MarieCharLotte", "MarieC", "MCharLotte", "MsMarieCharLotte", "MsMarieC", "MsMCharLotte");
+
+        $generator = $this->createGenerator($usedPurls);
+        $actual = $generator->generate($input);
+        Assert::areIdentical($expected, $actual);
+    }
+
+    function testNotDefinedSalutation() {
+        Assert::fail();
+    }
 }
