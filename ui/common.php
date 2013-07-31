@@ -53,10 +53,13 @@ function getUniquesFile(){
 function getUniquesFileLinkHTML(){
     $file = getUniquesFile();
 
-    $reader = new CsvRandomReader();
-    $reader->open($file);
+    $uniquesLink = "";
+    if (!empty($file)){
+        $reader = new CsvRandomReader();
+        $reader->open($file);
 
-    $uniquesLink = HTML::a($file, $file) . " - Rows: " . $reader->getRowCount();
+        $uniquesLink = HTML::a($file, $file) . " - Rows: " . $reader->getRowCount();
+    }
 
     return $uniquesLink;
 }

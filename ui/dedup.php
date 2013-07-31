@@ -63,22 +63,6 @@ include_once("common.php");
                 $(ul).find("> li").last().remove();
             }
 
-            $(".globalFiltersAdder input[type='button']").on("click", function(){
-                addLi($(".activeGlobalFilters"), this.value);
-            });
-
-            $(".globalFilterRemover").on("click", function(){
-                removeLastLi($(".activeGlobalFilters"));
-            });
-
-            $(".columnsToWatch .add").on("click", function(){
-                addLi($(".columnsToWatch ul"), $(".columnsToWatch select").find(":selected").text());
-            });
-
-            $(".columnsToWatch .remove").on("click", function(){
-                removeLastLi($(".columnsToWatch ul"));
-            });
-
             function getColumnHTML(){
                 var html =  "<div class='filters-container'>";
                     html +=     "<ul class='filter-list'>";
@@ -143,13 +127,6 @@ include_once("common.php");
             }
 
             $(".scanForm input[type=submit]").on("click", function(){
-
-                $(".scanForm input[name=compareColumns]").val(
-                    JSON.stringify(getUlElements(".columnsToWatch"))
-                );
-                $(".scanForm input[name=globalFilters]").val(
-                    JSON.stringify(getUlElements(".activeGlobalFilters"))
-                );
                 $(".scanForm input[name=identifyingColumn]").val(
                     $(".identifyingColumn select").find(":selected").text()
                 );
@@ -164,7 +141,7 @@ include_once("common.php");
     </script>
 </head>
 <body>
-    <h1>Dedup work at [<?=$_REQUEST["dir"]?>]</h1>
+    <h1>Dedup work at [<a href="<?=$_REQUEST["dir"]?>"><?=$_REQUEST["dir"]?></a>]</h1>
 
     <hr>
     <h2>Results:</h2>
