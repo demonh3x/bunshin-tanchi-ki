@@ -29,6 +29,21 @@ class UniquePURLGenerator {
         $this->cleaningFilter = new RowFilter();
         $this->cleaningFilter->setFilter(
             FilterGroup::create(
+                new TrimFilter(),
+                new UppercaseFirstLetterFilter()
+            ),
+            $salutationField
+        );
+        $this->cleaningFilter->setFilter(
+            FilterGroup::create(
+                new TrimFilter(),
+                new FirstNameFilter()
+            ),
+            $firstnameField
+        );
+        $this->cleaningFilter->setFilter(
+            FilterGroup::create(
+                new TrimFilter(),
                 new SubstituteAccentsFilter(),
                 new OnlyLettersFilter(),
                 new NoSpacesFilter()

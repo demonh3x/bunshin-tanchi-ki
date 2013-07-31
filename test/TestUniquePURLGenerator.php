@@ -108,4 +108,50 @@ class TestUniquePURLGenerator extends TestFixture{
         $actual = $generator->generate($input);
         Assert::areIdentical($expected, $actual);
     }
+
+    function testCleaningFirstname(){
+        $input = array(
+            "0" => "",
+            "1" => "MR",
+            "2" => "Jason Mark",
+            "3" => "Smith",
+            "4" => "PURLGoingToBeOverwrited",
+        );
+
+        $expected = array(
+            "0" => "",
+            "1" => "MR",
+            "2" => "Jason Mark",
+            "3" => "Smith",
+            "4" => "JasonSmith",
+        );
+
+        $generator = $this->createGenerator();
+        $actual = $generator->generate($input);
+        Assert::areIdentical($expected, $actual);
+    }
+
+    function testCleaningSalutation(){
+        $input = array(
+            "0" => "",
+            "1" => "MR",
+            "2" => "Jason",
+            "3" => "Smith",
+            "4" => "PURLGoingToBeOverwrited",
+        );
+
+        $expected = array(
+            "0" => "",
+            "1" => "MR",
+            "2" => "Jason",
+            "3" => "Smith",
+            "4" => "MrJasonSmith",
+        );
+
+        $generator = $this->createGenerator(array("JasonSmith", "JasonS", "JSmith"));
+        $actual = $generator->generate($input);
+        Assert::areIdentical($expected, $actual);
+    }
+
+
 }
