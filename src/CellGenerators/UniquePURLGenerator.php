@@ -42,6 +42,8 @@ class UniquePURLGenerator {
         $this->cleaningFilter->setFilter(
             FilterGroup::create(
                 new TrimFilter(),
+                new SubstituteAccentsFilter(),
+                new OnlyLettersFilter(),
                 new FirstNameFilter()
             ),
             $firstnameField

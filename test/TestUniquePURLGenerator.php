@@ -144,7 +144,7 @@ class TestUniquePURLGenerator extends TestFixture{
         $input = array(
             "0" => "",
             SALUTATION => "MR",
-            FIRSTNAME => "Jamie Jason",
+            FIRSTNAME => "Ja'mí-e Já-son",
             SURTNAME => "MacDow",
             PURL => "PURLGoingToBeOverwrited",
         );
@@ -152,7 +152,7 @@ class TestUniquePURLGenerator extends TestFixture{
         $expected = array(
             "0" => "",
             SALUTATION => "MR",
-            FIRSTNAME => "Jamie Jason",
+            FIRSTNAME => "Ja'mí-e Já-son",
             SURTNAME => "MacDow",
             PURL => "JamieMacDow",
         );
