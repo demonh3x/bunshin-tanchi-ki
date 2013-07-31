@@ -234,7 +234,7 @@ function sendCheckedRowsToPHP(){
     }
     else
     {
-        var checkedCheckboxes = $("input[type=checkbox]:checked");
+        checkedCheckboxes = $("input[type=checkbox]:checked:gt(0)");
         var arrayRow = new Array();
 
         var arrayColumnTitles = new Array();
