@@ -167,8 +167,8 @@ include_once("common.php");
 
     <div class="comparing-section">
         <h3>Apply column <em>comparing</em> rules:</h3>
-        <p>Changes made by the filters <em>won't be saved</em> in output files.</p>
-        <p>The scanner will use this columns to determine the uniqueness of a row.
+        <p>Changes made by the filters <em>will not be saved</em> in the output files.</p>
+        <p>The scanner will use this columns to determine the uniqueness of each row.
             If no column is selected, it'll use all the columns.</p>
         <div class="columns-to-compare">
             <ul class="columns">
@@ -181,7 +181,7 @@ include_once("common.php");
 
     <div class="cleaning-section">
         <h3>Apply column <em>cleaning</em> rules:</h3>
-        <p>Changes made by the filters <em>will be saved</em> in output files.</p>
+        <p>Changes made by the filters <em>will be saved</em> in the output files.</p>
         <p>The scanner will use this filters to clean the data.</p>
         <div class="columns-to-clean">
             <ul class="columns">
