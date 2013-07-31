@@ -37,6 +37,7 @@ UI
     #- move original file to merged folder
 
 #In dedup page, show the number of rows of every dups group.
+#In dedup page, show the number of rows of uniques file and input files.
 In dedup page, add the option to directly merge all the dups group.
 
 #! Column specific filters
