@@ -74,6 +74,7 @@ include_once("common.php");
                     html += "<input class='filter-remover' type='button' value='Remove last filter'/>";
                     html += "<label>Try the filters:</label>";
                     html += "<input class='try-filters' type='text'/>";
+                    html += "=&gt;";
                     html += "<input class='result-filters' type='text' disabled/>";
 
                 return html;
@@ -126,7 +127,7 @@ include_once("common.php");
                 $(".filter-remover").unbind("click").on("click", function(){
                     var ul = $(this).parent().find(".filter-list");
                     removeLastLi(ul);
-                    updateFiltersResult({target: $(this).parent().parent().find(".try-filters")});
+                    updateFiltersResult({target: $(this).parent().find(".try-filters")});
                 });
             }
             setFilterEvents();
