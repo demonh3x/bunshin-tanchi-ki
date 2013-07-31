@@ -3,6 +3,11 @@ namespace Enhance;
 
 include_once(__ROOT_DIR__ . "src/CellGenerators/UniquePURLGenerator.php");
 
+define("SALUTATION", "1");
+define("FIRSTNAME", "2");
+define("SURTNAME", "3");
+define("PURL", "4");
+
 class TestUniquePURLGenerator extends TestFixture{
 
     public function setUp(){
@@ -12,44 +17,59 @@ class TestUniquePURLGenerator extends TestFixture{
     }
 
     private function createGenerator($usedPurls = array()){
-        return Core::getCodeCoverageWrapper("UniquePURLGenerator", array("2", "3", "1", "4", $usedPurls));
+        return Core::getCodeCoverageWrapper("UniquePURLGenerator",
+            array(FIRSTNAME, SURTNAME, SALUTATION, PURL, $usedPurls)
+        );
     }
 
     private $testRow = array(
         "0" => "",
-        "1" => "Ms",
-        "2" => "Marie",
-        "3" => "Charlotte",
-        "4" => "PURLGoingToBeOverwrited",
+        SALUTATION => "Mr",
+        FIRSTNAME => "Jamie",
+        SURTNAME => "MacDow",
+        PURL => "PURLGoingToBeOverwrited",
     );
 
     private $purlSuccession = array(
-        "MarieCharlotte",
-        "MarieC",
-        "MCharlotte",
-        "MsMarieCharlotte",
-        "MsMarieC",
-        "MsMCharlotte",
-
-        "Marie-Charlotte",
-        "Marie-C",
-        "M-Charlotte",
-        "MsMarie-Charlotte",
-        "MsMarie-C",
-        "MsM-Charlotte",
-
-        "Ms-Marie-Charlotte",
-        "Ms-Marie-C",
-        "Ms-M-Charlotte",
+        "JamieMacDow",
+        "JamieM",
+        "JMacDow",
+        "MrJamieMacDow",
+        "Jamie-MacDow",
+        "Jamie-M",
+        "J-MacDow",
+        "MrJamieM",
+        "MrJMacDow",
+        "MrJamie-MacDow",
+        "Mr-JamieMacDow",
+        "Mr-Jamie-MacDow",
+        "MrJamie-M",
+        "Mr-JamieM",
+        "Mr-Jamie-M",
+        "MrJ-MacDow",
+        "Mr-JMacDow",
+        "Mr-J-MacDow",
+        "MacDowJamie",
+        "MacDowJ",
+        "MacDow-Jamie",
+        "MacDow-J",
+        "MrMacDowJamie",
+        "MrMacDow-Jamie",
+        "Mr-MacDowJamie",
+        "Mr-MacDow-Jamie",
+        "MrMacDowJ",
+        "Mr-MacDowJ",
+        "MrMacDow-J",
+        "Mr-MacDow-J",
     );
 
     function testGenerateOneCell(){
         $expected = array(
             "0" => "",
-            "1" => "Ms",
-            "2" => "Marie",
-            "3" => "Charlotte",
-            "4" => "MarieCharlotte",
+            SALUTATION => "Mr",
+            FIRSTNAME => "Jamie",
+            SURTNAME => "MacDow",
+            PURL => "JamieMacDow",
         );
 
         $generator = $this->createGenerator();
@@ -59,13 +79,13 @@ class TestUniquePURLGenerator extends TestFixture{
     function testFirstCombinationUsed(){
         $expected = array(
             "0" => "",
-            "1" => "Ms",
-            "2" => "Marie",
-            "3" => "Charlotte",
-            "4" => "MarieC",
+            SALUTATION => "Mr",
+            FIRSTNAME => "Jamie",
+            SURTNAME => "MacDow",
+            PURL => "JamieM",
         );
 
-        $generator = $this->createGenerator(array("MarieCharlotte"));
+        $generator = $this->createGenerator(array("JamieMacDow"));
         Assert::areIdentical($expected, $generator->generate($this->testRow));
     }
 
@@ -78,7 +98,7 @@ class TestUniquePURLGenerator extends TestFixture{
             }
 
             $expectedPurl = $this->purlSuccession[$purlIndex];
-            $actualPurl = $generator->generate($this->testRow)["4"];
+            $actualPurl = $generator->generate($this->testRow)[PURL];
 
             Assert::areIdentical($expectedPurl, $actualPurl);
         }
@@ -101,18 +121,18 @@ class TestUniquePURLGenerator extends TestFixture{
     function testCleaningSurname(){
         $input = array(
             "0" => "",
-            "1" => "Ms",
-            "2" => "Marie",
-            "3" => "Cha'r Lót-te",
-            "4" => "PURLGoingToBeOverwrited",
+            SALUTATION => "Mr",
+            FIRSTNAME => "Jamie",
+            SURTNAME => "Ma'c Dó-w",
+            PURL => "PURLGoingToBeOverwrited",
         );
 
         $expected = array(
             "0" => "",
-            "1" => "Ms",
-            "2" => "Marie",
-            "3" => "Cha'r Lót-te",
-            "4" => "MarieCharLotte",
+            SALUTATION => "Mr",
+            FIRSTNAME => "Jamie",
+            SURTNAME => "Ma'c Dó-w",
+            PURL => "JamieMacDow",
         );
 
         $generator = $this->createGenerator();
@@ -123,18 +143,18 @@ class TestUniquePURLGenerator extends TestFixture{
     function testCleaningFirstname(){
         $input = array(
             "0" => "",
-            "1" => "MR",
-            "2" => "Jason Mark",
-            "3" => "Smith",
-            "4" => "PURLGoingToBeOverwrited",
+            SALUTATION => "MR",
+            FIRSTNAME => "Jamie Jason",
+            SURTNAME => "MacDow",
+            PURL => "PURLGoingToBeOverwrited",
         );
 
         $expected = array(
             "0" => "",
-            "1" => "MR",
-            "2" => "Jason Mark",
-            "3" => "Smith",
-            "4" => "JasonSmith",
+            SALUTATION => "MR",
+            FIRSTNAME => "Jamie Jason",
+            SURTNAME => "MacDow",
+            PURL => "JamieMacDow",
         );
 
         $generator = $this->createGenerator();
@@ -145,21 +165,21 @@ class TestUniquePURLGenerator extends TestFixture{
     function testCleaningSalutation(){
         $input = array(
             "0" => "",
-            "1" => "MR",
-            "2" => "Jason",
-            "3" => "Smith",
-            "4" => "PURLGoingToBeOverwrited",
+            SALUTATION => "MR",
+            FIRSTNAME => "Jamie",
+            SURTNAME => "MacDow",
+            PURL => "PURLGoingToBeOverwrited",
         );
 
         $expected = array(
             "0" => "",
-            "1" => "MR",
-            "2" => "Jason",
-            "3" => "Smith",
-            "4" => "MrJasonSmith",
+            SALUTATION => "MR",
+            FIRSTNAME => "Jamie",
+            SURTNAME => "MacDow",
+            PURL => "MrJamieMacDow",
         );
 
-        $generator = $this->createGenerator(array("JasonSmith", "JasonS", "JSmith"));
+        $generator = $this->createGenerator(array("JamieMacDow", "JamieM", "JMacDow"));
         $actual = $generator->generate($input);
         Assert::areIdentical($expected, $actual);
     }
@@ -167,28 +187,28 @@ class TestUniquePURLGenerator extends TestFixture{
     function testHyphenSeparatedPurlWithHyphensInSurname(){
         $input = array(
             "0" => "",
-            "1" => "Ms",
-            "2" => "Marie",
-            "3" => "Char-Lotte",
-            "4" => "PURLGoingToBeOverwrited",
+            SALUTATION => "Mr",
+            FIRSTNAME => "Jamie",
+            SURTNAME => "Mac-Dow",
+            PURL => "PURLGoingToBeOverwrited",
         );
 
         $expected = array(
             "0" => "",
-            "1" => "Ms",
-            "2" => "Marie",
-            "3" => "Char-Lotte",
-            "4" => "Marie-CharLotte",
+            SALUTATION => "Mr",
+            FIRSTNAME => "Jamie",
+            SURTNAME => "Mac-Dow",
+            PURL => "Jamie-MacDow",
         );
 
-        $usedPurls = array("MarieCharLotte", "MarieC", "MCharLotte", "MsMarieCharLotte", "MsMarieC", "MsMCharLotte");
+        $usedPurls = array("JamieMacDow", "JamieM", "JMacDow", "MrJamieMacDow", "MrJamieM", "MrJMacDow");
 
         $generator = $this->createGenerator($usedPurls);
         $actual = $generator->generate($input);
         Assert::areIdentical($expected, $actual);
     }
-
+/*
     function testNotDefinedSalutation() {
         Assert::fail();
-    }
+    }*/
 }
