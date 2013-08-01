@@ -101,7 +101,7 @@ function writeForm () {
     document.write("<form name=\"duplicates\"><table id=list_of_duplicates border=1>");
 
     document.write(     "<tr><td style=\"background-color: grey;\">" +
-        "<input type=\"checkbox\" name=\"select_all\">" +
+        "<input type=\"checkbox\"  checked=\"checked\" name=\"select_all\">" +
         "</td>");
 
     for (var columnName in arrayPHPToJavascript[0])
@@ -116,7 +116,7 @@ function writeForm () {
     {
         document.write( "<tr>" +
             "<td style=\"width: 25px; text-align: center; background-color: grey;\">" +
-            "<input type=checkbox name=\"checkboxlist\" />" +
+            "<input type=checkbox  checked=\"checked\" name=\"checkboxlist\" />" +
             "</td>");
 
         for (var k in arrayPHPToJavascript[i])
@@ -135,7 +135,7 @@ function writeForm () {
 
     document.write("Purl Column Name:" +
         "<select id=\"purlColumnName\" >");
-    document.write(         "<option selected> CHOOSE </option>");
+    document.write(         "<option selected> DISABLED </option>");
     for (var i = 2; i < totalColumns; i++)
     {
         var actualColumnName = $("#list_of_duplicates tr:nth-child(1) td:nth-child(" + i + ") span").text();
@@ -144,7 +144,7 @@ function writeForm () {
     document.write(     "</select><br>" +
 
         "<input type=\"button\" value=\"Merge To Uniques File\"" +
-        " onclick=sendCheckedRowsToPHP()>" +
+        " onclick=checkIfReadyToSend()>" +
         "</form>");
 }
 
@@ -165,7 +165,43 @@ function getPurlColumnName(){
     return $("#list_of_duplicates tr:nth-child(1) td:nth-child(" + getPurlColumnIndex() + ") span").text();
 }
 
-function sendCheckedRowsToPHP(){
+function wantToCheckPurl(){
+    var checkPurl = false;
+
+    console.log(getPurlColumnIndex());
+
+    if (getPurlColumnIndex() > 1)
+    {
+        checkPurl = true;
+    }
+
+    return checkPurl;
+}
+
+function sendCheckedRowsToPHP() {
+    var checkedCheckboxes = $("tr:gt(0)").find("input[type=checkbox]:checked");
+    var arrayRow = new Array();
+
+    var arrayColumnTitles = new Array();
+
+    for (var titleText in arrayPHPToJavascript[0])
+    {
+        arrayColumnTitles.push(titleText);
+    }
+
+    checkedCheckboxes.each(function(){
+        var columnsInSelectedRow = $(this).parent().parent().find("input[type=text]");
+        var arrayColumns = {};
+        columnsInSelectedRow.each ( function(indexCols, element) {
+            arrayColumns[arrayColumnTitles[indexCols]] = ($(element).val());
+        })
+        arrayRow.push(arrayColumns);
+    })
+    console.log(arrayRow);
+    convertJavascriptArrayToPHP(arrayRow);
+}
+
+function checkIfReadyToSend(){
     var checkedCheckboxes = $("input[type=checkbox][name=checkboxlist]:checked");
     var checkedRowsNumber = 0;
     var purlExists = false;
@@ -203,58 +239,46 @@ function sendCheckedRowsToPHP(){
      }
      });*/
 
-
-    var purlColumnSelected = false;
-    if (getPurlColumnIndex() != 1)
-    {
-        purlColumnSelected = true;
-    }
-
-
-    if (purlColumnSelected == false)
-    {
-        alert("There is any Purl Column selected to check.");
-    }
-    else if (checkedRowsNumber == 0)
+    if (checkedRowsNumber == 0)
     {
         alert("There are no checked rows to save.");
     }
-    else if (purlEmpty)
+    else if (wantToCheckPurl())
     {
-        alert("You can not send the file. There is at least one empty PURL checked to send.")
-    }
-    else if (purlExists)
-    {
-        alert("You can not send the file. Duplicates or empty purls were found.");
-    }
-    else if (purlRepeated)
-    {
-        alert("You can not send the file. There are two or more repeated PURLs " +
-            "in the table.")
+        var purlColumnSelected = false;
+        if (getPurlColumnIndex() != 1)
+        {
+            purlColumnSelected = true;
+        }
+
+
+        if (purlColumnSelected == false)
+        {
+            alert("There is any Purl Column selected to check.");
+        }
+        else if (purlEmpty)
+        {
+            alert("You can not send the file. There is at least one empty PURL checked to send.")
+        }
+        else if (purlExists)
+        {
+            alert("You can not send the file. Duplicates or empty purls were found.");
+        }
+        else if (purlRepeated)
+        {
+            alert("You can not send the file. There are two or more repeated PURLs " +
+                "in the table.")
+        }
+        else
+        {
+            sendCheckedRowsToPHP();
+        }
     }
     else
     {
-        checkedCheckboxes = $("tr:gt(0)").find("input[type=checkbox]:checked");
-        var arrayRow = new Array();
-
-        var arrayColumnTitles = new Array();
-
-        for (var titleText in arrayPHPToJavascript[0])
-        {
-            arrayColumnTitles.push(titleText);
-        }
-
-        checkedCheckboxes.each(function(){
-            var columnsInSelectedRow = $(this).parent().parent().find("input[type=text]");
-            var arrayColumns = {};
-            columnsInSelectedRow.each ( function(indexCols, element) {
-                arrayColumns[arrayColumnTitles[indexCols]] = ($(element).val());
-            })
-            arrayRow.push(arrayColumns);
-        })
-        console.log(arrayRow);
-        convertJavascriptArrayToPHP(arrayRow);
+        sendCheckedRowsToPHP();
     }
+
 }
 
 function getArrayOfRepeatedIndexesInTheHoleTable () {
