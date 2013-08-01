@@ -141,7 +141,7 @@ function getDupGroupsHTML($dedupsPageURL){
     foreach ($dedups as $id => $dedup){
         $link = getViewDupsGroupLink($dedup);
         $generateLink = getGeneratePurlsLink($dedup, $dedupsPageURL);
-        $dedups[$id] = HTML::a($dedup, $link) . " - [" . HTML::aNewPage("Generate PURL", $generateLink) . "]
+        $dedups[$id] = HTML::a($dedup, $link) . " - [" . HTML::a("Generate PURL", $generateLink) . "]
                        - [" . HTML::a("Download", $dedup) . "] - Rows: " . getRowLines(urldecode($dedup));
     }
 
