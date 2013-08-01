@@ -105,18 +105,22 @@ class TestUniquePURLGenerator extends TestFixture{
         $this->assertSuccession($this->testRow, $this->purlSuccession);
     }
 
-    function testFailingToGeneratePurlShouldThrowAnException(){
-        $generator = $this->createGenerator($this->purlSuccession);
+    private function assertExceptionWhenSuccessionEnds($inputRow = array(), $purlSuccession = array()){
+        $generator = $this->createGenerator($purlSuccession);
 
         $exceptionTrown = false;
 
         try {
-            $generator->generate($this->testRow);
+            $generator->generate($inputRow);
         }catch (\Exception $e){
             $exceptionTrown = true;
         }
 
         Assert::isTrue($exceptionTrown);
+    }
+
+    function testFailingToGeneratePurlThrowsAnException(){
+        $this->assertExceptionWhenSuccessionEnds($this->testRow, $this->purlSuccession);
     }
 
     function testCleaningSurname(){
@@ -209,28 +213,33 @@ class TestUniquePURLGenerator extends TestFixture{
         Assert::areIdentical($expected, $actual);
     }
 
+
+    private $testRowNoSalutation = array(
+        "0" => "",
+        SALUTATION => "",
+        FIRSTNAME => "Jamie",
+        SURTNAME => "Mac-Dow",
+        PURL => "PURLGoingToBeOverwrited",
+    );
+
+    private $purlSuccessionWithoutSalutation = array(
+        "JamieMacDow",
+        "JamieM",
+        "JMacDow",
+        "Jamie-MacDow",
+        "Jamie-M",
+        "J-MacDow",
+        "MacDowJamie",
+        "MacDowJ",
+        "MacDow-Jamie",
+        "MacDow-J",
+    );
+
     function testNotDefinedSalutation() {
-        $inputRow = array(
-            "0" => "",
-            SALUTATION => "",
-            FIRSTNAME => "Jamie",
-            SURTNAME => "Mac-Dow",
-            PURL => "PURLGoingToBeOverwrited",
-        );
+        $this->assertSuccession($this->testRowNoSalutation, $this->purlSuccessionWithoutSalutation);
+    }
 
-        $purlSuccessionWithoutSalutation = array(
-            "JamieMacDow",
-            "JamieM",
-            "JMacDow",
-            "Jamie-MacDow",
-            "Jamie-M",
-            "J-MacDow",
-            "MacDowJamie",
-            "MacDowJ",
-            "MacDow-Jamie",
-            "MacDow-J",
-        );
-
-        $this->assertSuccession($inputRow, $purlSuccessionWithoutSalutation);
+    function testFailingToGeneratePurlWhenNoSalutationThrowsException(){
+        $this->assertExceptionWhenSuccessionEnds($this->testRowNoSalutation, $this->purlSuccessionWithoutSalutation);
     }
 }
