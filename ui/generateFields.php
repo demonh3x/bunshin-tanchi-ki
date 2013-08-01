@@ -125,7 +125,7 @@
 
         rename($file, $beforeGeneratingDuplicatesFolder);
 
-        header("Location: " . $_REQUEST["dedupsPageURL"]);
+        //header("Location: " . $_REQUEST["dedupsPageURL"]);
     ?>
 
     <h1>Generate fields from file: <?= $file ?> to <?= $outputFile ?></h1>
