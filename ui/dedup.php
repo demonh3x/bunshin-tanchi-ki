@@ -72,7 +72,10 @@ include_once("common.php");
                     }?>
                     html += "</div>";
                     html += "<input class='filter-remover' type='button' value='Remove last filter'/>";
-                    /*html += "<input class='filter-tryer' type='button' value='Try filters'/>";*/
+                    html += "<label>Try the filters:</label>";
+                    html += "<input class='try-filters' type='text'/>";
+                    html += "=&gt;";
+                    html += "<input class='result-filters' type='text' disabled/>";
 
                 return html;
             }
@@ -92,15 +95,39 @@ include_once("common.php");
             });
 
             function setFilterEvents(){
+                function updateFiltersResult(event){
+                    var text =  JSON.stringify($(event.target).val());
+
+                    var ul = $(event.target).parent().find(".filter-list");
+                    var filters = JSON.stringify(getUlElements(ul));
+
+                    var target = $(event.target).parent().find(".result-filters");
+
+                    $.ajax({
+                        url: 'tryFilters.php',
+                        data: {
+                            text: text,
+                            filters: filters
+                        },
+                        success: function(data){
+                            target.val(data);
+                        }
+                    });
+                }
+
+                $(".try-filters").on("keyup", updateFiltersResult);
+
                 $(".filter-adder").unbind("click").on("click", function(){
                     var ul = $(this).parent().find(".filter-list");
                     var value = this.value;
                     addLi(ul, value);
+                    updateFiltersResult({target: $(this).parent().parent().find(".try-filters")});
                 });
 
                 $(".filter-remover").unbind("click").on("click", function(){
                     var ul = $(this).parent().find(".filter-list");
                     removeLastLi(ul);
+                    updateFiltersResult({target: $(this).parent().find(".try-filters")});
                 });
             }
             setFilterEvents();
