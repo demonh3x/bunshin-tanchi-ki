@@ -37,8 +37,8 @@ function getViewDupsGroupLink($file){
     return  __VIEW_DUPS_GROUP_FILE__ . "?dupsGroup=" . urlencode($file);
 }
 
-function getGeneratePurlsLink($file){
-    return __GENERATE_FIELDS_FILE__ . "?file=" . $file;
+function getGeneratePurlsLink($file, $dedupsPageURL){
+    return __GENERATE_FIELDS_FILE__ . "?file=" . $file . "&dedupsPageURL=http://" . $dedupsPageURL;
 }
 
 function getUniquesFile(){
@@ -135,12 +135,12 @@ function getRowLines($file){
     return $reader->getRowCount();
 }
 
-function getDupGroupsHTML(){
+function getDupGroupsHTML($dedupsPageURL){
     $dedups = getDupGroups();
 
     foreach ($dedups as $id => $dedup){
         $link = getViewDupsGroupLink($dedup);
-        $generateLink = getGeneratePurlsLink($dedup);
+        $generateLink = getGeneratePurlsLink($dedup, $dedupsPageURL);
         $dedups[$id] = HTML::a($dedup, $link) . " - [" . HTML::aNewPage("Generate PURL", $generateLink) . "]
                        - [" . HTML::a("Download", $dedup) . "] - Rows: " . getRowLines(urldecode($dedup));
     }

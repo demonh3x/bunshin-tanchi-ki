@@ -85,6 +85,7 @@
         function getArrayOfExistingPURLs($file) {
             $reader = new CsvRandomReader();
             $reader->open($file);
+            $arrayUsedPurls = array();
 
             for ($i = 0; $i < $reader->getRowCount(); $i++){
                 $arrayUsedPurls[] = $reader->readRow($i)[0];
@@ -129,7 +130,7 @@
             throw new Exception("Couldn't move the file");
         }
 
-        //header("Location: " . $_REQUEST["dedupsPageURL"]);
+        header("Location: " . $_REQUEST["dedupsPageURL"]);
     ?>
 
     <h1>Generate fields from file: <?= $file ?> to <?= $outputFile ?></h1>
