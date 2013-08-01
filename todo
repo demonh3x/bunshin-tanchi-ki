@@ -11,7 +11,7 @@ Refactor FirstName and Surname Filter
 
 Unify the usage of the scanners (maybe an interface for scanners?)
 
-Documentation Random Reader
+# Documentation Random Reader
 #!! Clean output data (Applying filters to exit)
 #!! OccurrencesScanner (Capital letters detector -> Regex)
 #!! PurlGenerator - PURL Combinations (Jamie)
@@ -29,15 +29,15 @@ UI
 # Configure PURL Column
 # Append saving dups group to uniques
 # Warnings when edditing a group of more than 2 rows
-~#Fatal error (manually thrown) when writing the dupsGroups to the uniques file more than once at a time.
+~# Fatal error (manually thrown) when writing the dupsGroups to the uniques file more than once at a time.
 
-#Download link duplicates groups
-#Generate Fields links in duplicates groups using the UniquePURLGenerator
+# Download link duplicates groups
+# Generate Fields links in duplicates groups using the UniquePURLGenerator
     #- create generated file in the same folder as original
     #- move original file to merged folder
 
-#In dedup page, show the number of rows of every dups group.
-#In dedup page, show the number of rows of uniques file and input files.
+# In dedup page, show the number of rows of every dups group.
+# In dedup page, show the number of rows of uniques file and input files.
 
 #! Column specific filters
 Page for using OcurrenceScanner (similar to HashUniquesScanner)
@@ -48,6 +48,7 @@ Auto-select the PURL column in editGroup page to the Identifying column selected
 Option to deactivate PURL checking
 #! Try filters before applying them on the scanner.
 
-#Bug when checking all rows in editDupsGroup with the upper-left checkbox. It'll save an additional empty row.
+# Bug when checking all rows in editDupsGroup with the upper-left checkbox. It'll save an additional empty row.
+# Bug when only checking the first row in editDupsGroup.
 
 Fix multiple "../deduplications/" appendings when redirecting.
