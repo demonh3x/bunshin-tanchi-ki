@@ -19,6 +19,7 @@ Unify the usage of the scanners (maybe an interface for scanners?)
 #!! First Name Filter (Filter Composite Names (ex: MacDow))
 #!! Surname Filter
 
+# Handling empty salutation when generating PURLs
 
 UI
 -----------------------------------------------------------------
