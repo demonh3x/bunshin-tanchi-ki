@@ -146,7 +146,7 @@
         createIdentifyingFile();
         echo "<h1>Finished!</h1>";
 
-        header('Location: ' . getViewDedupLink(__DEDUP_DIR__ . getPostVar("dir") ));
+        header('Location: ' . getViewDedupLink(getPostVar("dir")));
     ?>
 </body>
 </html>

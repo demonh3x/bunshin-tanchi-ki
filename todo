@@ -34,7 +34,7 @@ UI
 # Download link duplicates groups
 # Generate Fields links in duplicates groups using the UniquePURLGenerator
     #- create generated file in the same folder as original
-    #- move original file to merged folder
+    #- move original file to beforeGenerating folder
 
 # In dedup page, show the number of rows of every dups group.
 # In dedup page, show the number of rows of uniques file and input files.
@@ -51,4 +51,4 @@ Option to deactivate PURL checking
 # Bug when checking all rows in editDupsGroup with the upper-left checkbox. It'll save an additional empty row.
 # Bug when only checking the first row in editDupsGroup.
 
-Fix multiple "../deduplications/" appendings when redirecting.
+# Fix multiple "../deduplications/" appendings when redirecting.
