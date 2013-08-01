@@ -117,13 +117,17 @@
             $row = $reader->readRow($i);
             $writer->writeRow($uniquePURLGenerator->generate($row));
         }
+        $reader = null;
 
         $pathParts = explode("/", $file);
         $inputFileName = $pathParts[count($pathParts) -1];
 
         $beforeGeneratingDuplicatesFolder = getBeforeGeneratingDuplicatesFolder($deduplicationsWorkFolder) . $inputFileName;
 
-        rename($file, $beforeGeneratingDuplicatesFolder);
+        $moveSuccess = rename($file, $beforeGeneratingDuplicatesFolder);
+        if (!$moveSuccess){
+            throw new Exception("Couldn't move the file");
+        }
 
         //header("Location: " . $_REQUEST["dedupsPageURL"]);
     ?>
