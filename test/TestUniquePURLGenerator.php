@@ -91,11 +91,8 @@ class TestUniquePURLGenerator extends TestFixture{
 
     function testSuccessionOfGeneratedPurls(){
         for ($purlIndex = 0; $purlIndex < count($this->purlSuccession); $purlIndex++){
-            $generator = $this->createGenerator();
-
-            for ($i = 0; $i < $purlIndex; $i++){
-                $generator->generate($this->testRow);
-            }
+            $usedPurls = array_slice($this->purlSuccession, 0, $purlIndex);
+            $generator = $this->createGenerator($usedPurls);
 
             $expectedPurl = $this->purlSuccession[$purlIndex];
             $actualPurl = $generator->generate($this->testRow)[PURL];
