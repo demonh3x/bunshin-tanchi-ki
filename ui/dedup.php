@@ -176,7 +176,8 @@ include_once("common.php");
     <?= getUniquesFileLinkHTML(); ?>
 
     <h3>Duplicate groups:</h3>
-    <?= getDupGroupsHTML(); ?>
+    <? $current_page_URL = $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"] ?>
+    <?= getDupGroupsHTML($current_page_URL); ?>
 
     <hr>
     <h2>Configure scanner:</h2>
