@@ -101,7 +101,7 @@ function writeForm () {
     document.write("<form name=\"duplicates\"><table id=list_of_duplicates border=1>");
 
     document.write(     "<tr><td style=\"background-color: grey;\">" +
-        "<input type=\"checkbox\" name=\"select_all\">" +
+        "<input type=\"checkbox\"  checked=\"checked\" name=\"select_all\">" +
         "</td>");
 
     for (var columnName in arrayPHPToJavascript[0])
@@ -116,7 +116,7 @@ function writeForm () {
     {
         document.write( "<tr>" +
             "<td style=\"width: 25px; text-align: center; background-color: grey;\">" +
-            "<input type=checkbox name=\"checkboxlist\" />" +
+            "<input type=checkbox  checked=\"checked\" name=\"checkboxlist\" />" +
             "</td>");
 
         for (var k in arrayPHPToJavascript[i])
