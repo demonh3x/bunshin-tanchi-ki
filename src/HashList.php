@@ -1,6 +1,8 @@
 <?php
 
-class HashList {
+include_once("UniquesList.php");
+
+class HashList implements UniquesList{
     private $values = array();
 
     function contains($value){
