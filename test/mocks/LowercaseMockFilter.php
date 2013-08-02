@@ -11,6 +11,7 @@ class LowercaseMockFilter implements \Filter{
             case "hI":
                 return "hi";
             case "Foo":
+            case "FOO":
                 return "foo";
             case "Bar":
             case "bar":
