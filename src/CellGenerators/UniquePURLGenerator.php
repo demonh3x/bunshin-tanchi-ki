@@ -1,6 +1,6 @@
 <?php
 
-include_once(__ROOT_DIR__ . "src/HashList.php");
+include_once(__ROOT_DIR__ . "src/FilteredHashList.php");
 foreach (glob(__ROOT_DIR__ . "src/CellGenerators/PurlCalculators/*.php") as $filename){
     include_once($filename);
 }
@@ -21,7 +21,7 @@ class UniquePURLGenerator {
     function __construct($firstnameField, $surnameField, $salutationField, $purlField, $usedPurls = array()){
         $this->purlField = $purlField;
 
-        $this->hashList = new HashList();
+        $this->hashList = new FilteredHashList(new LowercaseFilter());
         foreach ($usedPurls as $purl){
             $this->hashList->add($purl);
         }
@@ -61,39 +61,40 @@ class UniquePURLGenerator {
 
     private function initPurlCalculators($firstnameField, $surnameField, $salutationField){
         $purlCalculators = array(
-            "NameSurnameCalculator",
-            "NameSCalculator",
-            "NSurnameCalculator",
-            "SalutationNameSurnameCalculator",
-            "Name_SurnameCalculator",
-            "Name_SCalculator",
-            "N_SurnameCalculator",
-            "SalutationNameSCalculator",
-            "SalutationNSurnameCalculator",
-            "SalutationName_SurnameCalculator",
-            "Salutation_NameSurnameCalculator",
-            "Salutation_Name_SurnameCalculator",
-            "SalutationName_SCalculator",
-            "Salutation_NameSCalculator",
-            "Salutation_Name_SCalculator",
-            "SalutationN_SurnameCalculator",
-            "Salutation_NSurnameCalculator",
-            "Salutation_N_SurnameCalculator",
-            "SurnameNameCalculator",
-            "SurnameNCalculator",
-            "Surname_NameCalculator",
-            "Surname_NCalculator",
-            "SalutationSurnameNameCalculator",
-            "SalutationSurname_NameCalculator",
-            "Salutation_SurnameNameCalculator",
-            "Salutation_Surname_NameCalculator",
-            "SalutationSurnameNCalculator",
-            "Salutation_SurnameNCalculator",
-            "SalutationSurname_NCalculator",
-            "Salutation_Surname_NCalculator",
+            "NameSurname",
+            "NameS",
+            "NSurname",
+            "SalutationNameSurname",
+            "Name_Surname",
+            "Name_S",
+            "N_Surname",
+            "SalutationNameS",
+            "SalutationNSurname",
+            "SalutationName_Surname",
+            "Salutation_NameSurname",
+            "Salutation_Name_Surname",
+            "SalutationName_S",
+            "Salutation_NameS",
+            "Salutation_Name_S",
+            "SalutationN_Surname",
+            "Salutation_NSurname",
+            "Salutation_N_Surname",
+            "SurnameName",
+            "SurnameN",
+            "Surname_Name",
+            "Surname_N",
+            "SalutationSurnameName",
+            "SalutationSurname_Name",
+            "Salutation_SurnameName",
+            "Salutation_Surname_Name",
+            "SalutationSurnameN",
+            "Salutation_SurnameN",
+            "SalutationSurname_N",
+            "Salutation_Surname_N",
         );
 
         foreach ($purlCalculators as $purlCalculator){
+            $purlCalculator .= "Calculator";
             $this->purlCalculators[] = new $purlCalculator($firstnameField, $surnameField, $salutationField);
         }
     }

@@ -242,4 +242,17 @@ class TestUniquePURLGenerator extends TestFixture{
     function testFailingToGeneratePurlWhenNoSalutationThrowsException(){
         $this->assertExceptionWhenSuccessionEnds($this->testRowNoSalutation, $this->purlSuccessionWithoutSalutation);
     }
+
+    function testPURLWithMixedCaseShouldMatchTheSameInLowecase(){
+        $expected = array(
+            "0" => "",
+            SALUTATION => "Mr",
+            FIRSTNAME => "Jamie",
+            SURTNAME => "MacDow",
+            PURL => "JamieM",
+        );
+
+        $generator = $this->createGenerator(array("JAmiEmacDow"));
+        Assert::areIdentical($expected, $generator->generate($this->testRow));
+    }
 }
