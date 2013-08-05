@@ -9,6 +9,7 @@ define("__DEDUP_DIR__", __ROOT_DIR__ . "deduplications/");
             define("__BEFORE_GENERATING_FOLDER__", "beforeGenerating/");
         define("__INPUTS_FOLDER__", "input/");
         define("__IDENTIFYING_VALUES_FILE__", "identifyingValues.csv");
+        define("__CONFIG_FILE__", "config.xml");
 
 define("__FILTERS_DIR__", __ROOT_DIR__ . "src/HashCalculators/Filters/");
 
@@ -34,7 +35,7 @@ function getViewDedupLink($dirToDedup){
 }
 
 function getViewDupsGroupLink($file){
-    return  __VIEW_DUPS_GROUP_FILE__ . "?dupsGroup=" . urlencode($file);
+    return  __VIEW_DUPS_GROUP_FILE__ . "?dupsGroup=" . urlencode($file) . "&identifyingColumn=" . getIdentifyingColumn();
 }
 
 function getGeneratePurlsLink($file, $dedupsPageURL){
@@ -128,7 +129,7 @@ function getDupGroups(){
     return $dedups;
 }
 
-function getRowLines($file){
+function getRowCount($file){
     $reader = new CsvRandomReader();
     $reader->open($file);
 
@@ -142,7 +143,7 @@ function getDupGroupsHTML($dedupsPageURL){
         $link = getViewDupsGroupLink($dedup);
         $generateLink = getGeneratePurlsLink($dedup, $dedupsPageURL);
         $dedups[$id] = HTML::a($dedup, $link) . " - [" . HTML::a("Generate PURL", $generateLink) . "]
-                       - [" . HTML::a("Download", $dedup) . "] - Rows: " . getRowLines(urldecode($dedup));
+                       - [" . HTML::a("Download", $dedup) . "] - Rows: " . getRowCount(urldecode($dedup));
     }
 
     return HTML::ol($dedups);
@@ -184,4 +185,44 @@ function getFilterGroup($arrayNames){
         $filters[] = new $class();
     }
     return FilterGroup::create($filters);
+}
+
+function getConfigFile(){
+    $dir = getPostVar("dir") != null? getPostVar("dir") : $_REQUEST["dir"];
+    $xml = $dir. "/" . __CONFIG_FILE__;
+    return $xml;
+}
+
+function getFirstXmlValue($xpath){
+    $xml = getConfigFile();
+
+    if (is_file($xml)){
+        $element = simplexml_load_file($xml);
+
+        $nodes = $element->xpath($xpath);
+        $firstNode = count($nodes) > 0? $nodes[0]: array();
+
+        return $firstNode;
+    }
+    return "";
+}
+
+function getIdentifyingColumn(){
+    $columnName = getFirstXmlValue("/identifyingColumn/name");
+    return $columnName;
+}
+
+function isIdentifyingColumnEnabled(){
+    $enabled = getFirstXmlValue("/identifyingColumn/enabled");
+    return (strtolower($enabled) === "true" || intval($enabled) > 0);
+}
+
+function createConfigFile($identifyingColumnEnabled = false, $identifyingColumn = ""){
+    $data = simplexml_load_string(
+        "<identifyingColumn>
+            <name>$identifyingColumn</name>
+            <enabled>$identifyingColumnEnabled</enabled>
+        </identifyingColumn>");
+
+    $data->asXML(getConfigFile());
 }
