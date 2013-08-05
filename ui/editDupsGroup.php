@@ -24,7 +24,18 @@ writeForm();
 var purlColumn = "";
 
 $(document).ready(function(){
-    purlColumn = $("#list_of_duplicates tr:gt(0) td:nth-child(" + getPurlColumnIndex() + ") input[type=text]");
+
+    console.log("Identifying Column From Request: " + getPurlColumnIndexFromRequest());
+    var purlColumnIndexFromRequest = getPurlColumnIndexFromRequest();
+    console.log(purlColumnIndexFromRequest);
+    if (purlColumnIndexFromRequest != null)
+    {
+        purlColumn = $("#list_of_duplicates tr:gt(0) td:nth-child(" + purlColumnIndexFromRequest + ") input[type=text]");
+    }
+    else
+    {
+        purlColumn = $("#list_of_duplicates tr:gt(0) td:nth-child(" + getPurlColumnIndex() + ") input[type=text]");
+    }
     purlColumn.each(function(){
         checkIfPURLIsBeingUsed(this, getArrayOfRepeatedIndexesInTheHoleTable());
     });
@@ -104,6 +115,7 @@ function writeForm () {
         "<input type=\"checkbox\"  checked=\"checked\" name=\"select_all\">" +
         "</td>");
 
+    console.log(arrayPHPToJavascript[0])
     for (var columnName in arrayPHPToJavascript[0])
     {
         document.write(     "<td id style=\"color: white; width: 100px; text-align: center; font-weight: 900; background-color: grey;\">" +
@@ -152,6 +164,34 @@ $("input[name=select_all]").change(function(){
     var c = this.checked;
     $(':checkbox').prop('checked', c);
 });
+
+function getPurlColumnIndexFromRequest() {
+    var request = {};
+    var pairs = location.search.substring(1).split('&');
+    for (var i = 0; i < pairs.length; i++) {
+        var pair = pairs[i].split('=');
+        request[pair[0]] = pair[1];
+    }
+
+    var i = 0;
+    for (var columnName in arrayPHPToJavascript[0])
+    {
+        i++;
+        if (columnName == request["identifyingColumn"])
+        {
+            var exists = true;
+            break;
+        }
+    }
+
+    var identifyingColumnFromRequest = null;
+    if (exists)
+    {
+        identifyingColumnFromRequest = i + 1;
+    }
+
+    return identifyingColumnFromRequest;
+}
 
 function getPurlColumnIndex() {
     var selectedPurl = $("#purlColumnName option:selected").index() + 1;
