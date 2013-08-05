@@ -10,7 +10,7 @@ include_once("HashCalculators/RowFilter.php");
 
 class HashUniquesExporter{
     private $scanner;
-    private $reader;
+    private $readers = array();
     private $uniquesWriter;
 
     private $uniquesRowFilter;
@@ -20,11 +20,11 @@ class HashUniquesExporter{
         $this->uniquesRowFilter = new RowFilter();
     }
 
-    function setReader(RandomReader $reader){
+    function addReader(RandomReader $reader){
         if (!$reader->isReady()){
             throw new Exception("The reader is not ready!");
         }
-        $this->reader = $reader;
+        $this->readers[] = $reader;
     }
 
     function setUniquesWriter(Writer $uniques, RowFilter $uniquesRowFilter = null){
@@ -49,7 +49,9 @@ class HashUniquesExporter{
 
     function setHashCalculator(HashCalculator $calculator){
         $this->scanner = new HashUniquesScanner($calculator);
-        $this->scanner->addReader($this->reader);
+        foreach ($this->readers as $reader) {
+            $this->scanner->addReader($reader);
+        }
     }
 
     function scan(){

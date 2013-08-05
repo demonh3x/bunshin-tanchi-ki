@@ -65,7 +65,7 @@
         $reader = new CsvRandomReader();
         $reader->open($INPUT_FILES[0]);
 
-        $scanner->setReader($reader);
+        $scanner->addReader($reader);
 
         $calculator = new StringHashCalculator();
         foreach ($COMPARING_COLUMN_FILTERS as $column => $filters){
