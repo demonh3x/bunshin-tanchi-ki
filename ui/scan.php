@@ -62,10 +62,12 @@
 
         $scanner = new HashUniquesExporter();
 
-        $reader = new CsvRandomReader();
-        $reader->open($INPUT_FILES[0]);
+        foreach ($INPUT_FILES as $inputFile){
+            $reader = new CsvRandomReader();
+            $reader->open($inputFile);
 
-        $scanner->addReader($reader);
+            $scanner->addReader($reader);
+        }
 
         $calculator = new StringHashCalculator();
         foreach ($COMPARING_COLUMN_FILTERS as $column => $filters){
