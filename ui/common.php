@@ -35,7 +35,10 @@ function getViewDedupLink($dirToDedup){
 }
 
 function getViewDupsGroupLink($file){
-    return  __VIEW_DUPS_GROUP_FILE__ . "?dupsGroup=" . urlencode($file) . "&identifyingColumn=" . getIdentifyingColumn();
+    $idColParameter = ((String) getIdentifyingColumn() !== "")?
+        "&identifyingColumn=" . getIdentifyingColumn() :
+        "";
+    return  __VIEW_DUPS_GROUP_FILE__ . "?dupsGroup=" . urlencode($file) . $idColParameter;
 }
 
 function getGeneratePurlsLink($file, $dedupsPageURL){
@@ -212,16 +215,10 @@ function getIdentifyingColumn(){
     return $columnName;
 }
 
-function isIdentifyingColumnEnabled(){
-    $enabled = getFirstXmlValue("/identifyingColumn/enabled");
-    return (strtolower($enabled) === "true" || intval($enabled) > 0);
-}
-
-function createConfigFile($identifyingColumnEnabled = false, $identifyingColumn = ""){
+function createConfigFile($identifyingColumn = ""){
     $data = simplexml_load_string(
         "<identifyingColumn>
             <name>$identifyingColumn</name>
-            <enabled>$identifyingColumnEnabled</enabled>
         </identifyingColumn>");
 
     $data->asXML(getConfigFile());

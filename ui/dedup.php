@@ -132,6 +132,14 @@ include_once("common.php");
             }
             setFilterEvents();
 
+            $("#identifyingColumnEnabled").on("click", function(){
+                var checked = $(this).is(':checked');
+                if (checked) {
+                    $(".identifyingColumn select").removeAttr('disabled');
+                } else {
+                    $(".identifyingColumn select").attr('disabled', 'disabled');
+                }
+            });
 
             function getUlElements(ul){
                 var columns = [];
@@ -155,7 +163,9 @@ include_once("common.php");
 
             $(".scanForm input[type=submit]").on("click", function(){
                 $(".scanForm input[name=identifyingColumn]").val(
-                    $(".identifyingColumn select").find(":selected").text()
+                    $("#identifyingColumnEnabled").is(':checked')?
+                        $(".identifyingColumn select").find(":selected").text():
+                        ""
                 );
                 $(".scanForm input[name=compareFilters]").val(
                     JSON.stringify(getColumnsFilters(".columns-to-compare"))
@@ -190,6 +200,8 @@ include_once("common.php");
     <hr>
     <h3>Identifying column (PURL):</h3>
     <div class="identifyingColumn">
+        <input id="identifyingColumnEnabled" type="checkbox" checked="checked"/>
+        <label for="identifyingColumnEnabled">Check uniqueness on the column: </label>
         <?= HTML::select(getInputFileColumns(getInputFiles()[0])) ?>
     </div>
 
