@@ -122,6 +122,9 @@
         echo "<h1>Execution Time: $executionTime seconds</h1>";
         echo "<h1>Memory Usage: $memoryUsage MB</h1>";
 
+        echo "<h1>Creating config file</h1>";
+        createConfigFile(true, $IDENTIFYING_COLUMN);
+
         echo "<h1>Creating identifying data</h1>";
         function createIdentifyingFile(){
             global $IDENTIFYING_VALUES_FILE, $IDENTIFYING_COLUMN;
