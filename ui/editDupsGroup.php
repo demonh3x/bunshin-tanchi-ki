@@ -25,17 +25,7 @@ var purlColumn = "";
 
 $(document).ready(function(){
 
-    console.log("Identifying Column From Request: " + getPurlColumnIndexFromRequest());
-    var purlColumnIndexFromRequest = getPurlColumnIndexFromRequest();
-    console.log(purlColumnIndexFromRequest);
-    if (purlColumnIndexFromRequest != null)
-    {
-        purlColumn = $("#list_of_duplicates tr:gt(0) td:nth-child(" + purlColumnIndexFromRequest + ") input[type=text]");
-    }
-    else
-    {
-        purlColumn = $("#list_of_duplicates tr:gt(0) td:nth-child(" + getPurlColumnIndex() + ") input[type=text]");
-    }
+    purlColumn = $("#list_of_duplicates tr:gt(0) td:nth-child(" + getPurlColumnIndex() + ") input[type=text]");
     purlColumn.each(function(){
         checkIfPURLIsBeingUsed(this, getArrayOfRepeatedIndexesInTheHoleTable());
     });
@@ -165,7 +155,7 @@ $("input[name=select_all]").change(function(){
     $(':checkbox').prop('checked', c);
 });
 
-function getPurlColumnIndexFromRequest() {
+function getPurlColumnNameFromRequest() {
     var request = {};
     var pairs = location.search.substring(1).split('&');
     for (var i = 0; i < pairs.length; i++) {
@@ -173,24 +163,7 @@ function getPurlColumnIndexFromRequest() {
         request[pair[0]] = pair[1];
     }
 
-    var i = 0;
-    for (var columnName in arrayPHPToJavascript[0])
-    {
-        i++;
-        if (columnName == request["identifyingColumn"])
-        {
-            var exists = true;
-            break;
-        }
-    }
-
-    var identifyingColumnFromRequest = null;
-    if (exists)
-    {
-        identifyingColumnFromRequest = i + 1;
-    }
-
-    return identifyingColumnFromRequest;
+    return request["identifyingColumn"];
 }
 
 function getPurlColumnIndex() {
@@ -430,5 +403,9 @@ function checkIfPURLIsBeingUsed(element, arrayModifyingPURLs){
     }
 }
 
+$(document).ready(function(){
+    $("#purlColumnName").val(getPurlColumnNameFromRequest());
+    $("#purlColumnName").change();
+})
 </script>
 </html>
