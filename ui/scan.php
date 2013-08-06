@@ -12,6 +12,7 @@
     <?php
         include_once("common.php");
         set_time_limit(0);
+        ini_set('memory_limit', '-1');
 
         include_once(__ROOT_DIR__ . "src/HashUniquesExporter.php");
         include_once(__ROOT_DIR__ . "src/RandomReaders/CsvRandomReader.php");
