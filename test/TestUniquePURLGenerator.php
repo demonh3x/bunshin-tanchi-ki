@@ -95,7 +95,8 @@ class TestUniquePURLGenerator extends TestFixture{
             $generator = $this->createGenerator($usedPurls);
 
             $expectedPurl = $purlSuccession[$purlIndex];
-            $actualPurl = $generator->generate($inputRow)[PURL];
+            $generatedData= $generator->generate($inputRow);
+            $actualPurl = $generatedData[PURL];
 
             Assert::areIdentical($expectedPurl, $actualPurl);
         }

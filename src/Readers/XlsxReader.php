@@ -38,7 +38,8 @@ class XlsxReader implements Reader{
         if ($this->eof == false)
         {
             $this->nextLine = $this->nextLine + 1;
-            return $this->cycleCachedRow()[$this->nextLine];
+            $cachedRow = $this->cycleCachedRow();
+            return $cachedRow[$this->nextLine];
         }
         else
         {
