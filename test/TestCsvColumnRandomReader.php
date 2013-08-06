@@ -8,7 +8,7 @@ class TestCsvColumnRandomReader extends TestFixture{
     private $testDataCsv;
 
     public function setUp(){
-        $this->testDataCsv =  __ROOT_DIR__ . 'test/sampleFiles/archivo.csv';
+        $this->testDataCsv =  __ROOT_DIR__ . 'test/sampleFiles/testCsvColumnRandomReader.csv';
     }
 
     public function tearDown(){
@@ -78,27 +78,34 @@ class TestCsvColumnRandomReader extends TestFixture{
         $reader = $this->createTestReader();
 
         $expected = array(
-            "ID" => "", "Company" => "タマ", "Salutation" => "いぬ", "Firstname" => "", "Surname" => "",
-            "PrintPURL" => "", "Domain_name" => "",
-            "PURL" => "", "Active" => "", "Jobtitle" => "£�"
+            "ID" => "",
+            "Company" => "Barry Paterson & Associates",
+            "Salutation" => "",
+            "Firstname" => "Barry",
+            "Surname" => "Paterson",
+            "PrintPURL" => "www.amayadesign.co.uk/BarryPaterson",
+            "Domain_name" => "www.amayadesign.co.uk/",
+            "PURL" => "BarryPaterson",
+            "Active" => "Y",
+            "Jobtitle" => "£�"
         );
         $current = $reader->readRow(2);
 
         Assert::areIdentical($expected, $current);
     }
 
-    function testJumpingForthToSecondRow(){
+    function testJumpingFourthToSecondRow(){
         $reader = $this->createTestReader();
 
         $expected = array(
             "ID" => "",
-            "Company" => "Finchatton",
+            "Company" => "Peter Bryant",
             "Salutation" => "",
-            "Firstname" => "Adam",
-            "Surname" => "Hunter",
-            "PrintPURL" => "www.amayadesign.co.uk/AdamHunter",
+            "Firstname" => "Peter",
+            "Surname" => "Bryant",
+            "PrintPURL" => "www.amayadesign.co.uk/PeterBryant",
             "Domain_name" => "www.amayadesign.co.uk/",
-            "PURL" => "AdamHunter",
+            "PURL" => "PeterBryant",
             "Active" => "Y",
             "Jobtitle" => "£�"
         );
@@ -107,9 +114,16 @@ class TestCsvColumnRandomReader extends TestFixture{
         Assert::areIdentical($expected, $current);
 
         $expected = array(
-            "ID" => "", "Company" => "Luxlo", "Salutation" => "Property", "Firstname" => "Amit", "Surname" => "Chadha",
-            "PrintPURL" => "www.amayadesign.co.uk/AmitChadha", "Domain_name" => "www.amayadesign.co.uk/",
-            "PURL" => "AmitChadha", "Active" => "Y", "Jobtitle" => "£�"
+            "ID" => "",
+            "Company" => "Luxlo Property",
+            "Salutation" => "",
+            "Firstname" => "Amit",
+            "Surname" => "Chadha",
+            "PrintPURL" => "www.amayadesign.co.uk/AmitChadha",
+            "Domain_name" => "www.amayadesign.co.uk/",
+            "PURL" => "AmitChadha",
+            "Active" => "Y",
+            "Jobtitle" => "£�"
         );
         $current = $reader->readRow(1);
 
