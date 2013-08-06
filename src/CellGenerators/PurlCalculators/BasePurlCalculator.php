@@ -10,6 +10,4 @@ abstract class BasePurlCalculator implements PurlCalculator{
         $this->surnameField = $surnameField;
         $this->salutationField = $salutationField;
     }
-
-    abstract function calculate($row);
 }

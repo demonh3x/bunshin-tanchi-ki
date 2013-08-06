@@ -1,10 +1,9 @@
 <?php
 namespace Enhance;
 
-include_once(__ROOT_DIR__ . "src/Readers/Reader.php");
 include_once(__ROOT_DIR__ . "src/RandomReaders/RandomReader.php");
 
-class NotReadyMockReader implements \Reader, \RandomReader{
+class NotReadyMockReader implements \RandomReader{
     function open($path){
     }
     function isReady(){

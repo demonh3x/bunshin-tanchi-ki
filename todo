@@ -45,7 +45,7 @@ Page for using OcurrenceScanner (similar to HashUniquesScanner)
 
 #!! Cleaning Filters
 
-Auto-select the PURL column in editGroup page to the Identifying column selected when scanning.
+# Auto-select the PURL column in editGroup page to the Identifying column selected when scanning.
 # Option to deactivate PURL checking
 #! Try filters before applying them on the scanner.
 
@@ -53,3 +53,5 @@ Auto-select the PURL column in editGroup page to the Identifying column selected
 # Bug when only checking the first row in editDupsGroup.
 
 # Fix multiple "../deduplications/" appendings when redirecting.
+
+Add input files to a dedup work

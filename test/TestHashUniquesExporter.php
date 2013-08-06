@@ -30,7 +30,7 @@ class TestHashUniquesExporter extends TestFixture{
         $exceptionRaised = false;
 
         try {
-            $exporter->setReader(new NotReadyMockReader());
+            $exporter->addReader(new NotReadyMockReader());
         } catch(\Exception $e){
             $exceptionRaised = true;
         }
@@ -55,7 +55,7 @@ class TestHashUniquesExporter extends TestFixture{
 
         $reader = new \RamRandomReader();
         $reader->open($ramId);
-        $exporter->setReader($reader);
+        $exporter->addReader($reader);
 
         return $exporter;
     }
@@ -390,6 +390,100 @@ class TestHashUniquesExporter extends TestFixture{
             $allDuplicates[] = $this->readRamData($id);
         }
 
+
+        Assert::areIdentical($expectedOutput, $allDuplicates);
+    }
+
+    private function createRamReader($ramId, $readerData){
+        unset($GLOBALS[$ramId]);
+
+        $writer = new \RamWriter();
+        $writer->create($ramId);
+        if (!$writer->isReady()){
+            throw new \Exception ("Can't create writer to set the default reader data!");
+        }
+        foreach ($readerData as $row){
+            $writer->writeRow($row);
+        }
+
+        $reader = new \RamRandomReader();
+        $reader->open($ramId);
+
+        return $reader;
+    }
+
+    function testMultipleReaders(){
+        $reader1 = $this->createRamReader(
+            "testMultipleReaders1",
+            array(
+                array(
+                    "Column1" => "Foo"
+                ),
+                array(
+                    "Column1" => "Bar"
+                ),
+                array(
+                    "Column1" => "Bar"
+                )
+            )
+        );
+
+        $reader2 = $this->createRamReader(
+            "testMultipleReaders2",
+            array(
+                array(
+                    "Column1" => "Foo"
+                ),
+                array(
+                    "Column1" => "Foo"
+                ),
+                array(
+                    "Column1" => "Bar"
+                )
+            )
+        );
+
+        $expectedOutput = array(
+            array(
+                array(
+                    "Column1" => "Bar"
+                ),
+                array(
+                    "Column1" => "Bar"
+                ),
+                array(
+                    "Column1" => "Bar"
+                ),
+            ),
+            array(
+                array(
+                    "Column1" => "Foo"
+                ),
+                array(
+                    "Column1" => "Foo"
+                ),
+                array(
+                    "Column1" => "Foo"
+                ),
+            )
+        );
+
+        $exporter = $this->createExporter();
+
+        $exporter->addReader($reader1);
+        $exporter->addReader($reader2);
+
+        $exporter->setHashCalculator(new \StringHashCalculator());
+
+        $factory = new MockRamWriterFactory();
+
+        $exporter->setDuplicatesWriterFactory($factory);
+        $exporter->scan();
+
+        $allDuplicates = array();
+        foreach ($factory->createdWriters as $id => $writer){
+            $allDuplicates[] = $this->readRamData($id);
+        }
 
         Assert::areIdentical($expectedOutput, $allDuplicates);
     }
