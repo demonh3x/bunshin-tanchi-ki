@@ -61,6 +61,19 @@ class TestUniquePURLGenerator extends TestFixture{
         "Mr-MacDowJ",
         "MrMacDow-J",
         "Mr-MacDow-J",
+        "JamieMacDowMr",
+        "JamieMMr",
+        "JMacDowMr",
+        "Jamie-MacDow-Mr",
+        "Jamie-M-Mr",
+        "J-MacDow-Mr",
+        "JamieMacDow-Mr",
+        "MacDowJamieMr",
+        "MacDow-Jamie-Mr",
+        "MacDowJamie-Mr",
+        "MacDowJMr",
+        "MacDowJ-Mr",
+        "MacDow-J-Mr",
     );
 
     function testGenerateOneCell(){

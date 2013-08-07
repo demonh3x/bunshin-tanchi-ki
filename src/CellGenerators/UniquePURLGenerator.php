@@ -91,6 +91,19 @@ class UniquePURLGenerator {
             "Salutation_SurnameN",
             "SalutationSurname_N",
             "Salutation_Surname_N",
+            "NameSurnameSalutation",
+            "NameSSalutation",
+            "NSurnameSalutation",
+            "Name_Surname_Salutation",
+            "Name_S_Salutation",
+            "N_Surname_Salutation",
+            "NameSurname_Salutation",
+            "SurnameNameSalutation",
+            "Surname_Name_Salutation",
+            "SurnameName_Salutation",
+            "SurnameNSalutation",
+            "SurnameN_Salutation",
+            "Surname_N_Salutation",
         );
 
         foreach ($purlCalculators as $purlCalculator){
