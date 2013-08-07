@@ -74,6 +74,56 @@ class TestUniquePURLGenerator extends TestFixture{
         "MacDowJMr",
         "MacDowJ-Mr",
         "MacDow-J-Mr",
+
+        "JamieMacDow-1",
+        "JamieM-1",
+        "JMacDow-1",
+        "MrJamieMacDow-1",
+        "Jamie-MacDow-1",
+        "Jamie-M-1",
+        "J-MacDow-1",
+        "MrJamieM-1",
+        "MrJMacDow-1",
+        "MrJamie-MacDow-1",
+
+        "Mr-JamieMacDow-1",
+        "Mr-Jamie-MacDow-1",
+        "MrJamie-M-1",
+        "Mr-JamieM-1",
+        "Mr-Jamie-M-1",
+        "MrJ-MacDow-1",
+        "Mr-JMacDow-1",
+        "Mr-J-MacDow-1",
+
+        "MacDowJamie-1",
+        "MacDowJ-1",
+        "MacDow-Jamie-1",
+        "MacDow-J-1",
+    );
+
+    private $purlSuccessionWithoutSalutation = array(
+        "JamieMacDow",
+        "JamieM",
+        "JMacDow",
+        "Jamie-MacDow",
+        "Jamie-M",
+        "J-MacDow",
+        "MacDowJamie",
+        "MacDowJ",
+        "MacDow-Jamie",
+        "MacDow-J",
+
+        "JamieMacDow-1",
+        "JamieM-1",
+        "JMacDow-1",
+        "Jamie-MacDow-1",
+        "Jamie-M-1",
+        "J-MacDow-1",
+
+        "MacDowJamie-1",
+        "MacDowJ-1",
+        "MacDow-Jamie-1",
+        "MacDow-J-1",
     );
 
     function testGenerateOneCell(){
@@ -234,19 +284,6 @@ class TestUniquePURLGenerator extends TestFixture{
         FIRSTNAME => "Jamie",
         SURTNAME => "Mac-Dow",
         PURL => "PURLGoingToBeOverwrited",
-    );
-
-    private $purlSuccessionWithoutSalutation = array(
-        "JamieMacDow",
-        "JamieM",
-        "JMacDow",
-        "Jamie-MacDow",
-        "Jamie-M",
-        "J-MacDow",
-        "MacDowJamie",
-        "MacDowJ",
-        "MacDow-Jamie",
-        "MacDow-J",
     );
 
     function testNotDefinedSalutation() {
