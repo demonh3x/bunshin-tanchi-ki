@@ -8,6 +8,8 @@ include_once("Writers/NullWriter.php");
 
 include_once("HashCalculators/RowFilter.php");
 
+include_once("HashList.php");
+
 class HashUniquesExporter{
     private $scanner;
     private $readers = array();
@@ -21,9 +23,6 @@ class HashUniquesExporter{
     }
 
     function addReader(RandomReader $reader){
-        if (!$reader->isReady()){
-            throw new Exception("The reader is not ready!");
-        }
         $this->readers[] = $reader;
     }
 
