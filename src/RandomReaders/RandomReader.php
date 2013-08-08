@@ -2,20 +2,6 @@
 
 interface RandomReader {
     /**
-     * Open a resource to read it.
-     * @param $path
-     * The path to the resource.
-     */
-    function open($path);
-
-    /**
-     * Is the reader ready to read?
-     * @return bool
-     * True if the resource can be read. False otherwise.
-     */
-    function isReady();
-
-    /**
      * Read a row from the resource.
      * @param $index
      * The row's index. It can't be greater or equal than row count. The indexes start at 0.
