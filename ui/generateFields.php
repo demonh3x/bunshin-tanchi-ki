@@ -107,10 +107,10 @@
         $writer = new CsvWriter();
         $writer->create($outputFile);
 
-        $purlColumn = "7";
-        $firstNameColumn = "3";
-        $lastNameColumn = "4";
-        $salutationColumn = "2";
+        $purlColumn = $_REQUEST["PurlColumn"];
+        $firstNameColumn = $_REQUEST["FirstNameColumn"];
+        $lastNameColumn = $_REQUEST["LastNameColumn"];
+        $salutationColumn = $_REQUEST["SalutationColumn"];
 
         $existingPurlsFile = getExistingPURLsPath($deduplicationsWorkFolder);
         $arrayUsedPurls = getArrayOfExistingPURLs($existingPurlsFile);
