@@ -15,7 +15,7 @@ class CsvWriter implements Writer{
     }
 
     function writeRow($data) {
-        //TODO: Make a test to check the encoding if correctly happening.
+        //TODO: Make a test to check the encoding is correctly happening.
         foreach ($data as $col => $val){
             if (mb_detect_encoding($val) != "UTF-8"){
                 $data[$col] = utf8_encode($val);
