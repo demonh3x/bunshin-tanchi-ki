@@ -18,7 +18,7 @@ class TestCsvRandomReader extends TestFixture{
         return Core::getCodeCoverageWrapper("CsvRandomReader", array($path));
     }
 
-    function testOpenVoidPathThrowsAnInputExceptionWithCode200(){
+    function testOpenNotValidPathThrowsAnInputExceptionWithCode200(){
         $exceptionThrown = false;
 
         try {

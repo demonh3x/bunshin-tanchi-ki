@@ -12,7 +12,7 @@ class CsvRandomReader implements RandomReader{
 
     function __construct($path) {
         if (empty($path)){
-            throw new InputException("The path can't be empty!", 200);
+            throw new InputException("The path \"$path\" has to be valid!", 200);
         }
 
         if (!is_file($path)){
