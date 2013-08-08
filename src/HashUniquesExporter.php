@@ -21,9 +21,6 @@ class HashUniquesExporter{
     }
 
     function addReader(RandomReader $reader){
-        if (!$reader->isReady()){
-            throw new Exception("The reader is not ready!");
-        }
         $this->readers[] = $reader;
     }
 

@@ -25,19 +25,6 @@ class TestHashUniquesExporter extends TestFixture{
         );
     }
 
-    function testRaiseExceptionWhenSettingAReaderNotReady(){
-        $exporter = $this->createExporter();
-        $exceptionRaised = false;
-
-        try {
-            $exporter->addReader(new NotReadyMockReader());
-        } catch(\Exception $e){
-            $exceptionRaised = true;
-        }
-
-        Assert::isTrue($exceptionRaised);
-    }
-
     private function createExporterWithReader($readerData){
         $exporter = $this->createExporter();
 
@@ -53,8 +40,7 @@ class TestHashUniquesExporter extends TestFixture{
             $writer->writeRow($row);
         }
 
-        $reader = new \RamRandomReader();
-        $reader->open($ramId);
+        $reader = new \RamRandomReader($ramId);
         $exporter->addReader($reader);
 
         return $exporter;
@@ -121,8 +107,7 @@ class TestHashUniquesExporter extends TestFixture{
         return $writer;
     }
     private function readRamData($ramId){
-        $reader = new \RamRandomReader();
-        $reader->open($ramId);
+        $reader = new \RamRandomReader($ramId);
 
         $data = array();
         for ($i = 0; $i < $reader->getRowCount(); $i++){
@@ -406,8 +391,7 @@ class TestHashUniquesExporter extends TestFixture{
             $writer->writeRow($row);
         }
 
-        $reader = new \RamRandomReader();
-        $reader->open($ramId);
+        $reader = new \RamRandomReader($ramId);
 
         return $reader;
     }

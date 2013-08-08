@@ -34,8 +34,7 @@ class TestOccurrenceScanner extends TestFixture{
             $writer->writeRow($row);
         }
 
-        $reader = new \RamRandomReader();
-        $reader->open($id);
+        $reader = new \RamRandomReader($id);
 
         return $reader;
     }

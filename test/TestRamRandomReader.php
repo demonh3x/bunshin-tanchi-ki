@@ -13,42 +13,50 @@ class TestRamRandomReader extends TestFixture{
     public function tearDown(){
     }
 
-    private function createReader(){
-        return Core::getCodeCoverageWrapper("RamRandomReader");
+    private function createReader($id){
+        return Core::getCodeCoverageWrapper("RamRandomReader", array($id));
     }
 
-    function testOpeningNotDefinedGlobal(){
-        $reader = $this->createReader();
+    function testOpeningNotDefinedGlobalShouldThrowAnException(){
+        $exceptionThrown = false;
 
-        $reader->open("nonExistingGlobalVariable");
-        Assert::isFalse($reader->isReady());
-        Assert::areIdentical(0, $reader->getRowCount());
+        try {
+            $this->createReader("nonExistingGlobalVariable");
+        } catch (\InputException $e){
+            $exceptionThrown = true;
+        }
+
+        Assert::isTrue($exceptionThrown);
     }
 
-    function testOpeningNonArrayDefinedGlobal(){
-        $reader = $this->createReader();
-
+    function testOpeningNonArrayDefinedGlobalShouldThrowAnException(){
+        $exceptionThrown = false;
         $this->defineGlobalVariable("Foo");
 
-        $reader->open($this->globalVariableName);
-        $ready = $reader->isReady();
+        try {
+            $this->createReader($this->globalVariableName);
+        } catch (\InputException $e){
+            $exceptionThrown = true;
+        }
 
         $this->undefineGlobalVariable();
 
-        Assert::isFalse($ready);
+        Assert::isTrue($exceptionThrown);
     }
 
-    function testOpeningArrayDefinedGlobal(){
-        $reader = $this->createReader();
-
+    function testOpeningArrayDefinedGlobalShouldNotThrowAnException(){
+        $exceptionThrown = false;
         $this->defineGlobalVariable(array());
 
-        $reader->open($this->globalVariableName);
-        $ready = $reader->isReady();
+        try {
+            $this->createReader($this->globalVariableName);
+        } catch (\InputException $e){
+            $exceptionThrown = true;
+        }
 
         $this->undefineGlobalVariable();
 
-        Assert::isTrue($ready);
+        Assert::isFalse($exceptionThrown);
     }
 
     private function defineGlobalVariable($value){
@@ -60,28 +68,28 @@ class TestRamRandomReader extends TestFixture{
     }
 
     function testRowCount(){
-        $reader = $this->createReader();
-
         $this->defineGlobalVariable(
             array(
                 array("0" => "Foo"),
                 array("0" => "Bar")
             )
         );
-        $reader->open($this->globalVariableName);
+
+        $reader = $this->createReader($this->globalVariableName);
+
         Assert::areIdentical(2, $reader->getRowCount());
     }
 
     function testReadingRow(){
-        $reader = $this->createReader();
-
         $this->defineGlobalVariable(
             array(
                 array("0" => "Foo"),
                 array("0" => "Bar")
             )
         );
-        $reader->open($this->globalVariableName);
+
+        $reader = $this->createReader($this->globalVariableName);
+
         $expected = array("0" => "Bar");
 
         Assert::areIdentical($expected, $reader->readRow(1));
