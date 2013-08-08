@@ -18,12 +18,12 @@ class TestCsvRandomReader extends TestFixture{
         return Core::getCodeCoverageWrapper("CsvRandomReader", array($path));
     }
 
-    function testOpenNotValidPathThrowsAnInputExceptionWithCode200(){
+    function testOpenNotValidPathThrowsARandomReaderExceptionWithCode200(){
         $exceptionThrown = false;
 
         try {
             $this->createReader('');
-        } catch (\InputException $e){
+        } catch (\RandomReaderException $e){
             $exceptionThrown = true;
             Assert::areIdentical(200, $e->getCode());
         }
@@ -31,12 +31,12 @@ class TestCsvRandomReader extends TestFixture{
         Assert::isTrue($exceptionThrown);
     }
 
-    function testOpenNonExistingFileThrowsAnInputExceptionWithCode201(){
+    function testOpenNonExistingFileThrowsARandomReaderExceptionWithCode201(){
         $exceptionThrown = false;
 
         try {
             $this->createReader('test/sampleFiles/non_existing_file.csv');
-        } catch (\InputException $e){
+        } catch (\RandomReaderException $e){
             $exceptionThrown = true;
             Assert::areIdentical(201, $e->getCode());
         }

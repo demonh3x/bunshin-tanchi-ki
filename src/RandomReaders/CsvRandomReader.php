@@ -3,7 +3,7 @@
 ini_set("auto_detect_line_endings", true);
 include_once("RandomReader.php");
 
-include_once("InputException.php");
+include_once("RandomReaderException.php");
 
 class CsvRandomReader implements RandomReader{
     protected $filePointer;
@@ -22,17 +22,17 @@ class CsvRandomReader implements RandomReader{
 
     protected function checkIfPathIsValid($path){
         if (empty($path)){
-            throw new InputException("The path \"$path\" has to be valid!", 200);
+            throw new RandomReaderException("The path \"$path\" has to be valid!", 200);
         }
 
         if (!is_file($path)){
-            throw new InputException("The path: \"$path\" doesn't represent a file!", 201);
+            throw new RandomReaderException("The path: \"$path\" doesn't represent a file!", 201);
         }
     }
 
     protected function checkIfFileIsOpened($path) {
         if (!$this->filePointer){
-            throw new InputException("Can't open the file in the path: \"$path\"!", 299);
+            throw new RandomReaderException("Can't open the file in the path: \"$path\"!", 299);
         }
     }
 

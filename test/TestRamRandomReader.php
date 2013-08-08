@@ -17,12 +17,12 @@ class TestRamRandomReader extends TestFixture{
         return Core::getCodeCoverageWrapper("RamRandomReader", array($id));
     }
 
-    function testOpeningNotDefinedGlobalThrowsAnInputExceptionWithCode100(){
+    function testOpeningNotDefinedGlobalThrowsARandomReaderExceptionWithCode100(){
         $exceptionThrown = false;
 
         try {
             $this->createReader("nonExistingGlobalVariable");
-        } catch (\InputException $e){
+        } catch (\RandomReaderException $e){
             $exceptionThrown = true;
             Assert::areIdentical(100, $e->getCode());
         }
@@ -36,7 +36,7 @@ class TestRamRandomReader extends TestFixture{
 
         try {
             $this->createReader($this->globalVariableName);
-        } catch (\InputException $e){
+        } catch (\RandomReaderException $e){
             $exceptionThrown = true;
             Assert::areIdentical(101, $e->getCode());
         }
@@ -52,7 +52,7 @@ class TestRamRandomReader extends TestFixture{
 
         try {
             $this->createReader($this->globalVariableName);
-        } catch (\InputException $e){
+        } catch (\RandomReaderException $e){
             $exceptionThrown = true;
         }
 

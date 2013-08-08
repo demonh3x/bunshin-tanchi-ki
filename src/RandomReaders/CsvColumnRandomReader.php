@@ -3,18 +3,18 @@
 ini_set("auto_detect_line_endings", true);
 include_once("CsvRandomReader.php");
 
-include_once("InputException.php");
+include_once("RandomReaderException.php");
 
 class CsvColumnRandomReader extends CsvRandomReader{
     private $columnNames = array();
 
     protected function checkIfPathIsValid($path){
         if (empty($path)){
-            throw new InputException("The path \"$path\" has to be valid!", 2000);
+            throw new RandomReaderException("The path \"$path\" has to be valid!", 2000);
         }
 
         if (!is_file($path)){
-            throw new InputException("The path: \"$path\" doesn't represent a file!", 2001);
+            throw new RandomReaderException("The path: \"$path\" doesn't represent a file!", 2001);
         }
     }
 
