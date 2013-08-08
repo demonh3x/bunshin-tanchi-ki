@@ -8,10 +8,10 @@ class RamRandomReader implements RandomReader{
 
     function __construct($id){
         if (!isset($GLOBALS[$id])){
-            throw new InputException("Can't use the global variable \"$id\" because it is not defined!", 1);
+            throw new InputException("Can't use the global variable \"$id\" because it is not defined!", 100);
         }
         if (!is_array($GLOBALS[$id])){
-            throw new InputException("Can't use the global variable \"$id\" because it is not an array!", 2);
+            throw new InputException("Can't use the global variable \"$id\" because it is not an array!", 101);
         }
 
         $this->pointerToGlobal = &$GLOBALS[$id];
