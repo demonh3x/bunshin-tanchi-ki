@@ -2,6 +2,8 @@
 
 include_once("Writer.php");
 
+include_once("WriterException.php");
+
 class CsvWriter implements Writer{
     private $fp;
 
