@@ -30,12 +30,15 @@ HashUniquesExporter construct with HashCalculator and UniquesList as HashUniques
 # Refactor RandomReader to move the open($path) method to the constructor and remove isReady().
     # The constructor should throw an exception if it is not ready when creating.
 
+# Refactor Writer interface to move the create($path) method to the constructor and remove isReady().
+    # The constructor should throw an exception if it is not ready when creating.
+
 Refactor Row class to have HashCalculator on the constructor
 Refactor RowListener to send as parameters: RandomReader, $index, $hash. Instead of Row object.
 
 Refactor HashUniquesScanner to have Array(RandomReader) and DuplicatesListener in the constructor.
 
-Refactor CsvColumnRandomReader to be a child class from CsvRandomReader.
+# Refactor CsvColumnRandomReader to be a child class from CsvRandomReader.
 
 ? Refactor StringHashCalculator to be inmutable: Move watchColumns() and setFilter() in the constructor.
 
