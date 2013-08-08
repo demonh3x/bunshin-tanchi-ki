@@ -64,8 +64,7 @@
         $scanner = new HashUniquesExporter();
 
         foreach ($INPUT_FILES as $inputFile){
-            $reader = new CsvRandomReader();
-            $reader->open($inputFile);
+            $reader = new CsvRandomReader($inputFile);
 
             $scanner->addReader($reader);
         }
@@ -137,8 +136,7 @@
                 unlink($IDENTIFYING_VALUES_FILE);
             }
 
-            $reader = new CsvRandomReader();
-            $reader->open($UNIQUES_FILE);
+            $reader = new CsvRandomReader($UNIQUES_FILE);
 
             $writer = new CsvWriter();
             $writer->create($IDENTIFYING_VALUES_FILE);
