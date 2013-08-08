@@ -11,8 +11,8 @@ class TestLockingCsvWriter extends TestFixture{
     public function tearDown(){
     }
 
-    private function createWriter(){
-        return new \LockingCsvWriter();
+    private function createWriter($path){
+        return new \LockingCsvWriter($path);
     }
 
     private function deleteFile($path){
@@ -24,40 +24,29 @@ class TestLockingCsvWriter extends TestFixture{
         }
     }
 
-    function testUnlockedFileShouldBeReady(){
+    function testOpeningAnOpenFileShouldThrowAWriterException(){
         $path = "sampleFiles/test_locking_csv_writer.csv";
         $this->deleteFile($path);
 
-        $writer = $this->createWriter();
-        $writer->create($path);
+        $writer = $this->createWriter($path);
 
-        Assert::isTrue($writer->isReady());
-    }
+        $exceptionThrown = false;
+        try {
+            $writer2 = $this->createWriter($path);
+        } catch (\WriterException $e){
+            $exceptionThrown = true;
+        }
 
-    function testOpeningAOpenFileShouldNotBeReady(){
-        $path = "sampleFiles/test_locking_csv_writer.csv";
-        $this->deleteFile($path);
-
-        $writer = $this->createWriter();
-        $writer->create($path);
-
-        $writer2 = $this->createWriter();
-        $writer2->create($path);
-
-        Assert::isFalse($writer2->isReady());
+        Assert::isTrue($exceptionThrown);
     }
 
     function testUnlockingWhenClosingFile(){
         $path = "sampleFiles/test_locking_csv_writer.csv";
         $this->deleteFile($path);
 
-        $writer = $this->createWriter();
-        $writer->create($path);
+        $writer = $this->createWriter($path);
         $writer = null;
 
-        $writer2 = $this->createWriter();
-        $writer2->create($path);
-
-        Assert::isTrue($writer2->isReady());
+        $writer2 = $this->createWriter($path);
     }
 }
