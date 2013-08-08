@@ -6,11 +6,21 @@ include_once("RandomReader.php");
 include_once("InputException.php");
 
 class CsvRandomReader implements RandomReader{
-    private $filePointer;
-    private $rowCount;
-    private $rowPositionMap = array();
+    protected $filePointer;
+    protected  $rowCount;
+    protected $rowPositionMap = array();
 
     function __construct($path) {
+        $this->checkIfPathIsValid($path);
+
+        $this->filePointer = fopen($path, "r");
+
+        $this->checkIfFileIsOpened($path);
+
+        $this->scanFile();
+    }
+
+    protected function checkIfPathIsValid($path){
         if (empty($path)){
             throw new InputException("The path \"$path\" has to be valid!", 200);
         }
@@ -18,17 +28,15 @@ class CsvRandomReader implements RandomReader{
         if (!is_file($path)){
             throw new InputException("The path: \"$path\" doesn't represent a file!", 201);
         }
+    }
 
-        $this->filePointer = fopen($path, "r");
-
+    protected function checkIfFileIsOpened($path) {
         if (!$this->filePointer){
             throw new InputException("Can't open the file in the path: \"$path\"!", 299);
         }
-
-        $this->scanFile();
     }
 
-    private function scanFile(){
+    protected function scanFile(){
         $position = $this->getFilePosition();
         $this->setFilePosition(0);
 
@@ -37,7 +45,7 @@ class CsvRandomReader implements RandomReader{
         $this->setFilePosition($position);
     }
 
-    private function countRowsAndCreateMap(){
+    protected function countRowsAndCreateMap(){
         $this->rowCount = 0;
         $this->rowPositionMap[$this->rowCount] = $this->getFilePosition();
 
@@ -54,7 +62,7 @@ class CsvRandomReader implements RandomReader{
         return ftell($this->filePointer);
     }
 
-    private function setFilePosition($position){
+    protected function setFilePosition($position){
         fseek($this->filePointer, $position, SEEK_SET);
     }
 
@@ -62,7 +70,7 @@ class CsvRandomReader implements RandomReader{
         return feof($this->filePointer);
     }
 
-    private function readFileLine(){
+    protected function readFileLine(){
         return fgets($this->filePointer);
     }
 
