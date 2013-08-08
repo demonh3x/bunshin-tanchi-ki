@@ -12,7 +12,7 @@ class TestLockingCsvWriter extends TestFixture{
     }
 
     private function createWriter($path){
-        return new \LockingCsvWriter($path);
+        return Core::getCodeCoverageWrapper("LockingCsvWriter", array($path));
     }
 
     private function deleteFile($path){
