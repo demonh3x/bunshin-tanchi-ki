@@ -56,10 +56,6 @@ class TestHashUniquesExporter extends TestFixture{
         $exporter->scan();
     }
 
-    function testRaiseExceptionWhenSettingANotReadyUniquesWriter(){
-        Assert::fail("Remove this test when all the writers throw the exception when creating and something goes wrong");
-    }
-
     function testScanningWithUniquesWriterWhenNoDuplicatesOneColumn(){
         $input = array(
             array(
