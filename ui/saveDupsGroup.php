@@ -23,14 +23,20 @@
     $htmlInformation .= "<h1>Identifying Values File: $identifyingValuesFile</h1>";
 
     $tryes = 0;
-    $writer = new LockingCsvWriter();
+    $writer = null;
+    $exceptionThrown = false;
     do {
         usleep(rand(30, 100));
-        $writer->create($uniquesFilePath);
+        $exceptionThrown = false;
+        try {
+            $writer = new LockingCsvWriter($uniquesFilePath);
+        } catch (WriterException $e){
+            $exceptionThrown = true;
+        }
         $tryes++;
-    } while ((!$writer->isReady()) && ($tryes < 10));
+    } while (($exceptionThrown) && ($tryes < 10));
 
-    if (!$writer->isReady()){
+    if ($exceptionThrown){
         beforeError();
         throw new Exception("Could not open the uniques file to write! [$uniquesFilePath]");
     }
@@ -63,12 +69,14 @@
     }
 
     $htmlInformation .= "<h1>Updating Identifying Values File: $identifyingValuesFile</h1>";
-    $identifyingFileWriter = new CsvWriter();
-    $identifyingFileWriter->create($identifyingValuesFile);
-    if (!$identifyingFileWriter->isReady()){
+    $identifyingFileWriter = null;
+    try {
+        $identifyingFileWriter = new CsvWriter($identifyingValuesFile);
+    }catch (WriterException $e){
         beforeError();
-        throw new Exception("Could not read the identifying values file! [$identifyingValuesFile]");
+        throw new Exception("Could not use the identifying values file! [$identifyingValuesFile]");
     }
+
     foreach ($arrayFromJavascript as $row){
         $identifyingFileWriter->writeRow(array($row[$identifyingColumn]));
     }

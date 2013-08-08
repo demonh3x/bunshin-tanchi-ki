@@ -102,8 +102,7 @@
         $reader = new CsvRandomReader($file);
 
         $outputFile = getNonExistingOutputFile($file);
-        $writer = new CsvWriter();
-        $writer->create($outputFile);
+        $writer = new CsvWriter($outputFile);
 
         $purlColumn = $_REQUEST["PurlColumn"];
         $firstNameColumn = $_REQUEST["FirstNameColumn"];

@@ -81,8 +81,7 @@
 
         $scanner->setHashCalculator($calculator);
 
-        $uniquesWriter = new CsvWriter();
-        $uniquesWriter->create($UNIQUES_FILE);
+        $uniquesWriter = new CsvWriter($UNIQUES_FILE);
 
         $cleaningFilters = new RowFilter();
         foreach ($CLEANING_COLUMN_FILTERS as $column => $filters){
@@ -97,12 +96,7 @@
         class CustomWriterFactory implements WriterFactory{
             function createWriter($id){
                 global $DUPS_DIR;
-
-                $writer = new CsvWriter();
-                $writer->create($DUPS_DIR . "$id.csv");
-                if (!$writer->isReady()){
-                    throw new Exception("Writer not ready!");
-                }
+                $writer = new CsvWriter($DUPS_DIR . "$id.csv");
                 return $writer;
             }
         }
@@ -138,8 +132,7 @@
 
             $reader = new CsvRandomReader($UNIQUES_FILE);
 
-            $writer = new CsvWriter();
-            $writer->create($IDENTIFYING_VALUES_FILE);
+            $writer = new CsvWriter($IDENTIFYING_VALUES_FILE);
 
             for ($rowIndex = 0; $rowIndex < $reader->getRowCount(); $rowIndex++){
                 $row = $reader->readRow($rowIndex);
