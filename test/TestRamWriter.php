@@ -13,21 +13,18 @@ class TestRamWriter extends TestFixture{
     public function tearDown(){
     }
 
-    private function createWriter(){
-        return Core::getCodeCoverageWrapper("RamWriter");
+    private function createWriter($id){
+        return Core::getCodeCoverageWrapper("RamWriter", array($id));
     }
 
     function testCreatingDefinesGlobalVariable(){
-        $writer = $this->createWriter();
+        $this->createWriter($this->globalVariableName);
 
-        $writer->create($this->globalVariableName);
         $isGlobalVariableDefined = isset($GLOBALS[$this->globalVariableName]);
-        $isReady = $writer->isReady();
 
         $this->undefineGlobal();
 
         Assert::isTrue($isGlobalVariableDefined);
-        Assert::isTrue($isReady);
     }
 
     private function undefineGlobal(){
@@ -35,9 +32,8 @@ class TestRamWriter extends TestFixture{
     }
 
     function testCreatingMakesAnArray(){
-        $writer = $this->createWriter();
+        $this->createWriter($this->globalVariableName);
 
-        $writer->create($this->globalVariableName);
         $isGlobalVariableAnArray = is_array($GLOBALS[$this->globalVariableName]);
 
         $this->undefineGlobal();
@@ -45,16 +41,22 @@ class TestRamWriter extends TestFixture{
         Assert::isTrue($isGlobalVariableAnArray);
     }
 
-    function testCreatingWhenAlreadyDefinedGlobal(){
-        $writer = $this->createWriter();
-
+    function testCreatingWhenAlreadyDefinedGlobalThrowsAnOutputExceptionWithCode100(){
         $this->defineGlobalVariable("Foo");
-        $writer->create($this->globalVariableName);
-        $isReady = $writer->isReady();
+
+        $exceptionThrown = false;
+        $errorCode = null;
+        try {
+            $this->createWriter($this->globalVariableName);
+        } catch (\WriterException $e){
+            $exceptionThrown = true;
+            $errorCode = $e->getCode();
+        }
 
         $this->undefineGlobal();
 
-        Assert::isFalse($isReady);
+        Assert::isTrue($exceptionThrown);
+        Assert::areIdentical(100, $errorCode);
     }
 
     private function defineGlobalVariable($value){
@@ -62,9 +64,8 @@ class TestRamWriter extends TestFixture{
     }
 
     function testWritingRow(){
-        $writer = $this->createWriter();
+        $writer = $this->createWriter($this->globalVariableName);
 
-        $writer->create($this->globalVariableName);
         $row = array(
             "0" => "Foo",
             "1" => "Bar"

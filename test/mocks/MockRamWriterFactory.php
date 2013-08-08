@@ -9,11 +9,7 @@ class MockRamWriterFactory implements \WriterFactory{
         $ramId = "testMockRamWriterFactory_$id";
         unset($GLOBALS[$ramId]);
 
-        $writer = new \RamWriter();
-        $writer->create($ramId);
-        if (!$writer->isReady()){
-            throw new \Exception("The MockRamWriterFactory couldn't create a Writer with the id: [$id]");
-        }
+        $writer = new \RamWriter($ramId);
 
         $this->createdWriters[$ramId] = &$writer;
 

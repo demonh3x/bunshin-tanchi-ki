@@ -25,10 +25,8 @@ class TestOccurrenceScanner extends TestFixture{
     }
 
     private function createRamReader($id, $data){
-        $writer = new \RamWriter();
-
         unset($GLOBALS[$id]);
-        $writer->create($id);
+        $writer = new \RamWriter($id);
 
         foreach ($data as $row){
             $writer->writeRow($row);

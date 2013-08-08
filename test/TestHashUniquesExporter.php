@@ -31,11 +31,7 @@ class TestHashUniquesExporter extends TestFixture{
         $ramId = "testHashDuplicatesExporter";
         unset($GLOBALS[$ramId]);
 
-        $writer = new \RamWriter();
-        $writer->create($ramId);
-        if (!$writer->isReady()){
-            throw new \Exception ("Can't create writer to set the default reader data!");
-        }
+        $writer = new \RamWriter($ramId);
         foreach ($readerData as $row){
             $writer->writeRow($row);
         }
@@ -61,18 +57,7 @@ class TestHashUniquesExporter extends TestFixture{
     }
 
     function testRaiseExceptionWhenSettingANotReadyUniquesWriter(){
-        $exporter = $this->createExporterrWithReaderAndHashCalculator(array());
-
-        $exceptionRaised = false;
-
-        $writer = new \RamWriter();
-        try {
-            $exporter->setUniquesWriter($writer);
-        } catch(\Exception $e){
-            $exceptionRaised = true;
-        }
-
-        Assert::isTrue($exceptionRaised);
+        Assert::fail("Remove this test when all the writers throw the exception when creating and something goes wrong");
     }
 
     function testScanningWithUniquesWriterWhenNoDuplicatesOneColumn(){
@@ -102,8 +87,7 @@ class TestHashUniquesExporter extends TestFixture{
     }
 
     private function getRamWriter($ramId){
-        $writer = new \RamWriter();
-        $writer->create($ramId);
+        $writer = new \RamWriter($ramId);
         return $writer;
     }
     private function readRamData($ramId){
@@ -382,11 +366,7 @@ class TestHashUniquesExporter extends TestFixture{
     private function createRamReader($ramId, $readerData){
         unset($GLOBALS[$ramId]);
 
-        $writer = new \RamWriter();
-        $writer->create($ramId);
-        if (!$writer->isReady()){
-            throw new \Exception ("Can't create writer to set the default reader data!");
-        }
+        $writer = new \RamWriter($ramId);
         foreach ($readerData as $row){
             $writer->writeRow($row);
         }

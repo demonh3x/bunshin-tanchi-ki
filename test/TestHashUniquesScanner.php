@@ -57,11 +57,7 @@ class TestHashUniquesScanner extends TestFixture{
     }
 
     private function createRamReader($data, $id){
-        $writer = new \RamWriter();
-        $writer->create($id);
-        if (!$writer->isReady()){
-            throw new \Exception ("Can't create writer!");
-        }
+        $writer = new \RamWriter($id);
         foreach ($data as $row){
             $writer->writeRow($row);
         }

@@ -27,9 +27,6 @@ class HashUniquesExporter{
     }
 
     function setUniquesWriter(Writer $uniques, RowFilter $uniquesRowFilter = null){
-        if (!$uniques->isReady()){
-            throw new Exception("The uniques writer is not ready!");
-        }
         $this->uniquesWriter = $uniques;
 
         if (!is_null($uniquesRowFilter)){
