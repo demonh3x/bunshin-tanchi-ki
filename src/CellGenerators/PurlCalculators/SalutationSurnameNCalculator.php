@@ -4,6 +4,6 @@ include_once("BasePurlCalculator.php");
 
 class SalutationSurnameNCalculator extends BasePurlCalculator{
     function calculate($row){
-        return $row[$this->salutationField] . $row[$this->surnameField] . substr($row[$this->firstnameField], 0, 1);
+        return $this->getSalutation($row) . $this->getSurname($row) . $this->getShortFirstName($row);
     }
 }

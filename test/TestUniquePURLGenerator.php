@@ -278,7 +278,7 @@ class TestUniquePURLGenerator extends TestFixture{
     }
 
 
-    private $testRowNoSalutation = array(
+    private $testRowSalutationEmpty = array(
         "0" => "",
         SALUTATION => "",
         FIRSTNAME => "Jamie",
@@ -287,11 +287,22 @@ class TestUniquePURLGenerator extends TestFixture{
     );
 
     function testNotDefinedSalutation() {
-        $this->assertSuccession($this->testRowNoSalutation, $this->purlSuccessionWithoutSalutation);
+        $this->assertSuccession($this->testRowSalutationEmpty, $this->purlSuccessionWithoutSalutation);
     }
 
     function testFailingToGeneratePurlWhenNoSalutationThrowsException(){
-        $this->assertExceptionWhenSuccessionEnds($this->testRowNoSalutation, $this->purlSuccessionWithoutSalutation);
+        $this->assertExceptionWhenSuccessionEnds($this->testRowSalutationEmpty, $this->purlSuccessionWithoutSalutation);
+    }
+
+    private $testRowNoSalutation = array(
+        "0" => "",
+        FIRSTNAME => "Jamie",
+        SURTNAME => "Mac-Dow",
+        PURL => "PURLGoingToBeOverwrited",
+    );
+
+    function testNoSalutationColumn(){
+        $this->assertSuccession($this->testRowNoSalutation, $this->purlSuccessionWithoutSalutation);
     }
 
     function testPURLWithMixedCaseShouldMatchTheSameInLowecase(){
