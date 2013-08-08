@@ -1,7 +1,7 @@
 # Implement HashUniquesExporter
 Multiple HashCalculators to use one OR another to detect a duplicate
-Parse logical columns on CSV
-HashUniquesScanner handle Column Mappings
+!! Parse logical columns on CSV
+!! HashUniquesScanner handle Column Mappings
 MySQL Random reader
 MySQL Writer
 - XLS Random reader
@@ -23,11 +23,21 @@ Unify the usage of the scanners (maybe an interface for scanners?)
 # Refactor PurlCalculators
 Refactor PURL-Number behaviour to generate infinite combinations
 
-HashUniquesScanner depend on UniquesList instead of HashList
-HashUniquesExporter construct with HashCalculator as HashUniquesScanner
+# HashUniquesScanner depend on UniquesList instead of HashList
+HashUniquesExporter construct with HashCalculator and UniquesList as HashUniquesScanner
 
-Remove Readers because they are not used.
-Refactor RandomReader to move the open($path) method to the constructor and remove isReady(). The constructor should throw an exception if it is not ready when creating.
+# Remove Readers because they are not used.
+# Refactor RandomReader to move the open($path) method to the constructor and remove isReady().
+    # The constructor should throw an exception if it is not ready when creating.
+
+Refactor Row class to have HashCalculator on the constructor
+Refactor RowListener to send as parameters: RandomReader, $index, $hash. Instead of Row object.
+
+Refactor HashUniquesScanner to have Array(RandomReader) and DuplicatesListener in the constructor.
+
+Refactor CsvColumnRandomReader to be a child class from CsvRandomReader.
+
+? Refactor StringHashCalculator to be inmutable: Move watchColumns() and setFilter() in the constructor.
 
 UI
 -----------------------------------------------------------------
@@ -62,11 +72,13 @@ Page for using OcurrenceScanner (similar to HashUniquesScanner)
 
 # Fix multiple "../deduplications/" appendings when redirecting.
 
-Add input files to a dedup work
+# Add input files to a dedup work
 
 Merge all group of duplicates link
 
 Logging system
 Option to deactivate duplicate groups writing
 
-!! generateFields customize $purlColumn  $firstNameColumn = "3"; lastNameColumn = "4"; $salutationColumn = "2";
+#!! generateFields customize $purlColumn  $firstNameColumn = "3"; lastNameColumn = "4"; $salutationColumn = "2";
+
+Sending empty input files when creating work, crashes
