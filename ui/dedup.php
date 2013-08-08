@@ -5,49 +5,8 @@ include_once("common.php");
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-
+    <link rel="stylesheet" type="text/css" href="main.css">
     <title></title>
-
-    <style type="text/css">
-        h2 {
-            color: green;
-            text-decoration: underline;
-        }
-        h3 {
-            color: gray;
-        }
-
-        table tr:first-child {
-            background: lightgrey;
-        }
-        table td{
-            border: 1px solid;
-        }
-
-        em {
-            text-decoration: underline;
-        }
-
-        .comparing-section {
-            background-color: #ffebb7;
-        }
-
-        .comparing-section ul,
-        .comparing-section ol{
-            background-color: #bca985;
-            border: 1px solid #e9d6a1;
-        }
-
-        .cleaning-section {
-            background-color: #beffc1;
-        }
-
-        .cleaning-section ul,
-        .cleaning-section ol{
-            background-color: #8cc38d;
-            border: 1px solid #a9e9ac;
-        }
-    </style>
 
     <script type="text/javascript" src="js/jquery.js"></script>
     <script type="text/javascript">

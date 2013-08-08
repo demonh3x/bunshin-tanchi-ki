@@ -64,7 +64,7 @@ class HTML {
 
         $class = is_null($class)? "": $class;
 
-        $html = "<select class='$class'>";
+        $html = "<select name='$class' class='$class'>";
 
         foreach ($array as $value){
             $html .= "<option value='$value'>$value</option>";
