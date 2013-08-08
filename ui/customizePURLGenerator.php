@@ -34,7 +34,7 @@
         <label for="LastNameColumn">Last Name column: </label>
         <?= HTML::select(getInputFileColumns($file), "LastNameColumn") ?>
         <br>
-        <label for="PurlColumn">Purl Column the column: </label>
+        <label for="PurlColumn">Purl column: </label>
         <?= HTML::select(getInputFileColumns($file), "PurlColumn") ?>
         <br>
         <br>
