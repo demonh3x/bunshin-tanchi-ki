@@ -8,9 +8,8 @@ class CsvWriter implements Writer{
     function __construct($path) {
         $this->fp = fopen($path, 'a');
 
-        //TODO: Make a test to check this exception.
         if (!$this->fp){
-            throw new WriterException("Can't open the file: \"$path\"!");
+            throw new WriterException("Can't open the file: \"$path\"!", 200);
         }
     }
 

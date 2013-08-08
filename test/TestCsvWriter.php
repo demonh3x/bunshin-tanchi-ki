@@ -34,6 +34,20 @@ class TestCsvWriter extends TestFixture{
         Assert::isTrue(file_exists($path));
     }
 
+    function testCreatingANotValidPathThrowsAWriterExceptionWithCode200(){
+        $path = "";
+
+        $exceptionThrown = false;
+        try{
+            $this->createWriter($path);
+        }catch (\WriterException $e){
+            $exceptionThrown = true;
+            Assert::areIdentical(200, $e->getCode());
+        }
+
+        Assert::isTrue($exceptionThrown);
+    }
+
     function testWritingRow(){
         $path = "sampleFiles/test_csv_writer_write.csv";
         $this->deleteFile($path);
