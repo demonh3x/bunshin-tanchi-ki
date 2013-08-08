@@ -2,6 +2,27 @@
 <html>
 <head>
     <title></title>
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script>
+        $(document).ready(function(){
+
+            var i = $('input[type=file]').size() + 1;
+
+            $('#add').click(function() {
+                $('<div><input type="file" class="field" name="file' + i + '"/>' +
+                    '</div>').fadeIn('slow').insertAfter('div:last');
+                i++;
+            });
+
+            $('#remove').click(function() {
+                if(i > 1) {
+                    $('.field:last').remove();
+                    i--;
+                }
+            });
+
+        });
+    </script>
 </head>
 <body>
     <h1>Index</h1>
@@ -12,9 +33,12 @@
     ?>
 
     <h2>Create new work:</h2>
-    <form enctype="multipart/form-data" action="upload.php" method="POST">
-        <input type="file" name="file"/>
-        <input type="submit"/>
+    <form name="uploadFiles" enctype="multipart/form-data" action="upload.php" method="POST">
+        <div><input type="file" name="file1"/></div>
+        <br>
+        <input type="submit" name="submit"/>
+        <input type="button" id="add" value="Add file">
+        <input type="button" id="remove" value="Remove file">
     </form>
 
     <h2>View existing works:</h2>
