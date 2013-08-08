@@ -18,7 +18,8 @@ class TestHashUniquesScanner extends TestFixture{
 
     private function createScanner(){
         return Core::getCodeCoverageWrapper('HashUniquesScanner', array(
-            new \StringHashCalculator()
+            new \StringHashCalculator(),
+            new \HashList()
         ));
     }
 /*
