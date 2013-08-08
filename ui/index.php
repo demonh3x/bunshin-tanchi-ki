@@ -10,7 +10,7 @@
 
             $('#add').click(function() {
                 $('<div><input type="file" class="field" name="file' + i + '"/>' +
-                    '</div>').fadeIn('slow').insertAfter('div:last');
+                    '</div>').fadeIn('fast').insertBefore('input[name=createNewWork]');
                 i++;
             });
 
@@ -35,8 +35,8 @@
     <h2>Create new work:</h2>
     <form name="uploadFiles" enctype="multipart/form-data" action="upload.php" method="POST">
         <div><input type="file" name="file1"/></div>
-        <br>
-        <input type="submit" name="submit"/>
+
+        <input type="submit" name="createNewWork" value="Submit"/>
         <input type="button" id="add" value="Add file">
         <input type="button" id="remove" value="Remove file">
     </form>
