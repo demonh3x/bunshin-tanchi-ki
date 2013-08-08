@@ -48,7 +48,7 @@ class HashUniquesExporter{
     }
 
     function setHashCalculator(HashCalculator $calculator){
-        $this->scanner = new HashUniquesScanner($calculator);
+        $this->scanner = new HashUniquesScanner($calculator, new HashList());
         foreach ($this->readers as $reader) {
             $this->scanner->addReader($reader);
         }

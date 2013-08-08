@@ -2,7 +2,7 @@
 namespace Enhance;
 
 include_once(__ROOT_DIR__ . "src/Writers/CsvWriter.php");
-include_once(__ROOT_DIR__ . "src/Readers/CsvReader.php");
+include_once(__ROOT_DIR__ . "src/RandomReaders/CsvRandomReader.php");
 
 class TestCsvWriter extends TestFixture{
 
@@ -48,9 +48,9 @@ class TestCsvWriter extends TestFixture{
         );
         $writer->writeRow($inputRow);
 
-        $reader = new \CsvReader();
+        $reader = new \CsvRandomReader();
         $reader->open($path);
-        $outputRow = $reader->readRow();
+        $outputRow = $reader->readRow(0);
 
         Assert::areIdentical($inputRow, $outputRow);
     }
@@ -69,9 +69,9 @@ class TestCsvWriter extends TestFixture{
         );
         $writer->writeRow($inputRow);
 
-        $reader = new \CsvReader();
+        $reader = new \CsvRandomReader();
         $reader->open($path);
-        $outputRow = $reader->readRow();
+        $outputRow = $reader->readRow(0);
 
         $expected = array(
             "0" => "Foo",
@@ -94,9 +94,9 @@ class TestCsvWriter extends TestFixture{
         );
         $writer->writeRow($inputRow);
 
-        $reader = new \CsvReader();
+        $reader = new \CsvRandomReader();
         $reader->open($path);
-        $outputRow = $reader->readRow();
+        $outputRow = $reader->readRow(0);
 
         $expected = array(
             "0" => "₤☻£﷼"
@@ -137,11 +137,11 @@ class TestCsvWriter extends TestFixture{
         );
         $writer2->writeRow($inputRow2);
 
-        $reader = new \CsvReader();
+        $reader = new \CsvRandomReader();
         $reader->open($path);
         $current = array();
-        while(!$reader->isEof()){
-            $current[] = $reader->readRow();
+        for ($i = 0; $i < $reader->getRowCount(); $i++){
+            $current[] = $reader->readRow($i);
         }
 
         $expected = array(

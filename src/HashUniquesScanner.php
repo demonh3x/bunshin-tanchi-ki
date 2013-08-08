@@ -3,7 +3,7 @@
 include_once("HashCalculators/HashCalculator.php");
 include_once("RandomReaders/RandomReader.php");
 
-include_once("HashList.php");
+include_once("UniquesList.php");
 include_once("Row.php");
 
 include_once("RowCollection.php");
@@ -18,9 +18,9 @@ class HashUniquesScanner {
 
     private $duplicatesListener;
 
-    function __construct(HashCalculator $calculator){
+    function __construct(HashCalculator $calculator, UniquesList $uniquesList){
         $this->calculator = $calculator;
-        $this->appearedRows = new HashList();
+        $this->appearedRows = $uniquesList;
         $this->setDuplicatesListener(new NullRowListener());
     }
 
