@@ -8,6 +8,8 @@ include_once("Writers/NullWriter.php");
 
 include_once("HashCalculators/RowFilter.php");
 
+include_once("HashList.php");
+
 class HashUniquesExporter{
     private $scanner;
     private $readers = array();
