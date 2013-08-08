@@ -12,8 +12,8 @@ class TestCsvWriter extends TestFixture{
     public function tearDown(){
     }
 
-    private function createWriter(){
-        return Core::getCodeCoverageWrapper("CsvWriter");
+    private function createWriter($path){
+        return Core::getCodeCoverageWrapper("CsvWriter", array($path));
     }
 
     private function deleteFile($path){
@@ -26,22 +26,20 @@ class TestCsvWriter extends TestFixture{
     }
 
     function testCreateFile(){
-        $writer = $this->createWriter();
-
         $path = "sampleFiles/test_csv_writer_create.csv";
         $this->deleteFile($path);
 
-        $writer->create($path);
+        $this->createWriter($path);
+
         Assert::isTrue(file_exists($path));
     }
 
     function testWritingRow(){
-        $writer = $this->createWriter();
-
         $path = "sampleFiles/test_csv_writer_write.csv";
         $this->deleteFile($path);
 
-        $writer->create($path);
+        $writer = $this->createWriter($path);
+
         $inputRow = array(
             "0" => "Foo",
             "1" => "Bar"
@@ -55,12 +53,11 @@ class TestCsvWriter extends TestFixture{
     }
 
     function testColumnNamesNotWriting(){
-        $writer = $this->createWriter();
-
         $path = "sampleFiles/test_csv_writer_write.csv";
         $this->deleteFile($path);
 
-        $writer->create($path);
+        $writer = $this->createWriter($path);
+
         $inputRow = array(
             "0" => "Foo",
             "1" => "Bar",
@@ -81,12 +78,11 @@ class TestCsvWriter extends TestFixture{
     }
 
     function testWritingUTF8Characters(){
-        $writer = $this->createWriter();
-
         $path = "sampleFiles/test_csv_writer_write.csv";
         $this->deleteFile($path);
 
-        $writer->create($path);
+        $writer = $this->createWriter($path);
+
         $inputRow = array(
             "0" => "₤☻£﷼"
         );
@@ -102,32 +98,18 @@ class TestCsvWriter extends TestFixture{
         Assert::areIdentical($expected, $outputRow);
     }
 
-    function testIsReady(){
-        $writer = $this->createWriter();
-        Assert::isFalse($writer->isReady());
-
-        $path = "sampleFiles/test_csv_writer_ready.csv";
-        $this->deleteFile($path);
-
-        $writer->create($path);
-        Assert::isTrue($writer->isReady());
-    }
-
     function testAppending(){
-        $writer = $this->createWriter();
-
         $path = "sampleFiles/test_csv_writer_append.csv";
         $this->deleteFile($path);
 
-        $writer->create($path);
+        $writer = $this->createWriter($path);
         $inputRow1 = array(
             "0" => "Foo",
             "1" => "Bar"
         );
         $writer->writeRow($inputRow1);
 
-        $writer2 = $this->createWriter();
-        $writer2->create($path);
+        $writer2 = $this->createWriter($path);
         $inputRow2 = array(
             "0" => "Bar",
             "1" => "Foo"

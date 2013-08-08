@@ -3,19 +3,15 @@
 include_once("Writer.php");
 
 class CsvWriter implements Writer{
-    private $ready = false,
-        $fp;
+    private $fp;
 
-    function create($path) {
+    function __construct($path) {
         $this->fp = fopen($path, 'a');
-        if ((bool) $this->fp)
-        {
-            $this->ready=true;
-        }
-    }
 
-    function isReady() {
-        return $this->ready;
+        //TODO: Make a test to check this exception.
+        if (!$this->fp){
+            throw new WriterException("Can't open the file: \"$path\"!");
+        }
     }
 
     function writeRow($data) {
@@ -30,8 +26,7 @@ class CsvWriter implements Writer{
     }
 
     function __destruct() {
-        if ($this->fp)
-        {
+        if ($this->fp){
             fclose($this->fp);
         }
     }
