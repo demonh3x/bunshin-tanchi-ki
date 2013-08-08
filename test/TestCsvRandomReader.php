@@ -14,37 +14,43 @@ class TestCsvRandomReader extends TestFixture{
     public function tearDown(){
     }
 
-    private function createReader(){
-        return Core::getCodeCoverageWrapper("CsvRandomReader");
+    private function createReader($path){
+        return Core::getCodeCoverageWrapper("CsvRandomReader", array($path));
     }
 
-    function testNotReadyOnCreate(){
-        $reader = $this->createReader();
-        Assert::isFalse($reader->isReady());
+    function testOpenVoidPathThrowsAnInputExceptionWithCode200(){
+        $exceptionThrown = false;
+
+        try {
+            $this->createReader('');
+        } catch (\InputException $e){
+            $exceptionThrown = true;
+            Assert::areIdentical(200, $e->getCode());
+        }
+
+        Assert::isTrue($exceptionThrown);
     }
 
-    function testOpenNonExistingFile(){
-        $reader = $this->createReader();
-        $reader->open('');
-        Assert::isFalse($reader->isReady());
+    function testOpenNonExistingFileThrowsAnInputExceptionWithCode201(){
+        $exceptionThrown = false;
+
+        try {
+            $this->createReader('test/sampleFiles/non_existing_file.csv');
+        } catch (\InputException $e){
+            $exceptionThrown = true;
+            Assert::areIdentical(201, $e->getCode());
+        }
+
+        Assert::isTrue($exceptionThrown);
     }
 
-    function testReadEmptyFile(){
-        $reader = $this->createReader();
-        $reader->open(__ROOT_DIR__ . 'test/sampleFiles/test_empty_data.csv');
+    function testReadEmptyFileCounts0Rows(){
+        $reader = $this->createReader(__ROOT_DIR__ . 'test/sampleFiles/test_empty_data.csv');
         Assert::areIdentical(0, $reader->getRowCount());
     }
 
     private function createTestReader(){
-        $reader = $this->createReader();
-        $reader->open($this->testDataCsv);
-
-        return $reader;
-    }
-
-    function testOpenFile(){
-        $reader = $this->createTestReader();
-        Assert::isTrue($reader->isReady());
+        return $this->createReader($this->testDataCsv);
     }
 
     function testCountLines(){
