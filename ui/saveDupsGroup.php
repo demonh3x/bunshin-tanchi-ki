@@ -35,8 +35,7 @@
         throw new Exception("Could not open the uniques file to write! [$uniquesFilePath]");
     }
 
-    $uniquesReader = new CsvRandomReader();
-    $uniquesReader->open($uniquesFilePath);
+    $uniquesReader = new CsvRandomReader($uniquesFilePath);
     if (!$uniquesReader->isReady()){
         beforeError();
         throw new Exception("Could not read the uniques file! [$uniquesFilePath]");
@@ -49,8 +48,7 @@
         $writer->writeRow($row);
     }
 
-    $uniquesReaderAfterWriting = new CsvRandomReader();
-    $uniquesReaderAfterWriting->open($uniquesFilePath);
+    $uniquesReaderAfterWriting = new CsvRandomReader($uniquesFilePath);
     if (!$uniquesReaderAfterWriting->isReady()){
         beforeError();
         throw new Exception("Could not read the uniques file to check the merge! [$uniquesFilePath]");
