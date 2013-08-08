@@ -48,8 +48,7 @@ class TestCsvWriter extends TestFixture{
         );
         $writer->writeRow($inputRow);
 
-        $reader = new \CsvRandomReader();
-        $reader->open($path);
+        $reader = new \CsvRandomReader($path);
         $outputRow = $reader->readRow(0);
 
         Assert::areIdentical($inputRow, $outputRow);
@@ -69,8 +68,7 @@ class TestCsvWriter extends TestFixture{
         );
         $writer->writeRow($inputRow);
 
-        $reader = new \CsvRandomReader();
-        $reader->open($path);
+        $reader = new \CsvRandomReader($path);
         $outputRow = $reader->readRow(0);
 
         $expected = array(
@@ -94,8 +92,7 @@ class TestCsvWriter extends TestFixture{
         );
         $writer->writeRow($inputRow);
 
-        $reader = new \CsvRandomReader();
-        $reader->open($path);
+        $reader = new \CsvRandomReader($path);
         $outputRow = $reader->readRow(0);
 
         $expected = array(
@@ -137,8 +134,7 @@ class TestCsvWriter extends TestFixture{
         );
         $writer2->writeRow($inputRow2);
 
-        $reader = new \CsvRandomReader();
-        $reader->open($path);
+        $reader = new \CsvRandomReader($path);
         $current = array();
         for ($i = 0; $i < $reader->getRowCount(); $i++){
             $current[] = $reader->readRow($i);

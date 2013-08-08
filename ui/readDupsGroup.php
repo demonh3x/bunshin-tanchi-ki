@@ -12,15 +12,13 @@ class Arrays {
         $identifyingFile = $this->getIdentifyingValuesFile($dupsGroupPath);
 
 
-        $CsvRandomReader = new CsvRandomReader();
-        $CsvRandomReader->open($dupsGroupPath);
+        $CsvRandomReader = new CsvRandomReader($dupsGroupPath);
         for ($i = 0; $i < $CsvRandomReader->getRowCount(); $i++)
         {
             array_push( $this->arrayRows, $CsvRandomReader->readRow($i) );
         }
 
-        $identifyingFileReader = new CsvRandomReader();
-        $identifyingFileReader->open($identifyingFile);
+        $identifyingFileReader = new CsvRandomReader($identifyingFile);
         for ($i = 0; $i < $identifyingFileReader->getRowCount(); $i++)
         {
             $value = $identifyingFileReader->readRow($i);

@@ -86,8 +86,7 @@
         }
 
         function getArrayOfExistingPURLs($file) {
-            $reader = new CsvRandomReader();
-            $reader->open($file);
+            $reader = new CsvRandomReader($file);
             $arrayUsedPurls = array();
 
             for ($i = 0; $i < $reader->getRowCount(); $i++){
@@ -100,8 +99,7 @@
 
 
     <?php
-        $reader = new CsvRandomReader();
-        $reader->open($file);
+        $reader = new CsvRandomReader($file);
 
         $outputFile = getNonExistingOutputFile($file);
         $writer = new CsvWriter();

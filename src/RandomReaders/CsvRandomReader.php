@@ -3,18 +3,29 @@
 ini_set("auto_detect_line_endings", true);
 include_once("RandomReader.php");
 
+include_once("InputException.php");
+
 class CsvRandomReader implements RandomReader{
-    private $ready = false;
     private $filePointer;
     private $rowCount;
     private $rowPositionMap = array();
 
-    function open($path) {
-        $this->filePointer = fopen($path, "r");
-        $this->ready = (bool) $this->filePointer;
-        if ($this->isReady()){
-            $this->scanFile();
+    function __construct($path) {
+        if (empty($path)){
+            throw new InputException("The path \"$path\" has to be valid!", 200);
         }
+
+        if (!is_file($path)){
+            throw new InputException("The path: \"$path\" doesn't represent a file!", 201);
+        }
+
+        $this->filePointer = fopen($path, "r");
+
+        if (!$this->filePointer){
+            throw new InputException("Can't open the file in the path: \"$path\"!", 299);
+        }
+
+        $this->scanFile();
     }
 
     private function scanFile(){
@@ -53,10 +64,6 @@ class CsvRandomReader implements RandomReader{
 
     private function readFileLine(){
         return fgets($this->filePointer);
-    }
-
-    function isReady() {
-        return $this->ready;
     }
 
     function readRow($index) {
