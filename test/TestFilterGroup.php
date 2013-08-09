@@ -15,7 +15,7 @@ class TestFilterGroup extends TestFixture{
     }
 
     private function createFilterGroup(){
-        return Core::getCodeCoverageWrapper("FilterGroup");
+        return Core::getCodeCoverageWrapper("FilterGroup", func_get_args());
     }
 
     function testNoFilters(){
@@ -24,38 +24,31 @@ class TestFilterGroup extends TestFixture{
     }
 
     function testOneFilter(){
-        $group = $this->createFilterGroup();
-        $group->addFilter(new UppercaseMockFilter());
+        $group = $this->createFilterGroup(new UppercaseMockFilter());
         Assert::areIdentical("HI", $group->applyTo("hi"));
     }
 
     function testTwoFiltersOneWay(){
-        $group = $this->createFilterGroup();
-        $group->addFilter(new NoSpacesMockFilter());
-        $group->addFilter(new UppercaseMockFilter());
+        $group = $this->createFilterGroup(array(
+            new NoSpacesMockFilter(),
+            new UppercaseMockFilter()
+        ));
         Assert::areIdentical("HI", $group->applyTo(" h i "));
     }
 
     function testTwoFiltersReversed(){
-        $group = $this->createFilterGroup();
-        $group->addFilter(new UppercaseMockFilter());
-        $group->addFilter(new NoSpacesMockFilter());
+        $group = $this->createFilterGroup(array(
+            new UppercaseMockFilter(),
+            new NoSpacesMockFilter()
+        ));
         Assert::areIdentical("HI", $group->applyTo(" h i "));
     }
 
     function testGroupCreationByParameters(){
-        $group = \FilterGroup::create(
+        $group = $this->createFilterGroup(
             new UppercaseMockFilter(),
             new NoSpacesMockFilter()
         );
-        Assert::areIdentical("HI", $group->applyTo(" h i "));
-    }
-
-    function testGroupCreationByArray(){
-        $group = \FilterGroup::create(array(
-            new UppercaseMockFilter(),
-            new NoSpacesMockFilter()
-        ));
         Assert::areIdentical("HI", $group->applyTo(" h i "));
     }
 }

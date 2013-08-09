@@ -183,7 +183,7 @@ function getFilterGroup($arrayNames){
         $class = $name . "Filter";
         $filters[] = new $class();
     }
-    return FilterGroup::create($filters);
+    return new FilterGroup($filters);
 }
 
 function getConfigFile(){

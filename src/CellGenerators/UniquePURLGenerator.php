@@ -33,14 +33,14 @@ class UniquePURLGenerator {
     private function initCleaningFilters($firstnameField, $surnameField, $salutationField){
         $this->cleaningFilter = new RowFilter();
         $this->cleaningFilter->setFilter(
-            FilterGroup::create(
+            new FilterGroup(
                 new TrimFilter(),
                 new UppercaseFirstLetterFilter()
             ),
             $salutationField
         );
         $this->cleaningFilter->setFilter(
-            FilterGroup::create(
+            new FilterGroup(
                 new TrimFilter(),
                 new SubstituteAccentsFilter(),
                 new OnlyLettersFilter(),
@@ -49,7 +49,7 @@ class UniquePURLGenerator {
             $firstnameField
         );
         $this->cleaningFilter->setFilter(
-            FilterGroup::create(
+            new FilterGroup(
                 new TrimFilter(),
                 new SubstituteAccentsFilter(),
                 new OnlyLettersFilter(),

@@ -3,33 +3,29 @@
 include_once("Filter.php");
 
 class FilterGroup implements Filter{
-    private static $instance;
+    private $filters = array();
 
-    static function create(){
-        static::$instance = new self();
+    function __construct($filters = array()){
         $arguments = func_get_args();
-        static::addAll($arguments);
-        return static::$instance;
+        $this->addFilters($arguments);
     }
 
-    private static function addAll($array){
-        foreach ($array as $value){
-            if (is_array($value)){
-                static::addAll($value);
-            } else {
-                static::$instance->addFilter($value);
+    private function addFilters($filters){
+        if (is_array($filters)){
+            foreach ($filters as $filter){
+                $this->addFilters($filter);
             }
+        } else {
+            $this->addFilter($filters);
         }
     }
 
-    private $filters = array();
+    private function addFilter(Filter $filter){
+        $this->filters[] = $filter;
+    }
 
     function applyTo($text){
         return $this->applyFilters($text);
-    }
-
-    function addFilter(Filter $filter){
-        $this->filters[] = $filter;
     }
 
     private function applyFilters($text){
