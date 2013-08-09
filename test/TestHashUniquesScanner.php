@@ -16,10 +16,12 @@ class TestHashUniquesScanner extends TestFixture{
     public function tearDown(){
     }
 
-    private function createScanner(){
+    private function createScanner($readers = array(), $dupListener = null){
         return Core::getCodeCoverageWrapper('HashUniquesScanner', array(
             new \StringHashCalculator(),
-            new \HashList()
+            new \HashList(),
+            $readers,
+            $dupListener
         ));
     }
 /*
@@ -45,18 +47,14 @@ class TestHashUniquesScanner extends TestFixture{
     }
 
     private function createDefaultScanner($readerData){
-        $scanner = $this->createScanner();
-
-        $ramId = "testHashUniquesScanner";
-        unset($GLOBALS[$ramId]);
-
-        $reader = $this->createRamReader($readerData, $ramId);
-        $scanner->addReader($reader);
-
+        $reader = $this->createRamReader($readerData, "testHashUniquesScanner");
+        $scanner = $this->createScanner($reader);
         return $scanner;
     }
 
     private function createRamReader($data, $id){
+        unset($GLOBALS[$id]);
+
         $writer = new \RamWriter($id);
         foreach ($data as $row){
             $writer->writeRow($row);
@@ -240,8 +238,9 @@ class TestHashUniquesScanner extends TestFixture{
             )
         );
 
-        $scanner = $this->createDefaultScanner($inputA);
-        $scanner->addReader($this->createRamReader($inputB, "testGettingUniquesTwoInputsDataB"));
+        $readerA = $this->createRamReader($inputA, "testGettingUniquesTwoInputsDataA");
+        $readerB = $this->createRamReader($inputB, "testGettingUniquesTwoInputsDataB");
+        $scanner = $this->createScanner(array($readerA, $readerB));
 
         $expected = array(
             array(
@@ -281,12 +280,13 @@ class TestHashUniquesScanner extends TestFixture{
             )
         );
 
-        $scanner = $this->createDefaultScanner($inputA);
-        $scanner->addReader($this->createRamReader($inputB, "testReceivingDuplicatesDataB"));
+        $readerA = $this->createRamReader($inputA, "testReceivingDuplicatesDataA");
+        $readerB = $this->createRamReader($inputB, "testReceivingDuplicatesDataB");
 
         $duplicatesListener = new MockRowListener();
 
-        $scanner->setDuplicatesListener($duplicatesListener);
+        $scanner = $this->createScanner(array($readerA, $readerB), $duplicatesListener);
+
         $scanner->getUniques();
 
         $expected = array(

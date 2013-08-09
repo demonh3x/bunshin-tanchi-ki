@@ -12,6 +12,8 @@ include_once("HashList.php");
 
 class HashUniquesExporter{
     private $scanner;
+    private $hashCalculator;
+    private $duplicatesListener = null;
     private $readers = array();
     private $uniquesWriter;
 
@@ -35,22 +37,24 @@ class HashUniquesExporter{
     }
 
     function setDuplicatesWriterFactory(WriterFactory $factory, RowFilter $duplicatesRowFilter = null){
-        $this->scanner->setDuplicatesListener(
-            new DuplicatesExporter(
-                $factory,
-                is_null($duplicatesRowFilter)? new RowFilter(): $duplicatesRowFilter
-            )
+        $this->duplicatesListener = new DuplicatesExporter(
+            $factory,
+            is_null($duplicatesRowFilter)? new RowFilter(): $duplicatesRowFilter
         );
     }
 
     function setHashCalculator(HashCalculator $calculator){
-        $this->scanner = new HashUniquesScanner($calculator, new HashList());
-        foreach ($this->readers as $reader) {
-            $this->scanner->addReader($reader);
-        }
+        $this->hashCalculator = $calculator;
     }
 
     function scan(){
+        $this->scanner = new HashUniquesScanner(
+            $this->hashCalculator,
+            new HashList(),
+            $this->readers,
+            $this->duplicatesListener
+        );
+
         $uniques = $this->scanner->getUniques();
         foreach ($uniques as $unique){
             $filteredUniqueRow = $this->uniquesRowFilter->applyTo($unique);

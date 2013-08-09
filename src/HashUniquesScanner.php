@@ -18,23 +18,34 @@ class HashUniquesScanner {
 
     private $duplicatesListener;
 
-    function __construct(HashCalculator $calculator, UniquesList $uniquesList){
+    function __construct(HashCalculator $calculator, UniquesList $uniquesList, $randomReaders = array(), RowListener $duplicatesListener = null){
         $this->calculator = $calculator;
         $this->appearedRows = $uniquesList;
-        $this->setDuplicatesListener(new NullRowListener());
-    }
 
-    function addReader(RandomReader $reader){
-        $this->readers[] = $reader;
-    }
+        if (is_array($randomReaders)){
+            foreach ($randomReaders as $randomReader){
+                $this->addReader($randomReader);
+            }
+        } else {
+            $this->addReader($randomReaders);
+        }
 
-    function setDuplicatesListener(RowListener $listener){
-        $this->duplicatesListener = $listener;
+        $this->setDuplicatesListener(
+            is_null($duplicatesListener)? new NullRowListener(): $duplicatesListener
+        );
     }
 
     function getUniques(){
         $this->processAllInputRows();
         return $this->createResultsIterator();
+    }
+
+    private function addReader(RandomReader $reader){
+        $this->readers[] = $reader;
+    }
+
+    private function setDuplicatesListener(RowListener $listener){
+        $this->duplicatesListener = $listener;
     }
 
     private function processAllInputRows(){
