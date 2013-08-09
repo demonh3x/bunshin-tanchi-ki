@@ -75,9 +75,9 @@ class DuplicatesExporter implements RowListener{
         $this->rowFilter = $rowFilter;
     }
 
-    function receiveRow(Row $row){
-        $filteredRow = $this->rowFilter->applyTo($row->getData());
-        $writer = $this->getWriter($row->getHash());
+    function receiveRow(RandomReader $reader, $rowIndex, $rowHash){
+        $filteredRow = $this->rowFilter->applyTo($reader->readRow($rowIndex));
+        $writer = $this->getWriter($rowHash);
         $writer->writeRow($filteredRow);
     }
 

@@ -148,7 +148,7 @@ class TestOccurrenceScanner extends TestFixture{
 }
 class NotMatchingReceiver implements \RowListener{
     public $rows = array();
-    function receiveRow(\Row $row){
-        $this->rows[] = $row->getData();
+    function receiveRow(\RandomReader $reader, $rowIndex, $rowHash){
+        $this->rows[] = $reader->readRow($rowIndex);
     }
 }

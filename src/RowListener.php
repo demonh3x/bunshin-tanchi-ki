@@ -3,5 +3,5 @@
 include_once("Row.php");
 
 interface RowListener {
-    function receiveRow(Row $row);
+    function receiveRow(RandomReader $reader, $rowIndex, $rowHash);
 }
