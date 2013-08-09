@@ -10,12 +10,12 @@ class CsvRandomReader implements RandomReader{
     protected  $rowCount;
     protected $rowPositionMap = array();
 
-    function __construct($path) {
-        $this->checkIfPathIsValid($path);
+    function __construct($filePath) {
+        $this->checkIfPathIsValid($filePath);
 
-        $this->filePointer = fopen($path, "r");
+        $this->filePointer = fopen($filePath, "r");
 
-        $this->checkIfFileIsOpened($path);
+        $this->checkIfFileIsOpened($filePath);
 
         $this->scanFile();
     }

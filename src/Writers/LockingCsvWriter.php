@@ -20,14 +20,14 @@ class LockingCsvWriter extends CsvWriter implements Writer{
     private $path;
     private $isThisFileLocking = false;
 
-    function __construct($path){
-        $this->path = $path;
+    function __construct($filePath){
+        $this->path = $filePath;
 
         if ($this->isLocked()){
-            throw new WriterException("The file \"$path\" is locked!", 2000);
+            throw new WriterException("The file \"$filePath\" is locked!", 2000);
         }
 
-        parent::__construct($path);
+        parent::__construct($filePath);
 
         $this->isThisFileLocking = true;
         $this->lock();
