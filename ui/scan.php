@@ -15,6 +15,7 @@
         ini_set('memory_limit', '-1');
 
         include_once(__ROOT_DIR__ . "src/HashUniquesExporter.php");
+        include_once(__ROOT_DIR__ . "src/HashList.php");
         include_once(__ROOT_DIR__ . "src/RandomReaders/CsvRandomReader.php");
         include_once(__ROOT_DIR__ . "src/HashCalculators/StringHashCalculator.php");
         foreach (glob(__ROOT_DIR__ . "src/Writers/*.php") as $filename){
@@ -61,12 +62,10 @@
 
         $startTime = microtime(true);
 
-        $scanner = new HashUniquesExporter();
 
+        $readers = array();
         foreach ($INPUT_FILES as $inputFile){
-            $reader = new CsvRandomReader($inputFile);
-
-            $scanner->addReader($reader);
+            $readers[] = new CsvRandomReader($inputFile);
         }
 
         $calculator = new StringHashCalculator();
@@ -76,10 +75,9 @@
                 $column
             );
         }
-
         $calculator->watchColumns($WATCH_COLUMNS);
 
-        $scanner->setHashCalculator($calculator);
+        $scanner = new HashUniquesExporter($calculator, new HashList(), $readers);
 
         $uniquesWriter = new CsvWriter($UNIQUES_FILE);
 
@@ -88,8 +86,6 @@
         }
         $cleaningFilters = new PerColumnRowFilter($CLEANING_COLUMN_FILTERS);
 
-        $scanner->setUniquesWriter($uniquesWriter, $cleaningFilters);
-
         class CustomWriterFactory implements WriterFactory{
             function createWriter($id){
                 global $DUPS_DIR;
@@ -97,12 +93,11 @@
                 return $writer;
             }
         }
-        $scanner->setDuplicatesWriterFactory(new CustomWriterFactory(), $cleaningFilters);
 
         $memoryUsage = memory_get_usage(true) / 1024 / 1024;
         echo "<h1>Memory Usage: $memoryUsage MB</h1>";
 
-        $scanner->scan();
+        $scanner->export($uniquesWriter, new CustomWriterFactory(), $cleaningFilters);
 
         echo "<h1>Done!</h1>";
 
