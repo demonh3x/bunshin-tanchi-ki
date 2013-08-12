@@ -3,7 +3,7 @@
 include_once("Row.php");
 include_once("RowCollection.php");
 
-include_once("HashCalculators/RowFilter.php");
+include_once("HashCalculators/NullRowFilter.php");
 
 include_once("RowListener.php");
 
@@ -15,7 +15,7 @@ class OccurrenceScanner {
         $this->reader = $reader;
         $this->regex = $regex;
         $this->columnsToScan = $columns;
-        $this->rowFilter = is_null($rowFilter)? new RowFilter(): $rowFilter;
+        $this->rowFilter = is_null($rowFilter)? new NullRowFilter(): $rowFilter;
         $this->notMatchingListener = new NullRowListener();
     }
 

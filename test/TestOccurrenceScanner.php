@@ -6,7 +6,7 @@ include_once(__ROOT_DIR__ . "src/OccurrenceScanner.php");
 include_once(__ROOT_DIR__ . "src/Writers/RamWriter.php");
 include_once(__ROOT_DIR__ . "src/RandomReaders/RamRandomReader.php");
 
-include_once(__ROOT_DIR__ . "src/HashCalculators/RowFilter.php");
+include_once(__ROOT_DIR__ . "src/HashCalculators/PerColumnRowFilter.php");
 include_once("mocks/LowercaseMockFilter.php");
 
 class TestOccurrenceScanner extends TestFixture{
@@ -116,8 +116,9 @@ class TestOccurrenceScanner extends TestFixture{
             array("0" => "Foo")
         );
 
-        $rowFilter = new \RowFilter();
-        $rowFilter->setGlobalFilter(new LowercaseMockFilter());
+        $rowFilter = new \PerColumnRowFilter(array(
+            "0" => new LowercaseMockFilter()
+        ));
 
         $this->assertOccurrences($input, $expected, $regex, array(), $rowFilter);
     }

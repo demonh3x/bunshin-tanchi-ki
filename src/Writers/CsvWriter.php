@@ -7,11 +7,11 @@ include_once("WriterException.php");
 class CsvWriter implements Writer{
     private $fp;
 
-    function __construct($path) {
-        $this->fp = fopen($path, 'a');
+    function __construct($filePath) {
+        $this->fp = fopen($filePath, 'a');
 
         if (!$this->fp){
-            throw new WriterException("Can't open the file: \"$path\"!", 200);
+            throw new WriterException("Can't open the file: \"$filePath\"!", 200);
         }
     }
 

@@ -6,15 +6,15 @@ include_once("RandomReaderException.php");
 class RamRandomReader implements RandomReader{
     private $pointerToGlobal;
 
-    function __construct($id){
-        if (!isset($GLOBALS[$id])){
-            throw new RandomReaderException("Can't use the global variable \"$id\" because it is not defined!", 100);
+    function __construct($globalVariableName){
+        if (!isset($GLOBALS[$globalVariableName])){
+            throw new RandomReaderException("Can't use the global variable \"$globalVariableName\" because it is not defined!", 100);
         }
-        if (!is_array($GLOBALS[$id])){
-            throw new RandomReaderException("Can't use the global variable \"$id\" because it is not an array!", 101);
+        if (!is_array($GLOBALS[$globalVariableName])){
+            throw new RandomReaderException("Can't use the global variable \"$globalVariableName\" because it is not an array!", 101);
         }
 
-        $this->pointerToGlobal = &$GLOBALS[$id];
+        $this->pointerToGlobal = &$GLOBALS[$globalVariableName];
     }
 
     function readRow($index){
