@@ -65,9 +65,7 @@ class HashUniquesScanner {
     }
 
     private function readRow(RandomReader $reader, $rowIndex){
-        $row = new Row($reader, $rowIndex);
-        $row->setHashCalculator($this->hashCalculator);
-
+        $row = new Row($reader, $rowIndex, $this->hashCalculator);
         return $row;
     }
 

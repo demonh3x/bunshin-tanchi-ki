@@ -4,6 +4,7 @@ include_once("Row.php");
 include_once("RowCollection.php");
 
 include_once("HashCalculators/NullRowFilter.php");
+include_once("HashCalculators/NullHashCalculator.php");
 
 include_once("RowListener.php");
 
@@ -57,7 +58,7 @@ class OccurrenceScanner {
     }
 
     protected function readRow($rowIndex){
-        return new Row($this->reader, $rowIndex);
+        return new Row($this->reader, $rowIndex, new NullHashCalculator());
     }
 
     protected function addOccurrence(Row $row){

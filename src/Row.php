@@ -1,20 +1,18 @@
 <?php
 
-include_once ("HashCalculators/NullHashCalculator.php");
-
 class Row {
     private $reader, $index;
     private $hash, $hashCalculator;
     private $data;
 
-    function __construct(RandomReader $reader, $index){
+    function __construct(RandomReader $reader, $index, HashCalculator $hashCalculator){
         $this->reader = $reader;
         $this->index = $index;
 
-        $this->setHashCalculator(new NullHashCalculator());
+        $this->setHashCalculator($hashCalculator);
     }
 
-    function setHashCalculator(HashCalculator $hashCalculator){
+    private function setHashCalculator(HashCalculator $hashCalculator){
         $this->hashCalculator = $hashCalculator;
         $this->hash = $this->hashCalculator->calculate(
             $this->getData()
