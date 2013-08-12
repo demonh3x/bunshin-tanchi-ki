@@ -35,7 +35,7 @@ class TestHashUniquesScanner extends TestFixture{
 
     private function createDefaultScanner($readerData){
         $reader = $this->createRamReader($readerData, "testHashUniquesScanner");
-        $scanner = $this->createScanner($reader);
+        $scanner = $this->createScanner(array($reader));
         return $scanner;
     }
 

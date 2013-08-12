@@ -23,12 +23,8 @@ class HashUniquesScanner {
         $this->calculator = $calculator;
         $this->appearedRows = $uniquesList;
 
-        if (is_array($randomReaders)){
-            foreach ($randomReaders as $randomReader){
-                $this->addReader($randomReader);
-            }
-        } else {
-            $this->addReader($randomReaders);
+        foreach ($randomReaders as $randomReader){
+            $this->addReader($randomReader);
         }
 
         $this->setDuplicatesListener(
