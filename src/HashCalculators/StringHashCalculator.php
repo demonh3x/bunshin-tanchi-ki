@@ -7,20 +7,18 @@ include_once("NullRowFilter.php");
 include_once("PerColumnRowFilter.php");
 
 class StringHashCalculator implements HashCalculator{
-    protected $columnsToScan = array();
-    protected $rowFilter;
+    private $columnsToScan = array();
+    private $rowFilter;
 
-    private $filters = array();
+    function __construct(Array $watchColumns = array(), RowFilter $filter = null){
+        $this->rowFilter = is_null($filter)?
+            new NullRowFilter():
+            $filter;
 
-    function __construct(){
-        $this->rowFilter = new NullRowFilter();
+        $this->columnsToScan = $watchColumns;
     }
 
-    function watchColumns($columns){
-        $this->columnsToScan = $columns;
-    }
-
-    function calculate($row){
+    function calculate(Array $row){
         $hash = "";
 
         $rowColumns = array_keys($row);
@@ -38,16 +36,7 @@ class StringHashCalculator implements HashCalculator{
         return $hash;
     }
 
-    protected function areColumnsDefined(){
+    private function areColumnsDefined(){
         return !empty($this->columnsToScan);
-    }
-/*
-    function setGlobalFilter(Filter $filter){
-        $this->rowFilter->setGlobalFilter($filter);
-    }*/
-
-    function setFilter(Filter $filter, $column){
-        $this->filters[$column] = $filter;
-        $this->rowFilter = new PerColumnRowFilter($this->filters);
     }
 }

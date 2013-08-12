@@ -13,8 +13,8 @@ class TestStringHashCalculator extends TestFixture{
     public function tearDown(){
     }
 
-    private function createHashCalculator(){
-        return Core::getCodeCoverageWrapper('StringHashCalculator');
+    private function createHashCalculator($watchColumns = array(), \RowFilter $filter = null){
+        return Core::getCodeCoverageWrapper('StringHashCalculator', array($watchColumns, $filter));
     }
 
     function testOneColumnHash(){
@@ -39,7 +39,7 @@ class TestStringHashCalculator extends TestFixture{
     }
 
     function testSelectedColumnHash(){
-        $calculator = $this->createHashCalculator();
+        $calculator = $this->createHashCalculator(array("2"));
 
         $data = array(
             "0" => "foo",
@@ -47,14 +47,12 @@ class TestStringHashCalculator extends TestFixture{
             "2" => "asdf",
             "3" => "qwer"
         );
-
-        $calculator->watchColumns(array("2"));
 
         Assert::areIdentical("2asdf", $calculator->calculate($data));
     }
 
     function testSelectedColumnsHash(){
-        $calculator = $this->createHashCalculator();
+        $calculator = $this->createHashCalculator(array("0", "3"));
 
         $data = array(
             "0" => "foo",
@@ -63,38 +61,43 @@ class TestStringHashCalculator extends TestFixture{
             "3" => "qwer"
         );
 
-        $calculator->watchColumns(array("0", "3"));
-
         Assert::areIdentical("0foo3qwer", $calculator->calculate($data));
     }
 
     function testFilteredHash(){
-        $calculator = $this->createHashCalculator();
+        $filter = new \PerColumnRowFilter(array(
+            "0" => new LowercaseMockFilter()
+        ));
+        $calculator = $this->createHashCalculator(array(), $filter);
 
         $data = array(
             "0" => "Foo"
         );
 
-        $calculator->setFilter(new LowercaseMockFilter(), "0");
-
         Assert::areIdentical("0foo", $calculator->calculate($data));
     }
 
     function testDifferentFiltersPerColumn(){
-        $calculator = $this->createHashCalculator();
+        $filter = new \PerColumnRowFilter(array(
+            "0" => new LowercaseMockFilter(),
+            "1" => new RemoveSpacesMockFilter()
+        ));
+        $calculator = $this->createHashCalculator(array(), $filter);
 
         $data = array(
             "0" => "Foo",
             "1" => " B a r "
         );
-        $calculator->setFilter(new LowercaseMockFilter(), "0");
-        $calculator->setFilter(new RemoveSpacesMockFilter(), "1");
 
         Assert::areIdentical("0foo1Bar", $calculator->calculate($data));
     }
 
     function testSelectedColumnsWithFilters(){
-        $calculator = $this->createHashCalculator();
+        $filter = new \PerColumnRowFilter(array(
+            "1" => new LowercaseMockFilter(),
+            "3" => new RemoveSpacesMockFilter()
+        ));
+        $calculator = $this->createHashCalculator(array("3", "1"), $filter);
 
         $data = array(
             "0" => "asdf",
@@ -103,15 +106,16 @@ class TestStringHashCalculator extends TestFixture{
             "3" => " B a r "
         );
 
-        $calculator->watchColumns(array("3", "1"));
-        $calculator->setFilter(new LowercaseMockFilter(), "1");
-        $calculator->setFilter(new RemoveSpacesMockFilter(), "3");
-
         Assert::areIdentical("3Bar1foo", $calculator->calculate($data));
     }
 
     function testFilteringMultipleColumnsAtOnce(){
-        $calculator = $this->createHashCalculator();
+        $lowercaseFilter = new LowercaseMockFilter();
+        $filter = new \PerColumnRowFilter(array(
+            "1" => $lowercaseFilter,
+            "3" => $lowercaseFilter
+        ));
+        $calculator = $this->createHashCalculator(array("3", "1"), $filter);
 
         $data = array(
             "0" => "asdf",
@@ -120,17 +124,11 @@ class TestStringHashCalculator extends TestFixture{
             "3" => "Bar"
         );
 
-        $lowercaseFilter = new LowercaseMockFilter();
-
-        $calculator->watchColumns(array("3", "1"));
-        $calculator->setFilter($lowercaseFilter, "1");
-        $calculator->setFilter($lowercaseFilter, "3");
-
         Assert::areIdentical("3bar1foo", $calculator->calculate($data));
     }
 
     function testSelectingNonExistingColumns(){
-        $calculator = $this->createHashCalculator();
+        $calculator = $this->createHashCalculator(array("5", "asdf"));
 
         $data = array(
             "0" => "asdf",
@@ -138,14 +136,12 @@ class TestStringHashCalculator extends TestFixture{
             "2" => "qwer",
             "3" => " B a r "
         );
-
-        $calculator->watchColumns(array("5", "asdf"));
 
         Assert::areIdentical("", $calculator->calculate($data));
     }
 
     function testSelectingSomeNonExistingColumns(){
-        $calculator = $this->createHashCalculator();
+        $calculator = $this->createHashCalculator(array("1", "asdf"));
 
         $data = array(
             "0" => "asdf",
@@ -154,13 +150,11 @@ class TestStringHashCalculator extends TestFixture{
             "3" => " B a r "
         );
 
-        $calculator->watchColumns(array("1", "asdf"));
-
         Assert::areIdentical("1Foo", $calculator->calculate($data));
     }
 
     function testNullValues(){
-        $calculator = $this->createHashCalculator();
+        $calculator = $this->createHashCalculator(array("0", "1"));
 
         $data = array(
             "0" => null,
@@ -168,8 +162,6 @@ class TestStringHashCalculator extends TestFixture{
             "2" => "qwer",
             "3" => " B a r "
         );
-
-        $calculator->watchColumns(array("0", "1"));
 
         Assert::areIdentical("1Foo", $calculator->calculate($data));
     }
