@@ -87,4 +87,25 @@ class SQL
 
         return $sql;
     }
+
+    static function createTable ($table, $data) {
+        $sql = "CREATE TABLE " . $table . " (";
+/*
+        $i = 0;
+        $dataSize = count($data);*/
+
+        foreach ($data as $column => $value)
+        {
+            $processedData[] = $column . " varchar(100)";/*
+            $sql .= " " . $column . " varchar(100)";
+            $i++;
+            if ($i < $dataSize) { $sql .= ","; };*/
+        }
+        $sql .= implode(", ", $processedData);
+
+        $sql .= ")";
+        print_r($sql);
+
+        return $sql;
+    }
 }
