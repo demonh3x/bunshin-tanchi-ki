@@ -3,6 +3,7 @@ namespace Enhance;
 
 include_once(__ROOT_DIR__ . "src/HashUniquesExporter.php");
 include_once(__ROOT_DIR__ . "src/HashCalculators/StringHashCalculator.php");
+include_once(__ROOT_DIR__ . "src/HashList.php");
 include_once(__ROOT_DIR__ . "src/HashCalculators/PerColumnRowFilter.php");
 
 include_once(__ROOT_DIR__ . "test/mocks/NotReadyMockReader.php");
@@ -20,16 +21,14 @@ class TestHashUniquesExporter extends TestFixture{
     public function tearDown(){
     }
 
-    private function createExporter(){
+    private function createExporter(\HashCalculator $hashCalculator, \UniquesList $uniquesList, $randomReaders = array()){
         return Core::getCodeCoverageWrapper(
-            'HashUniquesExporter'
+            'HashUniquesExporter',
+            array($hashCalculator, $uniquesList, $randomReaders)
         );
     }
 
-    private function createExporterWithReader($readerData){
-        $exporter = $this->createExporter();
-
-        $ramId = "testHashDuplicatesExporter";
+    private function createRamReader($ramId, $readerData){
         unset($GLOBALS[$ramId]);
 
         $writer = new \RamWriter($ramId);
@@ -38,23 +37,16 @@ class TestHashUniquesExporter extends TestFixture{
         }
 
         $reader = new \RamRandomReader($ramId);
-        $exporter->addReader($reader);
-
-        return $exporter;
+        return $reader;
     }
 
-    private function createExporterrWithReaderAndHashCalculator($readerData){
-        $exporter = $this->createExporterWithReader($readerData);
+    private function createDefaultExporter($readerData){
+        $ramId = "testHashDuplicatesExporter";
+        $reader = $this->createRamReader($ramId, $readerData);
 
-        $hashCalculator = new \StringHashCalculator();
-        $exporter->setHashCalculator($hashCalculator);
+        $exporter = $this->createExporter(new \StringHashCalculator(), new \HashList(), array($reader));
 
         return $exporter;
-    }
-
-    function testNotRaisingExceptionWhenReaderAndHashCalculatorAreSet(){
-        $exporter = $this->createExporterrWithReaderAndHashCalculator(array());
-        $exporter->scan();
     }
 
     function testScanningWithUniquesWriterWhenNoDuplicatesOneColumn(){
@@ -70,7 +62,7 @@ class TestHashUniquesExporter extends TestFixture{
     }
 
     private function assertUniques($input, $expectedOutput){
-        $exporter = $this->createExporterrWithReaderAndHashCalculator($input);
+        $exporter = $this->createDefaultExporter($input);
 
         $ramId = "testHashDuplicatesExporterAssertUniques";
         unset($GLOBALS[$ramId]);
@@ -219,7 +211,7 @@ class TestHashUniquesExporter extends TestFixture{
     }
 
     private function assertDuplicates($input, $expectedOutput){
-        $exporter = $this->createExporterrWithReaderAndHashCalculator($input);
+        $exporter = $this->createDefaultExporter($input);
 
         $factory = new MockRamWriterFactory();
 
@@ -281,7 +273,7 @@ class TestHashUniquesExporter extends TestFixture{
             )
         );
 
-        $exporter = $this->createExporterrWithReaderAndHashCalculator($input);
+        $exporter = $this->createDefaultExporter($input);
 
         $ramId = "testFilteringTheOutputUniquesData";
         unset($GLOBALS[$ramId]);
@@ -342,7 +334,7 @@ class TestHashUniquesExporter extends TestFixture{
             )
         );
 
-        $exporter = $this->createExporterrWithReaderAndHashCalculator($input);
+        $exporter = $this->createDefaultExporter($input);
 
         $rowFilter = new \PerColumnRowFilter(array(
             "Column1" => new LowercaseMockFilter()
@@ -362,17 +354,10 @@ class TestHashUniquesExporter extends TestFixture{
         Assert::areIdentical($expectedOutput, $allDuplicates);
     }
 
-    private function createRamReader($ramId, $readerData){
-        unset($GLOBALS[$ramId]);
+    private function createMultipleReadersExporter($readers){
+        $exporter = $this->createExporter(new \StringHashCalculator(), new \HashList(), $readers);
 
-        $writer = new \RamWriter($ramId);
-        foreach ($readerData as $row){
-            $writer->writeRow($row);
-        }
-
-        $reader = new \RamRandomReader($ramId);
-
-        return $reader;
+        return $exporter;
     }
 
     function testMultipleReaders(){
@@ -431,12 +416,7 @@ class TestHashUniquesExporter extends TestFixture{
             )
         );
 
-        $exporter = $this->createExporter();
-
-        $exporter->addReader($reader1);
-        $exporter->addReader($reader2);
-
-        $exporter->setHashCalculator(new \StringHashCalculator());
+        $exporter = $this->createMultipleReadersExporter(array($reader1, $reader2));
 
         $factory = new MockRamWriterFactory();
 

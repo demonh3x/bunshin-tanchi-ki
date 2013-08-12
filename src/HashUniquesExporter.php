@@ -9,7 +9,7 @@ include_once("Writers/NullWriter.php");
 include_once("HashCalculators/RowFilter.php");
 include_once("HashCalculators/NullRowFilter.php");
 
-include_once("HashList.php");
+include_once("UniquesList.php");
 
 class HashUniquesExporter{
     private $scanner;
@@ -20,12 +20,21 @@ class HashUniquesExporter{
 
     private $uniquesRowFilter;
 
-    function __construct(){
+    private $uniquesList;
+
+    function __construct(HashCalculator $hashCalculator, UniquesList $uniquesList, $randomReaders = array()){
+        $this->hashCalculator = $hashCalculator;
+        $this->uniquesList = $uniquesList;
+
+        foreach ($randomReaders as $reader){
+            $this->addReader($reader);
+        }
+
         $this->uniquesWriter = new NullWriter();
         $this->uniquesRowFilter = new NullRowFilter();
     }
 
-    function addReader(RandomReader $reader){
+    private function addReader(RandomReader $reader){
         $this->readers[] = $reader;
     }
 
@@ -48,14 +57,10 @@ class HashUniquesExporter{
         );
     }
 
-    function setHashCalculator(HashCalculator $calculator){
-        $this->hashCalculator = $calculator;
-    }
-
     function scan(){
         $this->scanner = new HashUniquesScanner(
             $this->hashCalculator,
-            new HashList(),
+            $this->uniquesList,
             $this->readers,
             $this->duplicatesListener
         );
