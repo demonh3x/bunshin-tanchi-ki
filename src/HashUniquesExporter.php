@@ -5,6 +5,7 @@ include_once("HashUniquesScanner.php");
 include_once("RandomReaders/RandomReader.php");
 include_once("Writers/Writer.php");
 include_once("Writers/NullWriter.php");
+include_once("Writers/NullWriterFactory.php");
 
 include_once("HashCalculators/RowFilter.php");
 include_once("HashCalculators/NullRowFilter.php");
@@ -12,15 +13,8 @@ include_once("HashCalculators/NullRowFilter.php");
 include_once("UniquesList.php");
 
 class HashUniquesExporter{
-    private $scanner;
-    private $hashCalculator;
-    private $duplicatesListener = null;
+    private $hashCalculator, $uniquesList;
     private $readers = array();
-    private $uniquesWriter;
-
-    private $uniquesRowFilter;
-
-    private $uniquesList;
 
     function __construct(HashCalculator $hashCalculator, UniquesList $uniquesList, $randomReaders = array()){
         $this->hashCalculator = $hashCalculator;
@@ -29,46 +23,37 @@ class HashUniquesExporter{
         foreach ($randomReaders as $reader){
             $this->addReader($reader);
         }
-
-        $this->uniquesWriter = new NullWriter();
-        $this->uniquesRowFilter = new NullRowFilter();
     }
 
     private function addReader(RandomReader $reader){
         $this->readers[] = $reader;
     }
 
-    function setUniquesWriter(Writer $uniques, RowFilter $uniquesRowFilter = null){
-        $this->uniquesWriter = $uniques;
-
-        if (!is_null($uniquesRowFilter)){
-            $this->uniquesRowFilter = $uniquesRowFilter;
+    function export(Writer $uniquesWriter, WriterFactory $duplicatesFactory = null, RowFilter $cleanerFilter = null){
+        if (is_null($duplicatesFactory)){
+            $duplicatesFactory = new NullWriterFactory();
         }
-    }
-
-    function setDuplicatesWriterFactory(WriterFactory $factory, RowFilter $duplicatesRowFilter = null){
-        if (is_null($duplicatesRowFilter)){
-            $duplicatesRowFilter = new NullRowFilter();
+        if (is_null($cleanerFilter)){
+            $cleanerFilter = new NullRowFilter();
         }
 
-        $this->duplicatesListener = new DuplicatesExporter(
-            $factory,
-            $duplicatesRowFilter
+        $duplicatesListener = new DuplicatesExporter(
+            $duplicatesFactory,
+            $cleanerFilter
         );
-    }
 
-    function scan(){
-        $this->scanner = new HashUniquesScanner(
+        $scanner = new HashUniquesScanner(
             $this->hashCalculator,
             $this->uniquesList,
             $this->readers,
-            $this->duplicatesListener
+            $duplicatesListener
         );
 
-        $uniques = $this->scanner->getUniques();
-        foreach ($uniques as $unique){
-            $filteredUniqueRow = $this->uniquesRowFilter->applyTo($unique);
-            $this->uniquesWriter->writeRow($filteredUniqueRow);
+        $uniqueRows = $scanner->getUniques();
+        foreach ($uniqueRows as $uniqueRow){
+            $uniquesWriter->writeRow(
+                $cleanerFilter->applyTo($uniqueRow)
+            );
         }
     }
 }

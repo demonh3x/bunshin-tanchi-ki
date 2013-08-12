@@ -22,10 +22,11 @@ class TestHashUniquesExporter extends TestFixture{
     }
 
     private function createExporter(\HashCalculator $hashCalculator, \UniquesList $uniquesList, $randomReaders = array()){
-        return Core::getCodeCoverageWrapper(
+        /*return Core::getCodeCoverageWrapper(
             'HashUniquesExporter',
             array($hashCalculator, $uniquesList, $randomReaders)
-        );
+        );*/
+        return new \HashUniquesExporter($hashCalculator, $uniquesList, $randomReaders);
     }
 
     private function createRamReader($ramId, $readerData){
@@ -67,8 +68,7 @@ class TestHashUniquesExporter extends TestFixture{
         $ramId = "testHashDuplicatesExporterAssertUniques";
         unset($GLOBALS[$ramId]);
 
-        $exporter->setUniquesWriter($this->getRamWriter($ramId));
-        $exporter->scan();
+        $exporter->export($this->getRamWriter($ramId));
 
         $actualData = $this->readRamData($ramId);
 
@@ -215,8 +215,7 @@ class TestHashUniquesExporter extends TestFixture{
 
         $factory = new MockRamWriterFactory();
 
-        $exporter->setDuplicatesWriterFactory($factory);
-        $exporter->scan();
+        $exporter->export(new \NullWriter(), $factory);
 
         $allDuplicates = array();
         foreach ($factory->createdWriters as $id => $writer){
@@ -281,9 +280,8 @@ class TestHashUniquesExporter extends TestFixture{
         $rowFilter = new \PerColumnRowFilter(array(
             "Column1" => new LowercaseMockFilter()
         ));
-        $exporter->setUniquesWriter($this->getRamWriter($ramId), $rowFilter);
 
-        $exporter->scan();
+        $exporter->export($this->getRamWriter($ramId), null, $rowFilter);
 
         $actualData = $this->readRamData($ramId);
 
@@ -341,9 +339,8 @@ class TestHashUniquesExporter extends TestFixture{
         ));
 
         $factory = new MockRamWriterFactory();
-        $exporter->setDuplicatesWriterFactory($factory, $rowFilter);
 
-        $exporter->scan();
+        $exporter->export(new \NullWriter(), $factory, $rowFilter);
 
         $allDuplicates = array();
         foreach ($factory->createdWriters as $id => $writer){
@@ -420,8 +417,7 @@ class TestHashUniquesExporter extends TestFixture{
 
         $factory = new MockRamWriterFactory();
 
-        $exporter->setDuplicatesWriterFactory($factory);
-        $exporter->scan();
+        $exporter->export(new \NullWriter(), $factory);
 
         $allDuplicates = array();
         foreach ($factory->createdWriters as $id => $writer){
