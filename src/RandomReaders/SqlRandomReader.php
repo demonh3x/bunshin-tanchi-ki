@@ -1,10 +1,10 @@
 <?php
 
-include_once("../SQL/DB.php");
-include_once("../SQL/SQL.php");
-include_once("RandomReader.php");
+include_once("../src/SQL/DB.php");
+include_once("../src/SQL/SQL.php");
+include_once("../src/RandomReaders/RandomReader.php");
 
-class SqlReader implements RandomReader{
+class SqlRandomReader implements RandomReader{
 
     private $connection = null;
 
@@ -16,7 +16,7 @@ class SqlReader implements RandomReader{
 
     function readRow($index) {
         $query = SQL::select($this->table, null, null, 1, $index);
-        return $this->connection->query($query);
+        return $this->connection->query($query)[0];
     }
 
     function getRowCount() {
