@@ -3,6 +3,7 @@ namespace Enhance;
 
 include_once(__ROOT_DIR__ . "src/HashUniquesExporter.php");
 include_once(__ROOT_DIR__ . "src/HashCalculators/StringHashCalculator.php");
+include_once(__ROOT_DIR__ . "src/HashCalculators/PerColumnRowFilter.php");
 
 include_once(__ROOT_DIR__ . "test/mocks/NotReadyMockReader.php");
 include_once(__ROOT_DIR__ . "test/mocks/MockRamWriterFactory.php");
@@ -285,8 +286,9 @@ class TestHashUniquesExporter extends TestFixture{
         $ramId = "testFilteringTheOutputUniquesData";
         unset($GLOBALS[$ramId]);
 
-        $rowFilter = new \RowFilter();
-        $rowFilter->setGlobalFilter(new LowercaseMockFilter());
+        $rowFilter = new \PerColumnRowFilter(array(
+            "Column1" => new LowercaseMockFilter()
+        ));
         $exporter->setUniquesWriter($this->getRamWriter($ramId), $rowFilter);
 
         $exporter->scan();
@@ -295,7 +297,7 @@ class TestHashUniquesExporter extends TestFixture{
 
         $uniquesOutput = array(
             array(
-                "Column1" => "foo", "Column2" => "bar", "Column3" => "hi"
+                "Column1" => "foo", "Column2" => "bar", "Column3" => "Hi"
             )
         );
 
@@ -342,8 +344,9 @@ class TestHashUniquesExporter extends TestFixture{
 
         $exporter = $this->createExporterrWithReaderAndHashCalculator($input);
 
-        $rowFilter = new \RowFilter();
-        $rowFilter->setGlobalFilter(new LowercaseMockFilter());
+        $rowFilter = new \PerColumnRowFilter(array(
+            "Column1" => new LowercaseMockFilter()
+        ));
 
         $factory = new MockRamWriterFactory();
         $exporter->setDuplicatesWriterFactory($factory, $rowFilter);

@@ -7,6 +7,7 @@ include_once("Writers/Writer.php");
 include_once("Writers/NullWriter.php");
 
 include_once("HashCalculators/RowFilter.php");
+include_once("HashCalculators/NullRowFilter.php");
 
 include_once("HashList.php");
 
@@ -21,7 +22,7 @@ class HashUniquesExporter{
 
     function __construct(){
         $this->uniquesWriter = new NullWriter();
-        $this->uniquesRowFilter = new RowFilter();
+        $this->uniquesRowFilter = new NullRowFilter();
     }
 
     function addReader(RandomReader $reader){
@@ -37,9 +38,13 @@ class HashUniquesExporter{
     }
 
     function setDuplicatesWriterFactory(WriterFactory $factory, RowFilter $duplicatesRowFilter = null){
+        if (is_null($duplicatesRowFilter)){
+            $duplicatesRowFilter = new NullRowFilter();
+        }
+
         $this->duplicatesListener = new DuplicatesExporter(
             $factory,
-            is_null($duplicatesRowFilter)? new RowFilter(): $duplicatesRowFilter
+            $duplicatesRowFilter
         );
     }
 

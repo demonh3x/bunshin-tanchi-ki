@@ -3,13 +3,17 @@
 include_once("Filters/Filter.php");
 include_once("HashCalculator.php");
 include_once("RowFilter.php");
+include_once("NullRowFilter.php");
+include_once("PerColumnRowFilter.php");
 
 class StringHashCalculator implements HashCalculator{
     protected $columnsToScan = array();
     protected $rowFilter;
 
+    private $filters = array();
+
     function __construct(){
-        $this->rowFilter = new RowFilter();
+        $this->rowFilter = new NullRowFilter();
     }
 
     function watchColumns($columns){
@@ -37,12 +41,13 @@ class StringHashCalculator implements HashCalculator{
     protected function areColumnsDefined(){
         return !empty($this->columnsToScan);
     }
-
+/*
     function setGlobalFilter(Filter $filter){
         $this->rowFilter->setGlobalFilter($filter);
-    }
+    }*/
 
     function setFilter(Filter $filter, $column){
-        $this->rowFilter->setFilter($filter, $column);
+        $this->filters[$column] = $filter;
+        $this->rowFilter = new PerColumnRowFilter($this->filters);
     }
 }

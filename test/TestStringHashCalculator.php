@@ -75,7 +75,7 @@ class TestStringHashCalculator extends TestFixture{
             "0" => "Foo"
         );
 
-        $calculator->setGlobalFilter(new LowercaseMockFilter());
+        $calculator->setFilter(new LowercaseMockFilter(), "0");
 
         Assert::areIdentical("0foo", $calculator->calculate($data));
     }
@@ -120,11 +120,11 @@ class TestStringHashCalculator extends TestFixture{
             "3" => "Bar"
         );
 
+        $lowercaseFilter = new LowercaseMockFilter();
+
         $calculator->watchColumns(array("3", "1"));
-        $calculator->setFilter(
-            new LowercaseMockFilter(),
-            array("1", "3")
-        );
+        $calculator->setFilter($lowercaseFilter, "1");
+        $calculator->setFilter($lowercaseFilter, "3");
 
         Assert::areIdentical("3bar1foo", $calculator->calculate($data));
     }

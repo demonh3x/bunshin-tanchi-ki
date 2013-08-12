@@ -5,7 +5,7 @@ foreach (glob(__ROOT_DIR__ . "src/CellGenerators/PurlCalculators/*.php") as $fil
     include_once($filename);
 }
 
-include_once(__ROOT_DIR__ . "src/HashCalculators/RowFilter.php");
+include_once(__ROOT_DIR__ . "src/HashCalculators/PerColumnRowFilter.php");
 include_once(__ROOT_DIR__ . "src/HashCalculators/Filters/FilterGroup.php");
 foreach (glob(__ROOT_DIR__ . "src/HashCalculators/Filters/*Filter.php") as $filename){
     include_once($filename);
@@ -31,32 +31,24 @@ class UniquePURLGenerator {
     }
 
     private function initCleaningFilters($firstnameField, $surnameField, $salutationField){
-        $this->cleaningFilter = new RowFilter();
-        $this->cleaningFilter->setFilter(
-            new FilterGroup(
+        $this->cleaningFilter = new PerColumnRowFilter(array(
+            $salutationField => new FilterGroup(
                 new TrimFilter(),
                 new UppercaseFirstLetterFilter()
             ),
-            $salutationField
-        );
-        $this->cleaningFilter->setFilter(
-            new FilterGroup(
+            $firstnameField => new FilterGroup(
                 new TrimFilter(),
                 new SubstituteAccentsFilter(),
                 new OnlyLettersFilter(),
                 new FirstNameFilter()
             ),
-            $firstnameField
-        );
-        $this->cleaningFilter->setFilter(
-            new FilterGroup(
+            $surnameField => new FilterGroup(
                 new TrimFilter(),
                 new SubstituteAccentsFilter(),
                 new OnlyLettersFilter(),
                 new NoSpacesFilter()
-            ),
-            $surnameField
-        );
+            )
+        ));
     }
 
     private function initPurlCalculators($firstnameField, $surnameField, $salutationField){

@@ -83,13 +83,10 @@
 
         $uniquesWriter = new CsvWriter($UNIQUES_FILE);
 
-        $cleaningFilters = new RowFilter();
         foreach ($CLEANING_COLUMN_FILTERS as $column => $filters){
-            $cleaningFilters->setFilter(
-                getFilterGroup($filters),
-                $column
-            );
+            $CLEANING_COLUMN_FILTERS[$column] = getFilterGroup($filters);
         }
+        $cleaningFilters = new PerColumnRowFilter($CLEANING_COLUMN_FILTERS);
 
         $scanner->setUniquesWriter($uniquesWriter, $cleaningFilters);
 
