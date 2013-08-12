@@ -28,7 +28,19 @@ class SQL
         return $str_condiciones;
     }
 
-    static function select($table, $columns = null, $conditions = null){
+    private static function limit($limitLength, $limitStart = null) {
+        $str_condiciones = " limit ";
+
+        if (is_null($limitStart)){
+            $limitStart = 0;
+        }
+
+        $str_condiciones .= $limitStart . ", " . ($limitStart + $limitLength);
+
+        return $str_condiciones;
+    }
+
+    static function select($table, $columns = null, $conditions = null,  $limitLength = null, $limitStart = null){
         $sql = "select ";
 
         if (empty($columns)){
@@ -43,6 +55,10 @@ class SQL
 
         $sql .= " from $table";
         $sql .= static::where($conditions);
+
+        if (!is_null($limitLength)) {
+            $sql .= static::limit($limitLength, $limitStart);
+        }
 
         return $sql;
     }
@@ -68,6 +84,27 @@ class SQL
         $sql .= implode(", ", $datos_procesados);
 
         $sql .= static::where($conditions);
+
+        return $sql;
+    }
+
+    static function createTable ($table, $data) {
+        $sql = "CREATE TABLE " . $table . " (";
+/*
+        $i = 0;
+        $dataSize = count($data);*/
+
+        foreach ($data as $column => $value)
+        {
+            $processedData[] = $column . " varchar(100)";/*
+            $sql .= " " . $column . " varchar(100)";
+            $i++;
+            if ($i < $dataSize) { $sql .= ","; };*/
+        }
+        $sql .= implode(", ", $processedData);
+
+        $sql .= ")";
+        print_r($sql);
 
         return $sql;
     }
