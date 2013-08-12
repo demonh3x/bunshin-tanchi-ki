@@ -45,11 +45,10 @@ class HashUniquesExporter{
         $scanner = new HashUniquesScanner(
             $this->hashCalculator,
             $this->uniquesList,
-            $this->readers,
-            $duplicatesListener
+            $this->readers
         );
 
-        $uniqueRows = $scanner->getUniques();
+        $uniqueRows = $scanner->getUniques($duplicatesListener);
         foreach ($uniqueRows as $uniqueRow){
             $uniquesWriter->writeRow(
                 $cleanerFilter->applyTo($uniqueRow)

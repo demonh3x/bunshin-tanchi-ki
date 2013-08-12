@@ -16,12 +16,11 @@ class TestHashUniquesScanner extends TestFixture{
     public function tearDown(){
     }
 
-    private function createScanner($readers = array(), $dupListener = null){
+    private function createScanner($readers = array()){
         return Core::getCodeCoverageWrapper('HashUniquesScanner', array(
             new \StringHashCalculator(),
             new \HashList(),
-            $readers,
-            $dupListener
+            $readers
         ));
     }
 
@@ -235,9 +234,9 @@ class TestHashUniquesScanner extends TestFixture{
 
         $duplicatesListener = new MockRowListener();
 
-        $scanner = $this->createScanner(array($readerA, $readerB), $duplicatesListener);
+        $scanner = $this->createScanner(array($readerA, $readerB));
 
-        $scanner->getUniques();
+        $scanner->getUniques($duplicatesListener);
 
         $expected = array(
             array(
