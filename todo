@@ -1,3 +1,10 @@
+Testing
+-----------------------------------------------------------------
+Unify interface testing. Same test for all the classes implementing an interface
+
+
+Core
+-----------------------------------------------------------------
 # Implement HashUniquesExporter
 Multiple HashCalculators to use one OR another to detect a duplicate
 !! Parse logical columns on CSV
@@ -5,11 +12,8 @@ Multiple HashCalculators to use one OR another to detect a duplicate
 MySQL Random reader
 MySQL Writer
 - XLS Random reader
-Extract RowFilter functionality outside StringHashCalculator
 
 Refactor FirstName and Surname Filter
-
-Unify the usage of the scanners (maybe an interface for scanners?)
 
 # Documentation Random Reader
 #!! Clean output data (Applying filters to exit)
@@ -24,23 +28,25 @@ Unify the usage of the scanners (maybe an interface for scanners?)
 Refactor PURL-Number behaviour to generate infinite combinations
 
 # HashUniquesScanner depend on UniquesList instead of HashList
-HashUniquesExporter construct with HashCalculator and UniquesList as HashUniquesScanner
+# HashUniquesExporter construct with HashCalculator and UniquesList as HashUniquesScanner
+# Unify the usage of the scanners (maybe an interface for scanners?) -> HashUniquesExporter extends HashUniquesScanner
 
 # Remove Readers because they are not used.
 # Refactor RandomReader to move the open($path) method to the constructor and remove isReady().
     # The constructor should throw an exception if it is not ready when creating.
-
 # Refactor Writer interface to move the create($path) method to the constructor and remove isReady().
     # The constructor should throw an exception if it is not ready when creating.
 
 Refactor Row class to have HashCalculator on the constructor
-Refactor RowListener to send as parameters: RandomReader, $index, $hash. Instead of Row object.
-
-Refactor HashUniquesScanner to have Array(RandomReader) and DuplicatesListener in the constructor.
-
+# Refactor RowListener to send as parameters: RandomReader, $index, $hash. Instead of Row object.
+# Refactor HashUniquesScanner to have Array(RandomReader) and DuplicatesListener in the constructor.
 # Refactor CsvColumnRandomReader to be a child class from CsvRandomReader.
+# Refactor StringHashCalculator to be inmutable: Move watchColumns() and setFilter() in the constructor.
+# Extract RowFilter functionality outside StringHashCalculator
 
-? Refactor StringHashCalculator to be inmutable: Move watchColumns() and setFilter() in the constructor.
+# Refactor FilterGroup
+
+Remove functionality from UI, move it to core.
 
 UI
 -----------------------------------------------------------------
@@ -85,3 +91,8 @@ Option to deactivate duplicate groups writing
 #!! generateFields customize $purlColumn  $firstNameColumn = "3"; lastNameColumn = "4"; $salutationColumn = "2";
 
 Sending empty input files when creating work, crashes
+
+Login
+encripting/decoding writer/reader
+
+Design Profesional UI
