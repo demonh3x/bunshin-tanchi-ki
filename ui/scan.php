@@ -68,14 +68,12 @@
             $readers[] = new CsvRandomReader($inputFile);
         }
 
-        $calculator = new StringHashCalculator();
+        $rowFilters = array();
         foreach ($COMPARING_COLUMN_FILTERS as $column => $filters){
-            $calculator->setFilter(
-                getFilterGroup($filters),
-                $column
-            );
+            $rowFilters[$column] = getFilterGroup($filters);
         }
-        $calculator->watchColumns($WATCH_COLUMNS);
+        $rowFilter = new PerColumnRowFilter($rowFilters);
+        $calculator = new StringHashCalculator($WATCH_COLUMNS, $rowFilter);
 
         $scanner = new HashUniquesExporter($calculator, new HashList(), $readers);
 
