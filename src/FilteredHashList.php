@@ -3,6 +3,7 @@
 include_once('UniquesList.php');
 include_once('HashList.php');
 include_once('HashCalculators/Filters/Filter.php');
+include_once('HashCalculators/Filters/NoFilter.php');
 
 class FilteredHashList extends HashList implements UniquesList {
     private $checkingFilter;
