@@ -3,7 +3,6 @@
 include_once("HashUniquesScanner.php");
 
 include_once("Writers/Writer.php");
-include_once("Writers/NullWriter.php");
 include_once("Writers/NullWriterFactory.php");
 
 include_once("HashCalculators/RowFilter.php");
