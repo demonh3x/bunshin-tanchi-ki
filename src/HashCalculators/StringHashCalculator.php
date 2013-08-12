@@ -1,10 +1,8 @@
 <?php
 
-include_once("Filters/Filter.php");
 include_once("HashCalculator.php");
 include_once("RowFilter.php");
 include_once("NullRowFilter.php");
-include_once("PerColumnRowFilter.php");
 
 class StringHashCalculator implements HashCalculator{
     private $columnsToScan = array();
