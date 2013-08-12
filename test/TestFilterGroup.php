@@ -14,8 +14,8 @@ class TestFilterGroup extends TestFixture{
     public function tearDown(){
     }
 
-    private function createFilterGroup(){
-        return Core::getCodeCoverageWrapper("FilterGroup", func_get_args());
+    private function createFilterGroup(Array $filters = array()){
+        return Core::getCodeCoverageWrapper("FilterGroup", array($filters));
     }
 
     function testNoFilters(){
@@ -24,7 +24,7 @@ class TestFilterGroup extends TestFixture{
     }
 
     function testOneFilter(){
-        $group = $this->createFilterGroup(new UppercaseMockFilter());
+        $group = $this->createFilterGroup(array(new UppercaseMockFilter()));
         Assert::areIdentical("HI", $group->applyTo("hi"));
     }
 
@@ -45,10 +45,10 @@ class TestFilterGroup extends TestFixture{
     }
 
     function testGroupCreationByParameters(){
-        $group = $this->createFilterGroup(
+        $group = $this->createFilterGroup(array(
             new UppercaseMockFilter(),
             new NoSpacesMockFilter()
-        );
+        ));
         Assert::areIdentical("HI", $group->applyTo(" h i "));
     }
 }

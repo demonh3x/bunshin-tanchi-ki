@@ -32,22 +32,22 @@ class UniquePURLGenerator {
 
     private function initCleaningFilters($firstnameField, $surnameField, $salutationField){
         $this->cleaningFilter = new PerColumnRowFilter(array(
-            $salutationField => new FilterGroup(
+            $salutationField => new FilterGroup(array(
                 new TrimFilter(),
                 new UppercaseFirstLetterFilter()
-            ),
-            $firstnameField => new FilterGroup(
+            )),
+            $firstnameField => new FilterGroup(array(
                 new TrimFilter(),
                 new SubstituteAccentsFilter(),
                 new OnlyLettersFilter(),
                 new FirstNameFilter()
-            ),
-            $surnameField => new FilterGroup(
+            )),
+            $surnameField => new FilterGroup(array(
                 new TrimFilter(),
                 new SubstituteAccentsFilter(),
                 new OnlyLettersFilter(),
                 new NoSpacesFilter()
-            )
+            ))
         ));
     }
 

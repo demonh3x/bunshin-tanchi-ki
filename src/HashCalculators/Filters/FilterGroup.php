@@ -6,17 +6,8 @@ class FilterGroup implements Filter{
     private $filters = array();
 
     function __construct($filters = array()){
-        $arguments = func_get_args();
-        $this->addFilters($arguments);
-    }
-
-    private function addFilters($filters){
-        if (is_array($filters)){
-            foreach ($filters as $filter){
-                $this->addFilters($filter);
-            }
-        } else {
-            $this->addFilter($filters);
+        foreach ($filters as $filter){
+            $this->addFilter($filter);
         }
     }
 
