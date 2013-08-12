@@ -24,19 +24,6 @@ class TestHashUniquesScanner extends TestFixture{
             $dupListener
         ));
     }
-/*
-    function testRaiseExceptionWhenSettingAReaderNotReady(){
-        $scanner = $this->createScanner();
-        $exceptionRaised = false;
-
-        try {
-            $scanner->addReader(new NotReadyMockReader());
-        } catch(\Exception $e){
-            $exceptionRaised = true;
-        }
-
-        Assert::isTrue($exceptionRaised);
-    }*/
 
     function testGetUniquesNoReaders(){
         $scanner = $this->createScanner();
@@ -64,43 +51,6 @@ class TestHashUniquesScanner extends TestFixture{
 
         return $reader;
     }
-
-/*
-    function testRaiseExceptionWhenScanningAndHashCalculatorNotSet(){
-        $exporter = $this->createExporterWithReader(array(
-            "asdf"
-        ));
-        $exceptionRaised = false;
-
-        try {
-            $exporter->scan();
-        } catch(\Exception $e){
-            $exceptionRaised = true;
-        }
-
-        Assert::isTrue($exceptionRaised);
-    }*/
-
-/*
-    function testNotRaisingExceptionWhenReaderAndHashCalculatorAreSet(){
-        $exporter = $this->createExporterrWithReaderAndHashCalculator(array());
-        $exporter->scan();
-    }*/
-/*
-    function testRaiseExceptionWhenSettingANotReadyUniquesWriter(){
-        $exporter = $this->createExporterrWithReaderAndHashCalculator(array());
-
-        $exceptionRaised = false;
-
-        $writer = new \RamWriter();
-        try {
-            $exporter->setUniquesWriter($writer);
-        } catch(\Exception $e){
-            $exceptionRaised = true;
-        }
-
-        Assert::isTrue($exceptionRaised);
-    }*/
 
     function testGetUniquesImplementsIterator(){
         $input = array();
