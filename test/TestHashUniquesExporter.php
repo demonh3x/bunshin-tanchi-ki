@@ -22,11 +22,10 @@ class TestHashUniquesExporter extends TestFixture{
     }
 
     private function createExporter(\HashCalculator $hashCalculator, \UniquesList $uniquesList, $randomReaders = array()){
-        /*return Core::getCodeCoverageWrapper(
+        return Core::getCodeCoverageWrapper(
             'HashUniquesExporter',
             array($hashCalculator, $uniquesList, $randomReaders)
-        );*/
-        return new \HashUniquesExporter($hashCalculator, $uniquesList, $randomReaders);
+        );
     }
 
     private function createRamReader($ramId, $readerData){
