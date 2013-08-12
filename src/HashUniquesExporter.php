@@ -2,7 +2,6 @@
 
 include_once("HashUniquesScanner.php");
 
-include_once("RandomReaders/RandomReader.php");
 include_once("Writers/Writer.php");
 include_once("Writers/NullWriter.php");
 include_once("Writers/NullWriterFactory.php");
@@ -10,23 +9,9 @@ include_once("Writers/NullWriterFactory.php");
 include_once("HashCalculators/RowFilter.php");
 include_once("HashCalculators/NullRowFilter.php");
 
-include_once("UniquesList.php");
-
-class HashUniquesExporter{
-    private $hashCalculator, $uniquesList;
-    private $readers = array();
-
+class HashUniquesExporter extends HashUniquesScanner{
     function __construct(HashCalculator $hashCalculator, UniquesList $uniquesList, $randomReaders = array()){
-        $this->hashCalculator = $hashCalculator;
-        $this->uniquesList = $uniquesList;
-
-        foreach ($randomReaders as $reader){
-            $this->addReader($reader);
-        }
-    }
-
-    private function addReader(RandomReader $reader){
-        $this->readers[] = $reader;
+        parent::__construct($hashCalculator, $uniquesList, $randomReaders);
     }
 
     function export(Writer $uniquesWriter, WriterFactory $duplicatesFactory = null, RowFilter $cleanerFilter = null){
@@ -42,13 +27,7 @@ class HashUniquesExporter{
             $cleanerFilter
         );
 
-        $scanner = new HashUniquesScanner(
-            $this->hashCalculator,
-            $this->uniquesList,
-            $this->readers
-        );
-
-        $uniqueRows = $scanner->getUniques($duplicatesListener);
+        $uniqueRows = $this->getUniques($duplicatesListener);
         foreach ($uniqueRows as $uniqueRow){
             $uniquesWriter->writeRow(
                 $cleanerFilter->applyTo($uniqueRow)
