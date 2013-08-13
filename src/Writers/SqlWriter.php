@@ -2,6 +2,7 @@
 
 
 include_once("../src/SQL/DB.php");
+include_once("../src/SQL/Table.php");
 include_once("../src/SQL/SQL.php");
 include_once("../src/Writers/Writer.php");
 include_once("../src/Writers/WriterException.php");
@@ -13,7 +14,7 @@ class SqlWriter implements Writer{
         $this->connection = new DB($ip, $user, $password, $database);
         $this->table = $table;
 
-        $this->tableExists = in_array($table, $this->connection->tables());
+        $this->tableExists = in_array($table, Table::getAvailable($this->connection));
     }
 
     function writeRow($data) {
@@ -23,11 +24,11 @@ class SqlWriter implements Writer{
         $this->connection->query($query);
     }
 
-    function getTableExists() {
+    private function getTableExists() {
         return $this->tableExists;
     }
 
-    function createTableIfNotExists($tableExists, $data) {
+    private function createTableIfNotExists($tableExists, $data) {
         if (!$tableExists)
         {
             $query = SQL::createTable($this->table, $data);
@@ -36,7 +37,7 @@ class SqlWriter implements Writer{
         }
     }
 
-    function checkIfAllColumnsExist() {
+    private function checkIfAllColumnsExist() {
 
     }
 }
