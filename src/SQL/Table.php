@@ -4,11 +4,30 @@ include_once "SQL.php";
 
 class Table
 {
-    private $nombre, $base_datos;
+    /**
+     * Get the available tables.
+     * @param DB $database
+     * The database to look in.
+     * @return array
+     * An array with the table names.
+     */
+    static function getAvailable(DB $database){
+        $return = array();
 
-    function __construct($base_datos, $nombre){
-        $this->base_datos = $base_datos;
-        $this->nombre = $nombre;
+        $results = $database->query(SQL::showTables());
+
+        for($i = 0; $i < count($results); $i++){
+            $return[] = array_values($results[$i])[0];
+        }
+
+        return $return;
+    }
+
+    private $name, $database;
+
+    function __construct(DB $database, $name){
+        $this->database = $database;
+        $this->name = $name;
     }
 
     /**
@@ -22,12 +41,12 @@ class Table
      * La clave de cada elemento de los arrays asociativos es el atributo o columna y
      * el valor de cada elemento de los arrays asociativos es el valor de esa columna.
      */
-    function search($conditions = []){
-        $sql = SQL::select($this->nombre, null, $conditions);
+    function search($conditions = array()){
+        $sql = SQL::select($this->name, null, $conditions);
 
-        $resultados = $this->base_datos->consulta($sql);
+        $results = $this->database->query($sql);
 
-        return $resultados;
+        return $results;
     }
 
     /**
@@ -38,9 +57,9 @@ class Table
      * El numero de filas afectadas.
      */
     function insert($data){
-        $sql = SQL::insert($this->nombre, $data);
+        $sql = SQL::insert($this->name, $data);
 
-        return $this->base_datos->consulta($sql);
+        return $this->database->query($sql);
     }
 
     /**
@@ -59,8 +78,12 @@ class Table
             throw new InvalidArgumentException("El argumento condiciones debe ser un array asociativo");
         }
 
-        $sql = SQL::delete($this->nombre, $conditions);
+        $sql = SQL::delete($this->name, $conditions);
 
-        return $this->base_datos->consulta($sql);
+        return $this->database->query($sql);
+    }
+
+    function getColumns(){
+        throw new Exception("TODO");
     }
 }

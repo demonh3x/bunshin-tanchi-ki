@@ -13,31 +13,31 @@ class SQL
     }
 
     private static function where($conditions){
-        $str_condiciones = "";
+        $conditions_str = "";
 
         if (count($conditions) > 0){
-            $array_condiciones = [];
-            foreach ($conditions as $clave => $valor){
-                $array_condiciones[] = "$clave = '$valor'";
+            $conditions_array = array();
+            foreach ($conditions as $key => $value){
+                $conditions_array[] = "$key = '$value'";
             }
 
-            $str_condiciones = implode(" and ", $array_condiciones);
-            $str_condiciones = " where $str_condiciones";
+            $conditions_str = implode(" and ", $conditions_array);
+            $conditions_str = " where $conditions_str";
         }
 
-        return $str_condiciones;
+        return $conditions_str;
     }
 
     private static function limit($limitLength, $limitStart = null) {
-        $str_condiciones = " limit ";
+        $limit_str = " limit ";
 
         if (is_null($limitStart)){
             $limitStart = 0;
         }
 
-        $str_condiciones .= $limitStart . ", " . ($limitStart + $limitLength);
+        $limit_str .= $limitStart . ", " . ($limitStart + $limitLength);
 
-        return $str_condiciones;
+        return $limit_str;
     }
 
     static function select($table, $columns = null, $conditions = null,  $limitLength = null, $limitStart = null){
@@ -77,11 +77,11 @@ class SQL
     static function update($table, $data, $conditions){
         $sql = "update $table set ";
 
-        $datos_procesados = [];
-        foreach ($data as $columna => $valor){
-            $datos_procesados[] = "$columna='$valor'";
+        $processed_data = array();
+        foreach ($data as $column => $value){
+            $processed_data[] = "$column='$value'";
         }
-        $sql .= implode(", ", $datos_procesados);
+        $sql .= implode(", ", $processed_data);
 
         $sql .= static::where($conditions);
 
@@ -89,23 +89,20 @@ class SQL
     }
 
     static function createTable ($table, $data) {
-        $sql = "CREATE TABLE " . $table . " (";
-/*
-        $i = 0;
-        $dataSize = count($data);*/
+        $sql = "create table $table (";
 
+        $processedData = array();
         foreach ($data as $column => $value)
         {
-            $processedData[] = $column . " varchar(100)";/*
-            $sql .= " " . $column . " varchar(100)";
-            $i++;
-            if ($i < $dataSize) { $sql .= ","; };*/
+            $processedData[] = $column . " varchar(100)";
         }
         $sql .= implode(", ", $processedData);
-
         $sql .= ")";
-        print_r($sql);
 
         return $sql;
+    }
+
+    static function showTables(){
+        return "show tables";
     }
 }

@@ -1,8 +1,6 @@
 <?php
 class DB
 {
-    public static $base1;
-
     private $mysqli;
 
     function __construct($ip, $user, $password, $schema){
@@ -14,47 +12,30 @@ class DB
     }
 
     /**
-     * Realiza una consulta sql a la base de datos.
+     * Execute a query to the database.
      * @param $sql
-     * La consulta sql
+     * The SQL query.
      * @return int|mixed
-     * Un array de arrays asociativos que contiene los resultados o<br>
-     * el número de filas afectadas si no devuelve resultados.
+     * An asociative array with the results or<br>
+     * the affected row count if it doesn't return results.
      * @throws Exception
-     * Si ha ocurrido un error en la consulta.
+     * If there is something wrong in the query.
      */
     function query($sql){
-        $correcto = $this->mysqli->real_query($sql);
+        $correct = $this->mysqli->real_query($sql);
 
-        if($correcto){
-            $resultado = $this->mysqli->use_result();
+        if($correct){
+            $result = $this->mysqli->use_result();
 
-            if (!empty($resultado)){
-                $array_resultados = $resultado->fetch_all(MYSQLI_ASSOC);
-                return $array_resultados;
+            if (!empty($result)){
+                $array_results = $result->fetch_all(MYSQLI_ASSOC);
+                return $array_results;
             } else {
-                $filas_afectadas = $this->mysqli->affected_rows;
-                return $filas_afectadas;
+                $affected_rows = $this->mysqli->affected_rows;
+                return $affected_rows;
             }
         } else {
-            throw new Exception("Error en la consulta: $sql");
+            throw new Exception("Query error: $sql");
         }
-    }
-
-    /**
-     * Obtener las tablas existentes.
-     * @return array
-     * Un array de strings con los nombres de las tablas.
-     */
-    function tables(){
-        $retorno = [];
-
-        $resultados = $this->query("show tables");
-
-        for($i = 0; $i < count($resultados); $i++){
-            $retorno[] = array_values($resultados[$i])[0];
-        }
-
-        return $retorno;
     }
 }
