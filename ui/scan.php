@@ -18,6 +18,7 @@
         include_once(__ROOT_DIR__ . "src/HashList.php");
         include_once(__ROOT_DIR__ . "src/RandomReaders/CsvRandomReader.php");
         include_once(__ROOT_DIR__ . "src/HashCalculators/StringHashCalculator.php");
+        include_once(__ROOT_DIR__ . "src/HashCalculators/PerColumnRowFilter.php");
         foreach (glob(__ROOT_DIR__ . "src/Writers/*.php") as $filename){
             include_once($filename);
         }
