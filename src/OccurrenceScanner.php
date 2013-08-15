@@ -7,27 +7,40 @@ include_once("HashCalculators/NullRowFilter.php");
 include_once("HashCalculators/NullHashCalculator.php");
 
 include_once("RowListener.php");
+include_once("NullRowListener.php");
 
 class OccurrenceScanner {
-    protected $reader, $regex, $columnsToScan, $rowFilter, $notMatchingListener;
+    protected $readers = array(), $regex, $columnsToScan, $rowFilter, $notMatchingListener;
     protected $rowList = array();
 
-    function __construct(RandomReader $reader, $regex, $columns = array(), RowFilter $rowFilter = null){
-        $this->reader = $reader;
+    function __construct($regex, $readers = array(), $columns = array(), RowFilter $rowFilter = null){
         $this->regex = $regex;
+        foreach ($readers as $reader){
+            $this->addReader($reader);
+        }
         $this->columnsToScan = $columns;
         $this->rowFilter = is_null($rowFilter)? new NullRowFilter(): $rowFilter;
     }
 
+    private function addReader(RandomReader $reader){
+        $this->readers[] = $reader;
+    }
+
     function getOccurrences(RowListener $notMatching = null){
         $this->notMatchingListener = is_null($notMatching)? new NullRowListener(): $notMatching;
-        $this->processAllRows();
+        $this->processAllReaders();
         return $this->getResultsList();
     }
 
-    protected function processAllRows(){
-        for ($rowIndex = 0; $rowIndex < $this->reader->getRowCount(); $rowIndex++) {
-            $row = $this->readRow($rowIndex);
+    private function processAllReaders(){
+        foreach ($this->readers as $reader){
+            $this->processAllRows($reader);
+        }
+    }
+
+    protected function processAllRows(RandomReader $reader){
+        for ($rowIndex = 0; $rowIndex < $reader->getRowCount(); $rowIndex++) {
+            $row = $this->readRow($reader, $rowIndex);
             $this->processRow($row);
         }
     }
@@ -53,8 +66,8 @@ class OccurrenceScanner {
         return !empty($this->columnsToScan);
     }
 
-    protected function readRow($rowIndex){
-        return new Row($this->reader, $rowIndex, new NullHashCalculator());
+    protected function readRow(RandomReader $reader, $rowIndex){
+        return new Row($reader, $rowIndex, new NullHashCalculator());
     }
 
     protected function addOccurrence(Row $row){
