@@ -13,31 +13,36 @@ class SqlWriter implements Writer{
     function __construct($ip, $user, $password, $database, $table) {
         $this->connection = new DB($ip, $user, $password, $database);
         $this->table = $table;
-
-        $this->tableExists = in_array($table, Table::getAvailable($this->connection));
     }
 
     function writeRow($data) {
-        $this->createTableIfNotExists($this->tableExists, $data);
-
+        $this->createTableIfNotExists($data);
+        $this->createColumnsIfNotExist($data);
         $query = SQL::insert($this->table, $data);
         $this->connection->query($query);
     }
 
-    private function getTableExists() {
-        return $this->tableExists;
-    }
+    private function createTableIfNotExists($data) {
+        $tableExists = in_array($this->table, \Table::getAvailable($this->connection));
 
-    private function createTableIfNotExists($tableExists, $data) {
         if (!$tableExists)
         {
-            $query = SQL::createTable($this->table, $data);
+            $query = \SQL::createTable($this->table, $data);
+            print_r($query);
             $this->connection->query($query);
-            $this->tableExists = true;
         }
     }
 
-    private function checkIfAllColumnsExist() {
-
+    private function createColumnsIfNotExist($data) {
+        foreach($data as $key => $value)
+        {
+            $columnExists = in_array("$key", \Table::getColumns($this->table, $this->connection));
+            if(!$columnExists)
+            {
+                $query = \SQL::addColumn($this->table, $key);
+                $this->connection->query($query);
+            }
+        }
     }
+
 }

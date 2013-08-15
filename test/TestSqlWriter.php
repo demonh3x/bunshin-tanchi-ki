@@ -3,6 +3,7 @@ namespace Enhance;
 
 include_once("../src/SQL/DB.php");
 include_once("../src/SQL/SQL.php");
+include_once("../src/SQL/Table.php");
 include_once("../src/Writers/SqlWriter.php");
 include_once("../src/RandomReaders/SqlRandomReader.php");
 
@@ -12,15 +13,6 @@ class TestSqlWriter extends TestFixture{
     }*/
 
     function testWritingRow(){
-
-        $writer = new \SqlWriter("localhost", "root", "root", "sqlreader", "testWritingRow");
-
-        if ($writer->getTableExists())
-        {
-            $connection = new \DB("localhost", "root", "root", "sqlreader", "testWritingRow");
-            $connection->query(\SQL::delete("testWritingRow", null));
-        }
-
 
         $expected = array (
             array (
@@ -37,6 +29,22 @@ class TestSqlWriter extends TestFixture{
                 "country" => "2"
             )
         );
+
+        $connection = new \DB("localhost", "root", "root", "sqlreader");
+
+        $tableExists = in_array("testWritingRow", \Table::getAvailable($connection));
+
+        if ($tableExists)
+        {
+            $connection->query(\SQL::delete("testWritingRow", null));
+        }
+        else
+        {
+            $query = \SQL::createTable("testWritingRow", $expected);
+            $connection->query($query);
+        }
+
+        $writer = new \SqlWriter("localhost", "root", "root", "sqlreader", "testWritingRow");
 
         foreach ($expected as $row)
         {
@@ -55,43 +63,43 @@ class TestSqlWriter extends TestFixture{
         Assert::areIdentical($expected, $outputRows);
     }
 
-    function testAddingDataWithNonANonExistingColumn() {
-        $writer = new \SqlWriter("localhost", "root", "root", "sqlreader", "testAddingDataWithNonANonExistingColumn");
+    function testAddingDataWithANonExistingColumn() {
 
-        if ($writer->getTableExists())
+        $connection = new \DB("localhost", "root", "root", "sqlreader");
+
+        $tableName = "testAddingDataWithANonExistingColumn";
+
+        $tableExists = in_array($tableName, \Table::getAvailable($connection));
+
+        if ($tableExists)
         {
-            $connection = new \DB("localhost", "root", "root", "sqlreader", "testAddingDataWithNonANonExistingColumn");
-            $connection->query(\SQL::delete("testAddingDataWithNonANonExistingColumn", null));
+            $connection->query(\SQL::delete($tableName, null));
         }
 
-        $firstInput = array (
-            "name" => "ADRIAN",
-            "surname" => "GONZALEZ"
-        );
+        $writer = new \SqlWriter("localhost", "root", "root", "sqlreader", $tableName);
 
-        $secondInput = array (
-            "name" => "ADRIAN",
-            "surname" => "GONZALEZ",
-            "city" => "VILAREAL"
-        );
+        $firstInput = array ("name" => "ADRIAN", "surname" => "GONZALEZ");
+        $secondInput = array ("name" => "ADRIAN", "surname" => "GONZALEZ", "city" => "VILAREAL", "age" => "20");
 
         $writer->writeRow($firstInput);
         $writer->writeRow($secondInput);
 
         $expected = array (
             array (
+                "city" => null,
                 "name" => "ADRIAN",
                 "surname" => "GONZALEZ",
-                "city" => "null"
+                "age" => null
             ),
             array (
+                "city" => "VILAREAL",
                 "name" => "ADRIAN",
                 "surname" => "GONZALEZ",
-                "city" => "VILAREAL"
+                "age" => "20"
             )
         );
 
-        $reader = new \SqlRandomReader("localhost", "root", "root", "sqlreader", "testAddingDataWithNonANonExistingColumn");
+        $reader = new \SqlRandomReader("localhost", "root", "root", "sqlreader", $tableName);
 
         $totalRows = $reader->getRowCount();
         $outputRows = array();
@@ -102,5 +110,4 @@ class TestSqlWriter extends TestFixture{
 
         Assert::areIdentical($expected, $outputRows);
     }
-
 }
