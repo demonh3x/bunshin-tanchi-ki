@@ -60,6 +60,21 @@ class TestColumnMapperRowFilter extends TestFixture{
         $this->assertMapping($input, $expected, $this->testOneMapping);
     }
 
+    function testChangingOneOfThreeColumnNamesWithoutReordering(){
+        $input = array(
+            "columnName2" => "value2",
+            "columnName1" => "value1",
+            "columnName3" => "value3"
+        );
+        $expected = array(
+            "columnName2" => "value2",
+            "newColumnName1" => "value1",
+            "columnName3" => "value3"
+        );
+
+        $this->assertMapping($input, $expected, $this->testOneMapping);
+    }
+
     private $testThreeMappings = array(
         "columnName1" => "newColumnName1",
         "columnName2" => "newColumnName2",
