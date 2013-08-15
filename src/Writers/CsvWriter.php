@@ -8,7 +8,7 @@ class CsvWriter implements Writer{
     private $fp;
 
     function __construct($filePath) {
-        $this->fp = fopen($filePath, 'a');
+        $this->fp = @fopen($filePath, 'a');
 
         if (!$this->fp){
             throw new WriterException("Can't open the file: \"$filePath\"!", 200);
