@@ -136,7 +136,7 @@ class TestUniquePURLGenerator extends TestFixture{
         );
 
         $generator = $this->createGenerator();
-        Assert::areIdentical($expected, $generator->generate($this->testRow));
+        Assert::areIdentical($expected, $generator->applyTo($this->testRow));
     }
 
     function testFirstCombinationUsed(){
@@ -149,7 +149,7 @@ class TestUniquePURLGenerator extends TestFixture{
         );
 
         $generator = $this->createGenerator(array("JamieMacDow"));
-        Assert::areIdentical($expected, $generator->generate($this->testRow));
+        Assert::areIdentical($expected, $generator->applyTo($this->testRow));
     }
 
     private function assertSuccession($inputRow = array(), $purlSuccession = array()){
@@ -158,7 +158,7 @@ class TestUniquePURLGenerator extends TestFixture{
             $generator = $this->createGenerator($usedPurls);
 
             $expectedPurl = $purlSuccession[$purlIndex];
-            $generatedData= $generator->generate($inputRow);
+            $generatedData= $generator->applyTo($inputRow);
             $actualPurl = $generatedData[PURL];
 
             Assert::areIdentical($expectedPurl, $actualPurl);
@@ -175,7 +175,7 @@ class TestUniquePURLGenerator extends TestFixture{
         $exceptionTrown = false;
 
         try {
-            $generator->generate($inputRow);
+            $generator->applyTo($inputRow);
         }catch (\Exception $e){
             $exceptionTrown = true;
         }
@@ -205,7 +205,7 @@ class TestUniquePURLGenerator extends TestFixture{
         );
 
         $generator = $this->createGenerator();
-        $actual = $generator->generate($input);
+        $actual = $generator->applyTo($input);
         Assert::areIdentical($expected, $actual);
     }
 
@@ -227,7 +227,7 @@ class TestUniquePURLGenerator extends TestFixture{
         );
 
         $generator = $this->createGenerator();
-        $actual = $generator->generate($input);
+        $actual = $generator->applyTo($input);
         Assert::areIdentical($expected, $actual);
     }
 
@@ -249,7 +249,7 @@ class TestUniquePURLGenerator extends TestFixture{
         );
 
         $generator = $this->createGenerator(array("JamieMacDow", "JamieM", "JMacDow"));
-        $actual = $generator->generate($input);
+        $actual = $generator->applyTo($input);
         Assert::areIdentical($expected, $actual);
     }
 
@@ -273,7 +273,7 @@ class TestUniquePURLGenerator extends TestFixture{
         $usedPurls = array("JamieMacDow", "JamieM", "JMacDow", "MrJamieMacDow", "MrJamieM", "MrJMacDow");
 
         $generator = $this->createGenerator($usedPurls);
-        $actual = $generator->generate($input);
+        $actual = $generator->applyTo($input);
         Assert::areIdentical($expected, $actual);
     }
 
@@ -315,6 +315,6 @@ class TestUniquePURLGenerator extends TestFixture{
         );
 
         $generator = $this->createGenerator(array("JAmiEmacDow"));
-        Assert::areIdentical($expected, $generator->generate($this->testRow));
+        Assert::areIdentical($expected, $generator->applyTo($this->testRow));
     }
 }
