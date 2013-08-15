@@ -17,14 +17,10 @@ class OccurrenceScanner {
         $this->regex = $regex;
         $this->columnsToScan = $columns;
         $this->rowFilter = is_null($rowFilter)? new NullRowFilter(): $rowFilter;
-        $this->notMatchingListener = new NullRowListener();
     }
 
-    function setNotMatchingListener(RowListener $listener){
-        $this->notMatchingListener = $listener;
-    }
-
-    function getOccurrences(){
+    function getOccurrences(RowListener $notMatching = null){
+        $this->notMatchingListener = is_null($notMatching)? new NullRowListener(): $notMatching;
         $this->processAllRows();
         return $this->getResultsList();
     }

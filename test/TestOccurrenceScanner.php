@@ -127,9 +127,7 @@ class TestOccurrenceScanner extends TestFixture{
         $scanner = $this->createScanner($input, $regex, $columns, $rowFilter);
 
         $listener = new NotMatchingReceiver();
-        $scanner->setNotMatchingListener($listener);
-
-        $scanner->getOccurrences();
+        $scanner->getOccurrences($listener);
 
         Assert::areIdentical($expected, $listener->rows);
     }
