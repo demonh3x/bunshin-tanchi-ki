@@ -92,7 +92,7 @@ class SQL
         $sql = "create table $table (";
 
         $processedData = array();
-        foreach ($data[0] as $column => $value)
+        foreach ($data as $column => $value)
         {
             $processedData[] = $column . " varchar(100)";
         }
@@ -112,5 +112,9 @@ class SQL
 
     static function addColumn($table, $column, $datatype = "varchar(100)"){
         return "alter table " . $table . " add " . $column . " " . $datatype;
+    }
+
+    static function createDatabase ($databaseName) {
+        return "create database " . $databaseName;
     }
 }

@@ -7,12 +7,37 @@ include_once("../src/SQL/Table.php");
 include_once("../src/Writers/SqlWriter.php");
 include_once("../src/RandomReaders/SqlRandomReader.php");
 
+define("TEST_DB_IP", "localhost");
+define("TEST_DB_USER", "root");
+define("TEST_DB_PASSWORD", "root");
+define("TEST_DB_SCHEMA", "sqlReaderTests");
+
 class TestSqlWriter extends TestFixture{
     /*private function createWriter($path){
         return Core::getCodeCoverageWrapper("CsvWriter", array($path));
     }*/
 
+    public function setUp(){
+        $this->createDatabaseIfNotExists();
+    }
+
+    private function createDatabaseIfNotExists() {
+        new \mysqli(TEST_DB_IP, TEST_DB_USER, TEST_DB_PASSWORD, TEST_DB_SCHEMA);
+
+        if (mysqli_connect_errno())
+        {
+            $mysqli = new \mysqli(TEST_DB_IP, TEST_DB_USER, TEST_DB_PASSWORD);
+            $mysqli->real_query(\SQL::createDatabase(TEST_DB_SCHEMA));
+        }
+    }
+
+    private function createTestConnection(){
+        return new \DB(TEST_DB_IP, TEST_DB_USER, TEST_DB_PASSWORD,TEST_DB_SCHEMA);
+    }
+
     function testWritingRow(){
+
+        $tableName = "testWritingRow";
 
         $expected = array (
             array (
@@ -30,28 +55,28 @@ class TestSqlWriter extends TestFixture{
             )
         );
 
-        $connection = new \DB("localhost", "root", "root", "sqlreader");
+        $connection = $this->createTestConnection();
 
-        $tableExists = in_array("testWritingRow", \Table::getAvailable($connection));
+        $tableExists = in_array($tableName, \Table::getAvailable($connection));
 
         if ($tableExists)
         {
-            $connection->query(\SQL::delete("testWritingRow", null));
+            $connection->query(\SQL::delete($tableName, null));
         }
         else
         {
-            $query = \SQL::createTable("testWritingRow", $expected);
+            $query = \SQL::createTable($tableName, $expected);
             $connection->query($query);
         }
 
-        $writer = new \SqlWriter("localhost", "root", "root", "sqlreader", "testWritingRow");
+        $writer = new \SqlWriter(TEST_DB_IP, TEST_DB_USER, TEST_DB_PASSWORD, TEST_DB_SCHEMA, $tableName);
 
         foreach ($expected as $row)
         {
             $writer->writeRow($row);
         }
 
-        $reader = new \SqlRandomReader("localhost", "root", "root", "sqlreader", "testWritingRow");
+        $reader = new \SqlRandomReader(TEST_DB_IP, TEST_DB_USER, TEST_DB_PASSWORD, TEST_DB_SCHEMA, $tableName);
 
         $totalRows = $reader->getRowCount();
         $outputRows = array();
@@ -65,7 +90,7 @@ class TestSqlWriter extends TestFixture{
 
     function testAddingDataWithANonExistingColumn() {
 
-        $connection = new \DB("localhost", "root", "root", "sqlreader");
+        $connection = $this->createTestConnection();
 
         $tableName = "testAddingDataWithANonExistingColumn";
 
@@ -76,7 +101,7 @@ class TestSqlWriter extends TestFixture{
             $connection->query(\SQL::delete($tableName, null));
         }
 
-        $writer = new \SqlWriter("localhost", "root", "root", "sqlreader", $tableName);
+        $writer = new \SqlWriter(TEST_DB_IP, TEST_DB_USER, TEST_DB_PASSWORD, TEST_DB_SCHEMA, $tableName);
 
         $firstInput = array ("name" => "ADRIAN", "surname" => "GONZALEZ");
         $secondInput = array ("name" => "ADRIAN", "surname" => "GONZALEZ", "city" => "VILAREAL", "age" => "20");
@@ -86,20 +111,20 @@ class TestSqlWriter extends TestFixture{
 
         $expected = array (
             array (
-                "city" => null,
                 "name" => "ADRIAN",
                 "surname" => "GONZALEZ",
+                "city" => null,
                 "age" => null
             ),
             array (
-                "city" => "VILAREAL",
                 "name" => "ADRIAN",
                 "surname" => "GONZALEZ",
+                "city" => "VILAREAL",
                 "age" => "20"
             )
         );
 
-        $reader = new \SqlRandomReader("localhost", "root", "root", "sqlreader", $tableName);
+        $reader = new \SqlRandomReader(TEST_DB_IP, TEST_DB_USER, TEST_DB_PASSWORD, TEST_DB_SCHEMA, $tableName);
 
         $totalRows = $reader->getRowCount();
         $outputRows = array();
