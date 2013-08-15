@@ -102,6 +102,10 @@ class SQL
         return $sql;
     }
 
+    static function deleteTable ($table) {
+        return "drop table " . $table;
+    }
+
     static function showTables(){
         return "show tables";
     }

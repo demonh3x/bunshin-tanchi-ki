@@ -135,4 +135,32 @@ class TestSqlWriter extends TestFixture{
 
         Assert::areIdentical($expected, $outputRows);
     }
+
+    function testAddingNonExistingTable() {
+
+        $connection = $this->createTestConnection();
+
+        $tableName = "testAddingNonExistingTable";
+
+        $tableExists = in_array($tableName, \Table::getAvailable($connection));
+
+        if ($tableExists)
+        {
+            $connection->query(\SQL::deleteTable($tableName));
+        }
+
+        $tableExists = in_array($tableName, \Table::getAvailable($connection));
+
+        Assert::areIdentical($tableExists, false);
+
+        $writer = new \SqlWriter(TEST_DB_IP, TEST_DB_USER, TEST_DB_PASSWORD, TEST_DB_SCHEMA, $tableName);
+
+        $firstInput = array ("name" => "ADRIAN", "surname" => "GONZALEZ");
+
+        $writer->writeRow($firstInput);
+
+        $tableExists = in_array($tableName, \Table::getAvailable($connection));
+
+        Assert::areIdentical($tableExists, true);
+    }
 }
