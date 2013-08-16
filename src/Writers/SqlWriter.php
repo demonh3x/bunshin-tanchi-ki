@@ -9,6 +9,7 @@ include_once("../src/Writers/WriterException.php");
 
 class SqlWriter implements Writer{
     private $connection = null;
+    private $defaultDataType = "varchar(100)";
 
     function __construct($ip, $user, $password, $database, $table) {
         $this->connection = new DB($ip, $user, $password, $database);
@@ -25,9 +26,14 @@ class SqlWriter implements Writer{
     private function createTableIfNotExists($data) {
         $tableExists = in_array($this->table, \Table::getAvailable($this->connection));
 
+        $columns = array();
+        foreach ($data as $columnName => $value){
+            $columns[$columnName] = $this->defaultDataType;
+        }
+
         if (!$tableExists)
         {
-            $query = \SQL::createTable($this->table, $data);
+            $query = \SQL::createTable($this->table, $columns);
             $this->connection->query($query);
         }
     }
@@ -38,7 +44,7 @@ class SqlWriter implements Writer{
             $columnExists = in_array("$key", \Table::getColumns($this->table, $this->connection));
             if(!$columnExists)
             {
-                $query = \SQL::addColumn($this->table, $key);
+                $query = \SQL::addColumn($this->table, $key, $this->defaultDataType);
                 $this->connection->query($query);
             }
         }
