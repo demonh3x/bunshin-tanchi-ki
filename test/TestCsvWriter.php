@@ -25,13 +25,13 @@ class TestCsvWriter extends TestFixture{
         }
     }
 
+    private $createTestFilePath = "sampleFiles/test_csv_writer_create.csv";
     function testCreateFile(){
-        $path = "sampleFiles/test_csv_writer_create.csv";
-        $this->deleteFile($path);
+        $this->deleteFile($this->createTestFilePath);
 
-        $this->createWriter($path);
+        $this->createWriter($this->createTestFilePath);
 
-        Assert::isTrue(file_exists($path));
+        Assert::isTrue(file_exists($this->createTestFilePath));
     }
 
     function testCreatingANotValidPathThrowsAWriterExceptionWithCode200(){
@@ -48,11 +48,11 @@ class TestCsvWriter extends TestFixture{
         Assert::isTrue($exceptionThrown);
     }
 
+    private $writeTestFilePath = "sampleFiles/test_csv_writer_write.csv";
     function testWritingRow(){
-        $path = "sampleFiles/test_csv_writer_write.csv";
-        $this->deleteFile($path);
+        $this->deleteFile($this->writeTestFilePath);
 
-        $writer = $this->createWriter($path);
+        $writer = $this->createWriter($this->writeTestFilePath);
 
         $inputRow = array(
             "0" => "Foo",
@@ -60,17 +60,16 @@ class TestCsvWriter extends TestFixture{
         );
         $writer->writeRow($inputRow);
 
-        $reader = new \CsvRandomReader($path);
+        $reader = new \CsvRandomReader($this->writeTestFilePath);
         $outputRow = $reader->readRow(0);
 
         Assert::areIdentical($inputRow, $outputRow);
     }
 
     function testColumnNamesNotWriting(){
-        $path = "sampleFiles/test_csv_writer_write.csv";
-        $this->deleteFile($path);
+        $this->deleteFile($this->writeTestFilePath);
 
-        $writer = $this->createWriter($path);
+        $writer = $this->createWriter($this->writeTestFilePath);
 
         $inputRow = array(
             "0" => "Foo",
@@ -79,7 +78,7 @@ class TestCsvWriter extends TestFixture{
         );
         $writer->writeRow($inputRow);
 
-        $reader = new \CsvRandomReader($path);
+        $reader = new \CsvRandomReader($this->writeTestFilePath);
         $outputRow = $reader->readRow(0);
 
         $expected = array(
@@ -92,17 +91,16 @@ class TestCsvWriter extends TestFixture{
     }
 
     function testWritingUTF8Characters(){
-        $path = "sampleFiles/test_csv_writer_write.csv";
-        $this->deleteFile($path);
+        $this->deleteFile($this->writeTestFilePath);
 
-        $writer = $this->createWriter($path);
+        $writer = $this->createWriter($this->writeTestFilePath);
 
         $inputRow = array(
             "0" => "₤☻£﷼"
         );
         $writer->writeRow($inputRow);
 
-        $reader = new \CsvRandomReader($path);
+        $reader = new \CsvRandomReader($this->writeTestFilePath);
         $outputRow = $reader->readRow(0);
 
         $expected = array(
@@ -112,25 +110,25 @@ class TestCsvWriter extends TestFixture{
         Assert::areIdentical($expected, $outputRow);
     }
 
+    private $appendTestFilePath = "sampleFiles/test_csv_writer_append.csv";
     function testAppending(){
-        $path = "sampleFiles/test_csv_writer_append.csv";
-        $this->deleteFile($path);
+        $this->deleteFile($this->appendTestFilePath);
 
-        $writer = $this->createWriter($path);
+        $writer = $this->createWriter($this->appendTestFilePath);
         $inputRow1 = array(
             "0" => "Foo",
             "1" => "Bar"
         );
         $writer->writeRow($inputRow1);
 
-        $writer2 = $this->createWriter($path);
+        $writer2 = $this->createWriter($this->appendTestFilePath);
         $inputRow2 = array(
             "0" => "Bar",
             "1" => "Foo"
         );
         $writer2->writeRow($inputRow2);
 
-        $reader = new \CsvRandomReader($path);
+        $reader = new \CsvRandomReader($this->appendTestFilePath);
         $current = array();
         for ($i = 0; $i < $reader->getRowCount(); $i++){
             $current[] = $reader->readRow($i);
@@ -148,5 +146,53 @@ class TestCsvWriter extends TestFixture{
         );
 
         Assert::areIdentical($expected, $current);
+    }
+
+    function testWritingNotSortedRowsShouldWriteThemUnsorted(){
+        $this->deleteFile($this->writeTestFilePath);
+
+        $writer = $this->createWriter($this->writeTestFilePath);
+
+        $writer->writeRow(array(
+            "2" => "Foo",
+            "0" => "Hi",
+            "1" => "Bar"
+        ));
+
+        $reader = new \CsvRandomReader($this->writeTestFilePath);
+
+        $outputRow2 = $reader->readRow(0);
+
+        $expected = array(
+            "0" => "Foo",
+            "1" => "Hi",
+            "2" => "Bar"
+        );
+
+        Assert::areIdentical($expected, $outputRow2);
+    }
+
+    function testWritingRowWithoutColumnNames(){
+        $this->deleteFile($this->writeTestFilePath);
+
+        $writer = $this->createWriter($this->writeTestFilePath);
+
+        $writer->writeRow(array(
+            "Foo",
+            "Hi",
+            "Bar"
+        ));
+
+        $reader = new \CsvRandomReader($this->writeTestFilePath);
+
+        $outputRow2 = $reader->readRow(0);
+
+        $expected = array(
+            "0" => "Foo",
+            "1" => "Hi",
+            "2" => "Bar"
+        );
+
+        Assert::areIdentical($expected, $outputRow2);
     }
 }
