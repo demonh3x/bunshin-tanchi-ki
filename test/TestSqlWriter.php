@@ -7,11 +7,6 @@ include_once("../src/SQL/Table.php");
 include_once("../src/Writers/SqlWriter.php");
 include_once("../src/RandomReaders/SqlRandomReader.php");
 
-define("TEST_DB_IP", "localhost");
-define("TEST_DB_USER", "root");
-define("TEST_DB_PASSWORD", "root");
-define("TEST_DB_SCHEMA", "sqlReaderTests");
-
 class TestSqlWriter extends TestFixture{
     /*private function createWriter($path){
         return Core::getCodeCoverageWrapper("CsvWriter", array($path));
@@ -27,17 +22,17 @@ class TestSqlWriter extends TestFixture{
     }
 
     private function createDatabaseIfNotExists() {
-        new \mysqli(TEST_DB_IP, TEST_DB_USER, TEST_DB_PASSWORD, TEST_DB_SCHEMA);
+        new \mysqli(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__);
 
         if (mysqli_connect_errno())
         {
-            $mysqli = new \mysqli(TEST_DB_IP, TEST_DB_USER, TEST_DB_PASSWORD);
-            $mysqli->real_query(\SQL::createDatabase(TEST_DB_SCHEMA));
+            $mysqli = new \mysqli(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__);
+            $mysqli->real_query(\SQL::createDatabase(__TEST_DB_SCHEMA__));
         }
     }
 
     private function createTestConnection(){
-        return new \DB(TEST_DB_IP, TEST_DB_USER, TEST_DB_PASSWORD,TEST_DB_SCHEMA);
+        return new \DB(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__,__TEST_DB_SCHEMA__);
     }
 
     private function tableExists($tableName)
@@ -89,14 +84,14 @@ class TestSqlWriter extends TestFixture{
         $tableExists = $this->tableExists($tableName);
         $this->deleteTableIfExists($tableExists, $tableName);
 
-        $writer = new \SqlWriter(TEST_DB_IP, TEST_DB_USER, TEST_DB_PASSWORD, TEST_DB_SCHEMA, $tableName);
+        $writer = new \SqlWriter(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
 
         foreach ($expected as $row)
         {
             $writer->writeRow($row);
         }
 
-        $reader = new \SqlRandomReader(TEST_DB_IP, TEST_DB_USER, TEST_DB_PASSWORD, TEST_DB_SCHEMA, $tableName);
+        $reader = new \SqlRandomReader(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
         $outputRows = $this->readAllRows($reader);
 
         Assert::areIdentical($expected, $outputRows);
@@ -108,7 +103,7 @@ class TestSqlWriter extends TestFixture{
         $tableExists = $this->tableExists($tableName);
         $this->deleteTableIfExists($tableExists, $tableName);
 
-        $writer = new \SqlWriter(TEST_DB_IP, TEST_DB_USER, TEST_DB_PASSWORD, TEST_DB_SCHEMA, $tableName);
+        $writer = new \SqlWriter(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
 
         $firstInput = array ("name" => "ADRIAN", "surname" => "GONZALEZ");
         $secondInput = array ("name" => "ADRIAN", "surname" => "GONZALEZ", "city" => "VILAREAL", "age" => "20");
@@ -131,7 +126,7 @@ class TestSqlWriter extends TestFixture{
             )
         );
 
-        $reader = new \SqlRandomReader(TEST_DB_IP, TEST_DB_USER, TEST_DB_PASSWORD, TEST_DB_SCHEMA, $tableName);
+        $reader = new \SqlRandomReader(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
         $outputRows = $this->readAllRows($reader);
 
         Assert::areIdentical($expected, $outputRows);
@@ -147,7 +142,7 @@ class TestSqlWriter extends TestFixture{
         $tableExists = $this->tableExists($tableName);
         Assert::areIdentical(false, $tableExists);
 
-        $writer = new \SqlWriter(TEST_DB_IP, TEST_DB_USER, TEST_DB_PASSWORD, TEST_DB_SCHEMA, $tableName);
+        $writer = new \SqlWriter(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
 
         $tableExists = $this->tableExists($tableName);
         Assert::areIdentical(false, $tableExists);
