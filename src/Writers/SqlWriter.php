@@ -28,7 +28,6 @@ class SqlWriter implements Writer{
         if (!$tableExists)
         {
             $query = \SQL::createTable($this->table, $data);
-            print_r($query);
             $this->connection->query($query);
         }
     }
