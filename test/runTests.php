@@ -8,6 +8,11 @@ namespace Enhance;
     <?php
         define("__ROOT_DIR__", "../");
 
+        define("__TEST_DB_IP__", "localhost");
+        define("__TEST_DB_USER__", "root");
+        define("__TEST_DB_PASSWORD__", "root");
+        define("__TEST_DB_SCHEMA__", "sqlReaderTests");
+
         include_once('EnhanceTestFramework.php');
         $filterRegex =  "//";
         $excludeRegex = "//";
