@@ -1,6 +1,45 @@
 <?php
 class DB
 {
+    static function getAvailable($ip, $user, $password){
+        $mysqli = new mysqli($ip, $user, $password);
+
+        $return = array();
+
+        $results = static::querySql($mysqli, SQL::showDatabases());
+
+        for($i = 0; $i < count($results); $i++){
+            $return[] = array_values($results[$i])[0];
+        }
+
+        return $return;
+    }
+
+    static function create($ip, $user, $password, $schema){
+        $mysqli = new mysqli($ip, $user, $password);
+        static::querySql($mysqli, SQL::createDatabase($schema));
+
+        return new DB($ip, $user, $password, $schema);
+    }
+
+    private static function querySql($mysqli, $sql){
+        $correct = $mysqli->real_query($sql);
+
+        if($correct){
+            $result = $mysqli->use_result();
+
+            if (!empty($result)){
+                $array_results = $result->fetch_all(MYSQLI_ASSOC);
+                return $array_results;
+            } else {
+                $affected_rows = $mysqli->affected_rows;
+                return $affected_rows;
+            }
+        } else {
+            throw new Exception("Query error: $sql");
+        }
+    }
+
     private $mysqli;
 
     function __construct($ip, $user, $password, $schema){
@@ -22,20 +61,6 @@ class DB
      * If there is something wrong in the query.
      */
     function query($sql){
-        $correct = $this->mysqli->real_query($sql);
-
-        if($correct){
-            $result = $this->mysqli->use_result();
-
-            if (!empty($result)){
-                $array_results = $result->fetch_all(MYSQLI_ASSOC);
-                return $array_results;
-            } else {
-                $affected_rows = $this->mysqli->affected_rows;
-                return $affected_rows;
-            }
-        } else {
-            throw new Exception("Query error: $sql");
-        }
+        return static::querySql($this->mysqli, $sql);
     }
 }

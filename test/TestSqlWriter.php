@@ -23,8 +23,11 @@ class TestSqlWriter extends TestFixture{
     }
 
     private function createDatabaseIfNotExists() {
-        $mysqli = new \mysqli(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__);
-        $mysqli->real_query(\SQL::createDatabase(__TEST_DB_SCHEMA__));
+        $existingDatabases = \DB::getAvailable(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__);
+        if (!in_array(__TEST_DB_SCHEMA__, $existingDatabases ))
+        {
+            \DB::create(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__);
+        }
     }
 
     private function createTestConnection(){
@@ -38,10 +41,10 @@ class TestSqlWriter extends TestFixture{
         return $tableExists;
     }
 
-    private function deleteTableIfExists($tableExists, $tableName) {
+    private function deleteTableContentIfExists($tableExists, $tableName) {
         if ($tableExists)
         {
-            $this->connection->query(\SQL::deleteTable($tableName));
+            $this->connection->query(\SQL::delete($tableName, null));
         }
     }
 
@@ -78,7 +81,7 @@ class TestSqlWriter extends TestFixture{
         );
 
         $tableExists = $this->tableExists($tableName);
-        $this->deleteTableIfExists($tableExists, $tableName);
+        $this->deleteTableContentIfExists($tableExists, $tableName);
 
         $writer = new \SqlWriter(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
 
@@ -97,7 +100,7 @@ class TestSqlWriter extends TestFixture{
         $tableName = "testAddingDataWithANonExistingColumn";
 
         $tableExists = $this->tableExists($tableName);
-        $this->deleteTableIfExists($tableExists, $tableName);
+        $this->deleteTableContentIfExists($tableExists, $tableName);
 
         $writer = new \SqlWriter(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
 
@@ -133,15 +136,9 @@ class TestSqlWriter extends TestFixture{
         $tableName = "testAddingNonExistingTable";
 
         $tableExists = $this->tableExists($tableName);
-        $this->deleteTableIfExists($tableExists, $tableName);
-
-        $tableExists = $this->tableExists($tableName);
-        Assert::areIdentical(false, $tableExists);
+        $this->deleteTableContentIfExists($tableExists, $tableName);
 
         $writer = new \SqlWriter(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
-
-        $tableExists = $this->tableExists($tableName);
-        Assert::areIdentical(false, $tableExists);
 
         $firstInput = array ("name" => "ADRIAN", "surname" => "GONZALEZ");
 

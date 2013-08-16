@@ -102,10 +102,6 @@ class SQL
         return $sql;
     }
 
-    static function deleteTable ($table) {
-        return "drop table " . $table;
-    }
-
     static function showTables(){
         return "show tables";
     }
@@ -119,6 +115,10 @@ class SQL
     }
 
     static function createDatabase ($databaseName) {
-        return "create database if not exists " . $databaseName;
+        return "create database " . $databaseName;
+    }
+
+    static function showDatabases(){
+        return "show databases";
     }
 }
