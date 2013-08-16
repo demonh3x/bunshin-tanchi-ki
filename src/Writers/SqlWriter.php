@@ -39,13 +39,16 @@ class SqlWriter implements Writer{
     }
 
     private function createColumnsIfNotExist($data) {
-        foreach($data as $key => $value)
+
+        $table = new Table($this->connection, $this->table);
+        $arrayColumns = $table->getColumns($this->table, $this->connection);
+
+        foreach($data as $columnName => $value)
         {
-            $columnExists = in_array("$key", \Table::getColumns($this->table, $this->connection));
+            $columnExists = in_array("$columnName", $arrayColumns);
             if(!$columnExists)
             {
-                $query = \SQL::addColumn($this->table, $key, $this->defaultDataType);
-                $this->connection->query($query);
+                $table->addColumn($columnName, $this->defaultDataType);
             }
         }
     }
