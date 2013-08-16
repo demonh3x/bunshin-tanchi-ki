@@ -23,6 +23,11 @@ class Table
         return $return;
     }
 
+    static function create(DB $database, $name, $columns){
+        $database->query(SQL::createTable($name, $columns));
+        return new Table($database, $name);
+    }
+
     private $name, $database;
 
     function __construct(DB $database, $name){
@@ -83,10 +88,10 @@ class Table
         return $this->database->query($sql);
     }
 
-    static function getColumns($tableName, DB $database){
+    function getColumns(){
         $return = array();
 
-        $results = $database->query(SQL::showColumns($tableName));
+        $results = $this->database->query(SQL::showColumns($this->name));
 
         for($i = 0; $i < count($results); $i++){
             $return[] = array_values($results[$i])[0];
@@ -95,9 +100,9 @@ class Table
         return $return;
     }
 
-    static function addColumn($tableName, DB $database, $columnName){
-        $sql = SQL::addColumn($tableName, $columnName);
+    function addColumn($columnName, $dataType){
+        $sql = SQL::addColumn($this->name, $columnName, $dataType);
 
-        return $database->query($sql);
+        return $this->database->query($sql);
     }
 }
