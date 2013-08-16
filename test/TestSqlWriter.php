@@ -17,6 +17,11 @@ class TestSqlWriter extends TestFixture{
         return Core::getCodeCoverageWrapper("CsvWriter", array($path));
     }*/
 
+    private $connection;
+    function __construct(){
+        $this->connection = $this->createTestConnection();
+    }
+
     public function setUp(){
         $this->createDatabaseIfNotExists();
     }
@@ -33,6 +38,32 @@ class TestSqlWriter extends TestFixture{
 
     private function createTestConnection(){
         return new \DB(TEST_DB_IP, TEST_DB_USER, TEST_DB_PASSWORD,TEST_DB_SCHEMA);
+    }
+
+    private function tableExists($tableName)
+    {
+        $tableExists = in_array($tableName, \Table::getAvailable($this->connection));
+
+        return $tableExists;
+    }
+
+    private function deleteTableIfExists($tableExists, $tableName) {
+        if ($tableExists)
+        {
+            $this->connection->query(\SQL::deleteTable($tableName));
+        }
+    }
+
+    private function readAllRows($reader)
+    {
+        $totalRows = $reader->getRowCount();
+        $outputRows = array();
+        for ($i = 0; $i < $totalRows; $i++)
+        {
+            $outputRows[$i] = $reader->readRow($i);
+        }
+
+        return $outputRows;
     }
 
     function testWritingRow(){
@@ -55,19 +86,8 @@ class TestSqlWriter extends TestFixture{
             )
         );
 
-        $connection = $this->createTestConnection();
-
-        $tableExists = in_array($tableName, \Table::getAvailable($connection));
-
-        if ($tableExists)
-        {
-            $connection->query(\SQL::delete($tableName, null));
-        }
-        else
-        {
-            $query = \SQL::createTable($tableName, $expected);
-            $connection->query($query);
-        }
+        $tableExists = $this->tableExists($tableName);
+        $this->deleteTableIfExists($tableExists, $tableName);
 
         $writer = new \SqlWriter(TEST_DB_IP, TEST_DB_USER, TEST_DB_PASSWORD, TEST_DB_SCHEMA, $tableName);
 
@@ -77,29 +97,16 @@ class TestSqlWriter extends TestFixture{
         }
 
         $reader = new \SqlRandomReader(TEST_DB_IP, TEST_DB_USER, TEST_DB_PASSWORD, TEST_DB_SCHEMA, $tableName);
-
-        $totalRows = $reader->getRowCount();
-        $outputRows = array();
-        for ($i = 0; $i < $totalRows; $i++)
-        {
-            $outputRows[$i] = $reader->readRow($i);
-        }
+        $outputRows = $this->readAllRows($reader);
 
         Assert::areIdentical($expected, $outputRows);
     }
 
     function testAddingDataWithANonExistingColumn() {
-
-        $connection = $this->createTestConnection();
-
         $tableName = "testAddingDataWithANonExistingColumn";
 
-        $tableExists = in_array($tableName, \Table::getAvailable($connection));
-
-        if ($tableExists)
-        {
-            $connection->query(\SQL::delete($tableName, null));
-        }
+        $tableExists = $this->tableExists($tableName);
+        $this->deleteTableIfExists($tableExists, $tableName);
 
         $writer = new \SqlWriter(TEST_DB_IP, TEST_DB_USER, TEST_DB_PASSWORD, TEST_DB_SCHEMA, $tableName);
 
@@ -125,42 +132,31 @@ class TestSqlWriter extends TestFixture{
         );
 
         $reader = new \SqlRandomReader(TEST_DB_IP, TEST_DB_USER, TEST_DB_PASSWORD, TEST_DB_SCHEMA, $tableName);
-
-        $totalRows = $reader->getRowCount();
-        $outputRows = array();
-        for ($i = 0; $i < $totalRows; $i++)
-        {
-            $outputRows[$i] = $reader->readRow($i);
-        }
+        $outputRows = $this->readAllRows($reader);
 
         Assert::areIdentical($expected, $outputRows);
     }
 
     function testAddingNonExistingTable() {
 
-        $connection = $this->createTestConnection();
-
         $tableName = "testAddingNonExistingTable";
 
-        $tableExists = in_array($tableName, \Table::getAvailable($connection));
+        $tableExists = $this->tableExists($tableName);
+        $this->deleteTableIfExists($tableExists, $tableName);
 
-        if ($tableExists)
-        {
-            $connection->query(\SQL::deleteTable($tableName));
-        }
-
-        $tableExists = in_array($tableName, \Table::getAvailable($connection));
-
-        Assert::areIdentical($tableExists, false);
+        $tableExists = $this->tableExists($tableName);
+        Assert::areIdentical(false, $tableExists);
 
         $writer = new \SqlWriter(TEST_DB_IP, TEST_DB_USER, TEST_DB_PASSWORD, TEST_DB_SCHEMA, $tableName);
+
+        $tableExists = $this->tableExists($tableName);
+        Assert::areIdentical(false, $tableExists);
 
         $firstInput = array ("name" => "ADRIAN", "surname" => "GONZALEZ");
 
         $writer->writeRow($firstInput);
 
-        $tableExists = in_array($tableName, \Table::getAvailable($connection));
-
-        Assert::areIdentical($tableExists, true);
+        $tableExists = $this->tableExists($tableName);
+        Assert::areIdentical(true, $tableExists);
     }
 }
