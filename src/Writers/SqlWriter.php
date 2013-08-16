@@ -11,44 +11,44 @@ class SqlWriter implements Writer{
     private $connection = null;
     private $defaultDataType = "varchar(100)";
 
+    private $table;
+    private $tableName;
+    private $tableExists = false;
+
     function __construct($ip, $user, $password, $database, $table) {
         $this->connection = new DB($ip, $user, $password, $database);
-        $this->table = $table;
+        $this->tableName = $table;
+        $this->tableExists = in_array($this->tableName, Table::getAvailable($this->connection));
+        if ($this->tableExists){
+            $this->table = new Table($this->connection, $this->tableName);
+        }
     }
 
     function writeRow($data) {
-        $this->createTableIfNotExists($data);
+        if (!$this->tableExists) {
+            $this->createTable($data);
+        }
         $this->createColumnsIfNotExist($data);
-        $query = SQL::insert($this->table, $data);
-        $this->connection->query($query);
+
+        $this->table->insert($data);
     }
 
-    private function createTableIfNotExists($data) {
-        $tableExists = in_array($this->table, \Table::getAvailable($this->connection));
-
+    private function createTable($data) {
         $columns = array();
         foreach ($data as $columnName => $value){
             $columns[$columnName] = $this->defaultDataType;
         }
 
-        if (!$tableExists)
-        {
-            $query = \SQL::createTable($this->table, $columns);
-            $this->connection->query($query);
-        }
+        $this->table = Table::create($this->connection, $this->tableName, $columns);
     }
 
     private function createColumnsIfNotExist($data) {
+        $arrayColumns = $this->table->getColumns();
 
-        $table = new Table($this->connection, $this->table);
-        $arrayColumns = $table->getColumns($this->table, $this->connection);
-
-        foreach($data as $columnName => $value)
-        {
+        foreach ($data as $columnName => $value) {
             $columnExists = in_array("$columnName", $arrayColumns);
-            if(!$columnExists)
-            {
-                $table->addColumn($columnName, $this->defaultDataType);
+            if (!$columnExists) {
+                $this->table->addColumn($columnName, $this->defaultDataType);
             }
         }
     }
