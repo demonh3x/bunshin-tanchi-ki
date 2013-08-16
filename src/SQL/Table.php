@@ -83,7 +83,21 @@ class Table
         return $this->database->query($sql);
     }
 
-    function getColumns(){
-        throw new Exception("TODO");
+    static function getColumns($tableName, DB $database){
+        $return = array();
+
+        $results = $database->query(SQL::showColumns($tableName));
+
+        for($i = 0; $i < count($results); $i++){
+            $return[] = array_values($results[$i])[0];
+        }
+
+        return $return;
+    }
+
+    static function addColumn($tableName, DB $database, $columnName){
+        $sql = SQL::addColumn($tableName, $columnName);
+
+        return $database->query($sql);
     }
 }

@@ -102,7 +102,23 @@ class SQL
         return $sql;
     }
 
+    static function deleteTable ($table) {
+        return "drop table " . $table;
+    }
+
     static function showTables(){
         return "show tables";
+    }
+
+    static function showColumns($table){
+        return "show columns from " . $table;
+    }
+
+    static function addColumn($table, $column, $datatype = "varchar(100)"){
+        return "alter table " . $table . " add " . $column . " " . $datatype;
+    }
+
+    static function createDatabase ($databaseName) {
+        return "create database " . $databaseName;
     }
 }
