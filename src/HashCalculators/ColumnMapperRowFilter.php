@@ -12,13 +12,23 @@ class ColumnMapperRowFilter implements RowFilter{
         $return = array();
 
         foreach ($row as $column => $value){
-            if (isset($this->mappings[$column])){
-                $return[$this->mappings[$column]] = $value;
+            if ($this->isMappingSet($column)){
+                $key = $this->getMapping($column);
             } else {
-                $return[$column] = $value;
+                $key = $column;
             }
+
+            $return[$key] = $value;
         }
 
         return $return;
+    }
+
+    private function getMapping($column){
+        return $this->mappings[$column];
+    }
+
+    private function isMappingSet($column){
+        return isset($this->mappings[$column]);
     }
 }
