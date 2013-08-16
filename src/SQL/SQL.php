@@ -88,13 +88,13 @@ class SQL
         return $sql;
     }
 
-    static function createTable ($table, $data) {
+    static function createTable ($table, $columns) {
         $sql = "create table $table (";
 
         $processedData = array();
-        foreach ($data as $column => $value)
+        foreach ($columns as $column => $dataType)
         {
-            $processedData[] = $column . " varchar(100)";
+            $processedData[] = $column . " " .$dataType;
         }
         $sql .= implode(", ", $processedData);
         $sql .= ")";
@@ -110,8 +110,8 @@ class SQL
         return "show columns from " . $table;
     }
 
-    static function addColumn($table, $column, $datatype = "varchar(100)"){
-        return "alter table " . $table . " add " . $column . " " . $datatype;
+    static function addColumn($table, $column, $dataType){
+        return "alter table " . $table . " add " . $column . " " . $dataType;
     }
 
     static function createDatabase ($databaseName) {
