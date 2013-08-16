@@ -63,6 +63,7 @@ class TestSqlWriter extends TestFixture{
     function testWritingRow(){
 
         $tableName = "testWritingRow";
+        $tableName = strtolower($tableName);
 
         $expected = array (
             array (
@@ -98,6 +99,7 @@ class TestSqlWriter extends TestFixture{
 
     function testAddingDataWithANonExistingColumn() {
         $tableName = "testAddingDataWithANonExistingColumn";
+        $tableName = strtolower($tableName);
 
         $tableExists = $this->tableExists($tableName);
         $this->deleteTableContentIfExists($tableExists, $tableName);
@@ -134,6 +136,7 @@ class TestSqlWriter extends TestFixture{
     function testAddingNonExistingTable() {
 
         $tableName = "testAddingNonExistingTable";
+        $tableName = strtolower($tableName);
 
         $tableExists = $this->tableExists($tableName);
         $this->deleteTableContentIfExists($tableExists, $tableName);
