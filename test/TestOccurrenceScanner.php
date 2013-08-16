@@ -17,9 +17,13 @@ class TestOccurrenceScanner extends TestFixture{
     public function tearDown(){
     }
 
+    private function createOccurrenceScanner($regex, $reader, $columns = array(), $rowFilter = null){
+        return Core::getCodeCoverageWrapper("OccurrenceScanner", array($regex, $reader, $columns, $rowFilter));
+    }
+
     private function createScanner($data, $regex, $columns = array(), $rowFilter = null){
         $reader = $this->createRamReader("testOccurrenceScannerDefaultRamReader", $data);
-        $scanner = new \OccurrenceScanner($reader, $regex, $columns, $rowFilter);
+        $scanner = $this->createOccurrenceScanner($regex, array($reader), $columns, $rowFilter);
 
         return $scanner;
     }
@@ -42,14 +46,21 @@ class TestOccurrenceScanner extends TestFixture{
         Assert::isTrue($scanner->getOccurrences() instanceof \Iterator);
     }
 
-    private function assertOccurrences($input, $expected, $regex, $columns = array(), $rowFilter = null){
-        $scanner = $this->createScanner($input, $regex, $columns, $rowFilter);
-
+    private function getScannerOccurrences($scanner){
         $output = $scanner->getOccurrences();
+
         $outputArray = array();
         foreach ($output as $row){
             $outputArray[] = $row;
         }
+
+        return $outputArray;
+    }
+
+    private function assertOccurrences($input, $expected, $regex, $columns = array(), $rowFilter = null){
+        $scanner = $this->createScanner($input, $regex, $columns, $rowFilter);
+
+        $outputArray = $this->getScannerOccurrences($scanner);
 
         Assert::areIdentical($expected, $outputArray);
     }
@@ -127,9 +138,7 @@ class TestOccurrenceScanner extends TestFixture{
         $scanner = $this->createScanner($input, $regex, $columns, $rowFilter);
 
         $listener = new NotMatchingReceiver();
-        $scanner->setNotMatchingListener($listener);
-
-        $scanner->getOccurrences();
+        $scanner->getOccurrences($listener);
 
         Assert::areIdentical($expected, $listener->rows);
     }
@@ -145,6 +154,28 @@ class TestOccurrenceScanner extends TestFixture{
         $regex = "/^Foo/";
 
         $this->assertNotMatching($input, $expected, $regex);
+    }
+
+    function testAllOccurrencesMultipleReaders(){
+        $input1 = array(
+            array("0" => "Foo1"),
+            array("0" => "AFoo")
+        );
+        $reader1 = $this->createRamReader("testOccurrenceScannerMultipleReaders1", $input1);
+        $input2 = array(
+            array("0" => "Fo"),
+            array("0" => "Foo2")
+        );
+        $reader2 = $this->createRamReader("testOccurrenceScannerMultipleReaders2", $input2);
+
+        $regex = "/^Foo/";
+        $scanner = $this->createOccurrenceScanner($regex, array($reader1, $reader2));
+
+        $expected = array(
+            array("0" => "Foo1"),
+            array("0" => "Foo2")
+        );
+        Assert::areIdentical($expected, $this->getScannerOccurrences($scanner));
     }
 }
 class NotMatchingReceiver implements \RowListener{

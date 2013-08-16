@@ -116,7 +116,7 @@
 
         for ($i = 0; $i < $reader->getRowCount(); $i++){
             $row = $reader->readRow($i);
-            $writer->writeRow($uniquePURLGenerator->generate($row));
+            $writer->writeRow($uniquePURLGenerator->applyTo($row));
         }
         $reader = null;
 

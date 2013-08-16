@@ -1,5 +1,7 @@
 <?php
 
+include_once(__ROOT_DIR__ . "src/HashCalculators/RowFilter.php");
+
 include_once(__ROOT_DIR__ . "src/FilteredHashList.php");
 foreach (glob(__ROOT_DIR__ . "src/CellGenerators/PurlCalculators/*.php") as $filename){
     include_once($filename);
@@ -11,7 +13,7 @@ foreach (glob(__ROOT_DIR__ . "src/HashCalculators/Filters/*Filter.php") as $file
     include_once($filename);
 }
 
-class UniquePURLGenerator {
+class UniquePURLGenerator implements RowFilter{
     private $purlField;
     private $hashList;
     private $cleaningFilter;
@@ -129,7 +131,7 @@ class UniquePURLGenerator {
         }
     }
 
-    function generate($row){
+    function applyTo($row){
         $return = $row;
         $purlHasBeenGenerated = false;
 
