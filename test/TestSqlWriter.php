@@ -14,6 +14,7 @@ class TestSqlWriter extends TestFixture{
 
     private $connection;
     function __construct(){
+        $this->createDatabaseIfNotExists();
         $this->connection = $this->createTestConnection();
     }
 
@@ -22,13 +23,8 @@ class TestSqlWriter extends TestFixture{
     }
 
     private function createDatabaseIfNotExists() {
-        new \mysqli(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__);
-
-        if (mysqli_connect_errno())
-        {
-            $mysqli = new \mysqli(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__);
-            $mysqli->real_query(\SQL::createDatabase(__TEST_DB_SCHEMA__));
-        }
+        $mysqli = new \mysqli(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__);
+        $mysqli->real_query(\SQL::createDatabase(__TEST_DB_SCHEMA__));
     }
 
     private function createTestConnection(){

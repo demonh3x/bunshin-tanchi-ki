@@ -119,6 +119,6 @@ class SQL
     }
 
     static function createDatabase ($databaseName) {
-        return "create database " . $databaseName;
+        return "create database if not exists " . $databaseName;
     }
 }
