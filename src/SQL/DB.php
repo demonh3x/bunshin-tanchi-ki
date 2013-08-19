@@ -9,7 +9,8 @@ class DB
         $results = static::querySql($mysqli, SQL::showDatabases());
 
         for($i = 0; $i < count($results); $i++){
-            $return[] = array_values($results[$i])[0];
+            $res = array_values($results[$i]);
+            $return[] = $res[0];
         }
 
         return $return;
