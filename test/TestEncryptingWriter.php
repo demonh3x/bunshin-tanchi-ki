@@ -25,7 +25,7 @@ class TestEncryptingWriter extends TestFixture{
         $encWriter = $this->createWriter($ramWriter, $key);
 
         $encWriter->writeRow(array(
-            "encrypted data"
+            "0" => "encrypted data"
         ));
 
         $ramReader = new \RamRandomReader($ramId);
