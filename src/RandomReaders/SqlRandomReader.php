@@ -16,7 +16,8 @@ class SqlRandomReader implements RandomReader{
 
     function readRow($index) {
         $query = SQL::select($this->table, null, null, 1, $index);
-        return $this->connection->query($query)[0];
+        $res = $this->connection->query($query);
+        return $res[0];
     }
 
     function getRowCount() {
