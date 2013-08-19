@@ -2,6 +2,7 @@
 namespace Enhance;
 
 include_once(__ROOT_DIR__ . "src/Writers/CsvColumnWriter.php");
+include_once(__ROOT_DIR__ . "src/RandomReaders/CsvColumnRandomReader.php");
 class TestCsvColumnWriter extends TestFixture{
 
     private $testFilePath = "sampleFiles/test_csv_column_writer.csv";
@@ -168,63 +169,31 @@ class TestCsvColumnWriter extends TestFixture{
 
         Assert::areIdentical($expectedRows, $actualRows);
     }
-/*
-    function testWritingNotPreviouslyExistingColumns(){
+
+    function testWritingNotPreviouslyExistingColumnsThrowsException(){
+        $writer = $this->createWriter();
+
         $inputRows = array(
             array(
                 "columnName1" => "value1A",
                 "columnName2" => "value2A",
             ),
             array(
-                "columnName1" => "value1B",
                 "columnName2" => "value2B",
                 "columnName3" => "value3B",
             ),
         );
 
-        $expectedRows = array(
-            array(
-                "columnName1" => "value1A",
-                "columnName2" => "value2A",
-                "columnName3" => "",
-            ),
-            array(
-                "columnName1" => "value1B",
-                "columnName2" => "value2B",
-                "columnName3" => "value3B",
-            ),
-        );
+        $writer->writeRow($inputRows[0]);
 
-        $this->assertWritingMultipleRows($inputRows, $expectedRows);
-    }
+        $exceptionThrown = false;
+        try {
+            $writer->writeRow($inputRows[1]);
+        } catch (\WriterException $e){
+            $exceptionThrown = true;
+        }
 
-    function testWritingNotPreviouslyExistingColumnsUnsorted(){
-        $inputRows = array(
-            array(
-                "columnName1" => "value1A",
-                "columnName2" => "value2A",
-            ),
-            array(
-                "columnName3" => "value3B",
-                "columnName2" => "value2B",
-                "columnName1" => "value1B",
-            ),
-        );
-
-        $expectedRows = array(
-            array(
-                "columnName1" => "value1A",
-                "columnName2" => "value2A",
-                "columnName3" => "",
-            ),
-            array(
-                "columnName1" => "value1B",
-                "columnName2" => "value2B",
-                "columnName3" => "value3B",
-            ),
-        );
-
-        $this->assertWritingMultipleRows($inputRows, $expectedRows);
+        Assert::isTrue($exceptionThrown);
     }
 
     function testNotWritingPreviouslyExistingColumns(){
@@ -254,6 +223,6 @@ class TestCsvColumnWriter extends TestFixture{
         );
 
         $this->assertWritingMultipleRows($inputRows, $expectedRows);
-    }*/
+    }
 
 }

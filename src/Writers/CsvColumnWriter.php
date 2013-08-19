@@ -1,10 +1,14 @@
 <?php
 
 include_once("CsvWriter.php");
+
+include_once("WriterException.php");
+
 class CsvColumnWriter extends CsvWriter{
     private $areColumnsWritten = false;
     private $columnsOrder = array();
     private $filePath;
+    private $notDefinedValue = "";
 
     function __construct($filePath){
         $this->filePath = $filePath;
@@ -37,6 +41,16 @@ class CsvColumnWriter extends CsvWriter{
     }
 
     private function sort($data){
-        return array_merge(array_flip($this->columnsOrder), $data);
+        $defaultArray = array_flip($this->columnsOrder);
+        foreach ($defaultArray as $key => $value){
+            $defaultArray[$key] = $this->notDefinedValue;
+        }
+        $return = array_merge($defaultArray, $data);
+
+        if (count($return) !== count($this->columnsOrder)){
+            throw new WriterException();
+        }
+
+        return $return;
     }
 }
