@@ -15,7 +15,6 @@ class TestSqlWriter extends TestFixture{
     private $connection;
 
     function __construct(){
-        $this->schemaLowercase = strtolower(__TEST_DB_SCHEMA__);
         $this->createDatabaseIfNotExists();
         $this->connection = $this->createTestConnection();
     }
@@ -26,41 +25,35 @@ class TestSqlWriter extends TestFixture{
 
     private function createDatabaseIfNotExists() {
         $existingDatabases = \DB::getAvailable(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__);
-        foreach ($existingDatabases as $index => $database)
+
+        if (!in_array(__TEST_DB_SCHEMA__, $existingDatabases ))
         {
-            $existingDatabases[$index] = strtolower($existingDatabases[$index]);
-        }
-        if (!in_array($this->schemaLowercase, $existingDatabases ))
-        {
-            \DB::create(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, $this->schemaLowercase);
+            \DB::create(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__);
         }
     }
 
     private function createTestConnection(){
-        return new \DB(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__,$this->schemaLowercase);
+        return new \DB(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__,__TEST_DB_SCHEMA__);
     }
 
     private function tableExists($tableName)
     {
         $existingTables = \Table::getAvailable($this->connection);
-        foreach ($existingTables as $index => $table)
-        {
-            $existingTables[$index] = strtolower($existingTables[$index]);
-        }
 
         $tableExists = in_array($tableName, $existingTables);
 
         return $tableExists;
     }
 
-    private function deleteTableContentIfExists($tableExists, $tableName) {
+    private function deleteTableContentIfExists($tableName) {
+        $tableExists = $this->tableExists($tableName);
         if ($tableExists)
         {
             $this->connection->query(\SQL::delete($tableName, null));
         }
     }
 
-    private function readAllRows($reader)
+    private function readAllRows(\SqlRandomReader $reader)
     {
         $totalRows = $reader->getRowCount();
         $outputRows = array();
@@ -74,7 +67,8 @@ class TestSqlWriter extends TestFixture{
 
     function testWritingRow(){
 
-        $tableName = strtolower("testWritingRow");
+        $tableName = "testWritingRow";
+        $this->deleteTableContentIfExists($tableName);
 
         $expected = array (
             array (
@@ -92,29 +86,26 @@ class TestSqlWriter extends TestFixture{
             )
         );
 
-        $tableExists = $this->tableExists($tableName);
-        $this->deleteTableContentIfExists($tableExists, $tableName);
 
-        $writer = new \SqlWriter(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, $this->schemaLowercase, $tableName);
+        $writer = new \SqlWriter(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
 
         foreach ($expected as $row)
         {
             $writer->writeRow($row);
         }
 
-        $reader = new \SqlRandomReader(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, $this->schemaLowercase, $tableName);
+        $reader = new \SqlRandomReader(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
         $outputRows = $this->readAllRows($reader);
 
         Assert::areIdentical($expected, $outputRows);
     }
 
     function testAddingDataWithANonExistingColumn() {
-        $tableName = strtolower("testAddingDataWithANonExistingColumn");
 
-        $tableExists = $this->tableExists($tableName);
-        $this->deleteTableContentIfExists($tableExists, $tableName);
+        $tableName = "testAddingDataWithANonExistingColumn";
+        $this->deleteTableContentIfExists($tableName);
 
-        $writer = new \SqlWriter(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, $this->schemaLowercase, $tableName);
+        $writer = new \SqlWriter(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
 
         $firstInput = array ("name" => "ADRIAN", "surname" => "GONZALEZ");
         $secondInput = array ("name" => "ADRIAN", "surname" => "GONZALEZ", "city" => "VILAREAL", "age" => "20");
@@ -137,7 +128,7 @@ class TestSqlWriter extends TestFixture{
             )
         );
 
-        $reader = new \SqlRandomReader(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, $this->schemaLowercase, $tableName);
+        $reader = new \SqlRandomReader(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
         $outputRows = $this->readAllRows($reader);
 
         Assert::areIdentical($expected, $outputRows);
@@ -145,12 +136,10 @@ class TestSqlWriter extends TestFixture{
 
     function testAddingNonExistingTable() {
 
-        $tableName = strtolower("testAddingNonExistingTable");
+        $tableName = "testAddingNonExistingTable";
+        $this->deleteTableContentIfExists($tableName);
 
-        $tableExists = $this->tableExists($tableName);
-        $this->deleteTableContentIfExists($tableExists, $tableName);
-
-        $writer = new \SqlWriter(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, $this->schemaLowercase, $tableName);
+        $writer = new \SqlWriter(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
 
         $firstInput = array ("name" => "ADRIAN", "surname" => "GONZALEZ");
 
