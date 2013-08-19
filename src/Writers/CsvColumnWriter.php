@@ -48,7 +48,7 @@ class CsvColumnWriter extends CsvWriter{
         $return = array_merge($defaultArray, $data);
 
         if (count($return) !== count($this->columnsOrder)){
-            throw new WriterException();
+            throw new WriterException("The row contains columns not defined in the file! " . print_r($data, true));
         }
 
         return $return;
