@@ -2,7 +2,7 @@
 
 include_once("RandomReader.php");
 include_once(__ROOT_DIR__ . "src/HashCalculators/RowFilter.php");
-class FilteredRandomReader implements RandomReader{
+class FilteringRandomReader implements RandomReader{
     private $reader;
     private $filter;
 
