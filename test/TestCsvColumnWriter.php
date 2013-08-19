@@ -168,9 +168,92 @@ class TestCsvColumnWriter extends TestFixture{
 
         Assert::areIdentical($expectedRows, $actualRows);
     }
-
+/*
     function testWritingNotPreviouslyExistingColumns(){
-        Assert::fail();
+        $inputRows = array(
+            array(
+                "columnName1" => "value1A",
+                "columnName2" => "value2A",
+            ),
+            array(
+                "columnName1" => "value1B",
+                "columnName2" => "value2B",
+                "columnName3" => "value3B",
+            ),
+        );
+
+        $expectedRows = array(
+            array(
+                "columnName1" => "value1A",
+                "columnName2" => "value2A",
+                "columnName3" => "",
+            ),
+            array(
+                "columnName1" => "value1B",
+                "columnName2" => "value2B",
+                "columnName3" => "value3B",
+            ),
+        );
+
+        $this->assertWritingMultipleRows($inputRows, $expectedRows);
     }
+
+    function testWritingNotPreviouslyExistingColumnsUnsorted(){
+        $inputRows = array(
+            array(
+                "columnName1" => "value1A",
+                "columnName2" => "value2A",
+            ),
+            array(
+                "columnName3" => "value3B",
+                "columnName2" => "value2B",
+                "columnName1" => "value1B",
+            ),
+        );
+
+        $expectedRows = array(
+            array(
+                "columnName1" => "value1A",
+                "columnName2" => "value2A",
+                "columnName3" => "",
+            ),
+            array(
+                "columnName1" => "value1B",
+                "columnName2" => "value2B",
+                "columnName3" => "value3B",
+            ),
+        );
+
+        $this->assertWritingMultipleRows($inputRows, $expectedRows);
+    }
+
+    function testNotWritingPreviouslyExistingColumns(){
+        $inputRows = array(
+            array(
+                "columnName1" => "value1A",
+                "columnName2" => "value2A",
+                "columnName3" => "value3A",
+            ),
+            array(
+                "columnName1" => "value1B",
+                "columnName3" => "value3B",
+            ),
+        );
+
+        $expectedRows = array(
+            array(
+                "columnName1" => "value1A",
+                "columnName2" => "value2A",
+                "columnName3" => "value3A",
+            ),
+            array(
+                "columnName1" => "value1B",
+                "columnName2" => "",
+                "columnName3" => "value3B",
+            ),
+        );
+
+        $this->assertWritingMultipleRows($inputRows, $expectedRows);
+    }*/
 
 }

@@ -4,9 +4,16 @@ include_once("CsvWriter.php");
 class CsvColumnWriter extends CsvWriter{
     private $areColumnsWritten = false;
     private $columnsOrder = array();
+    private $filePath;
 
     function __construct($filePath){
+        $this->filePath = $filePath;
         $this->areColumnsWritten = file_exists($filePath);
+
+        if ($this->areColumnsWritten) {
+            $this->readColumns();
+        }
+
         parent::__construct($filePath);
     }
 
@@ -22,6 +29,11 @@ class CsvColumnWriter extends CsvWriter{
         $this->columnsOrder = array_keys($data);
         parent::writeRow($this->columnsOrder);
         $this->areColumnsWritten = true;
+    }
+
+    private function readColumns(){
+        $fp = fopen($this->filePath, "r");
+        $this->columnsOrder = array_values(fgetcsv($fp));
     }
 
     private function sort($data){
