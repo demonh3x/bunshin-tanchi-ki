@@ -38,7 +38,6 @@ class TestDecryptingRandomReader extends TestFixture{
         );
 
         $actual = $decReader->readRow(0);
-        print_r($actual);
         Assert::areIdentical($input, $actual);
     }
 
