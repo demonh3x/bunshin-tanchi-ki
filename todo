@@ -50,13 +50,12 @@ Refactor PURL-Number behaviour to generate infinite combinations
 # Refactor FilterGroup
 
 ! Remove functionality from UI, move it to core.
-    Remove used purls file and usages.
     Merge data to uniques data
     What do I do with merged data? delete? move?
     When generating fields -> What do I do with original data? delete? move?
 
 !!! Not re-de-duping duplicates groups from previous batches. Or data from already de-duped database...
-# !!! encripting/decoding writer/reader
+#!!! encripting/decoding writer/reader
 
 Make UniquePURLGenerator faster by pointing at last calculator used
 
@@ -109,3 +108,4 @@ Sending empty input files when creating work, crashes
 !! Design Profesional UI
 
 Remove PURL uniqueness checking
+    Remove used purls file and usages.
