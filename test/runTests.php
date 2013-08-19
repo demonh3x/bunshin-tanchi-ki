@@ -17,6 +17,8 @@ namespace Enhance;
         $filterRegex =  "//";
         $excludeRegex = "//";
 
+        echo phpversion() . "<br>";
+
         foreach (glob("Test*.php") as $filename)
         {
             if ($excludeRegex !== "//" && preg_match($excludeRegex, $filename)){
