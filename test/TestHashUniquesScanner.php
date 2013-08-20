@@ -3,6 +3,7 @@ namespace Enhance;
 
 include_once(__ROOT_DIR__ . "src/HashUniquesScanner.php");
 include_once(__ROOT_DIR__ . "src/HashCalculators/StringHashCalculator.php");
+include_once(__ROOT_DIR__ . "src/HashList.php");
 
 include_once(__ROOT_DIR__ . "src/RandomReaders/RamRandomReader.php");
 
