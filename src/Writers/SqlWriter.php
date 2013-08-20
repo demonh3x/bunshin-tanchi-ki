@@ -25,6 +25,7 @@ class SqlWriter implements Writer{
     }
 
     function writeRow($data) {
+        $this->tableExists = in_array($this->tableName, Table::getAvailable($this->connection));
         if (!$this->tableExists) {
             $this->createTable($data);
         }
