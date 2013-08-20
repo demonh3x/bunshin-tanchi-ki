@@ -1,11 +1,11 @@
 <?php
 namespace Enhance;
 
-include_once(__ROOT_DIR__ . "src/RandomReaders/FilteredRandomReader.php");
+include_once(__ROOT_DIR__ . "src/RandomReaders/FilteringRandomReader.php");
 
 include_once(__ROOT_DIR__ . "src/Writers/RamWriter.php");
 include_once(__ROOT_DIR__ . "src/RandomReaders/RamRandomReader.php");
-class TestFilteredRandomReader extends TestFixture{
+class TestFilteringRandomReader extends TestFixture{
 
     public function setUp(){
     }
@@ -27,8 +27,8 @@ class TestFilteredRandomReader extends TestFixture{
     }
 
     private function createReader($data){
-        $ramReader = $this->createRamReader("TestFilteredRandomReader", $data);
-        return new \FilteredRandomReader($ramReader, new MockRowFilter());
+        $ramReader = $this->createRamReader("TestFilteringRandomReader", $data);
+        return new \FilteringRandomReader($ramReader, new MockRowFilter());
     }
 
     function testFilteringReaderShouldFilterTheReadedRow(){

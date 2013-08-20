@@ -17,7 +17,8 @@ class Table
         $results = $database->query(SQL::showTables());
 
         for($i = 0; $i < count($results); $i++){
-            $return[] = array_values($results[$i])[0];
+            $res = array_values($results[$i]);
+            $return[] = $res[0];
         }
 
         return $return;
@@ -94,7 +95,8 @@ class Table
         $results = $this->database->query(SQL::showColumns($this->name));
 
         for($i = 0; $i < count($results); $i++){
-            $return[] = array_values($results[$i])[0];
+            $res = array_values($results[$i]);
+            $return[] = $res[0];
         }
 
         return $return;

@@ -17,16 +17,29 @@ namespace Enhance;
         $filterRegex =  "//";
         $excludeRegex = "//";
 
+        echo "PHP Version: " . phpversion() . "<br>";
+
+        $excludedTests = array();
+        function logTestExcluded($filename){
+            global $excludedTests;
+            $excludedTests[] = $filename;
+        }
+
         foreach (glob("Test*.php") as $filename)
         {
             if ($excludeRegex !== "//" && preg_match($excludeRegex, $filename)){
+                logTestExcluded($filename);
                 continue;
             }
+
             if (preg_match($filterRegex, $filename)){
                 include_once($filename);
+            } else {
+                logTestExcluded($filename);
             }
         }
 
+        echo "Excluded Tests: " . implode(", ", $excludedTests) . "<br>";
         Core::runTests();
     ?>
 

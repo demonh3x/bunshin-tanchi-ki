@@ -14,7 +14,7 @@ Multiple HashCalculators to use one OR another to detect a duplicate
 MySQL Random reader
 MySQL Writer
 - XLS Random reader
-CsvColumnWriter
+# CsvColumnWriter
 
 Refactor FirstName and Surname Filter
 
@@ -50,12 +50,12 @@ Refactor PURL-Number behaviour to generate infinite combinations
 # Refactor FilterGroup
 
 ! Remove functionality from UI, move it to core.
-    Remove used purls file and usages.
     Merge data to uniques data
     What do I do with merged data? delete? move?
     When generating fields -> What do I do with original data? delete? move?
 
 !!! Not re-de-duping duplicates groups from previous batches. Or data from already de-duped database...
+#!!! encripting/decoding writer/reader
 
 Make UniquePURLGenerator faster by pointing at last calculator used
 
@@ -104,8 +104,8 @@ Option to deactivate duplicate groups writing
 Sending empty input files when creating work, crashes
 
 ! Login
-!!! encripting/decoding writer/reader
 
 !! Design Profesional UI
 
 Remove PURL uniqueness checking
+    Remove used purls file and usages.
