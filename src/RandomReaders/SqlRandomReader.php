@@ -7,6 +7,7 @@ include_once("../src/RandomReaders/RandomReader.php");
 class SqlRandomReader implements RandomReader{
 
     private $connection = null;
+    private $table;
 
     function __construct ($ip, $user, $password, $database, $table)
     {
@@ -24,7 +25,7 @@ class SqlRandomReader implements RandomReader{
         $query = SQL::select($this->table, "COUNT(*)", null);
         $rowCount = $this->connection->query($query);
 
-        return $rowCount[0]["COUNT(*)"];
+        return intval($rowCount[0]["COUNT(*)"]);
     }
 
 }
