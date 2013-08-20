@@ -3,9 +3,9 @@
 class SQL
 {
     static function insert($table, $data){
-        $sql = "insert into $table(";
-        $sql .= implode(",", array_keys($data));
-        $sql .= ") values ('";
+        $sql = "insert into $table(`";
+        $sql .= implode("`,`", array_keys($data));
+        $sql .= "`) values ('";
         $sql .= implode("','", array_values($data));
         $sql .= "')";
 
@@ -94,7 +94,7 @@ class SQL
         $processedData = array();
         foreach ($columns as $column => $dataType)
         {
-            $processedData[] = $column . " " .$dataType;
+            $processedData[] = "`$column`" . " " .$dataType;
         }
         $sql .= implode(", ", $processedData);
         $sql .= ")";
