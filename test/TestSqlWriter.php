@@ -5,7 +5,6 @@ include_once("../src/SQL/DB.php");
 include_once("../src/SQL/SQL.php");
 include_once("../src/SQL/Table.php");
 include_once("../src/Writers/SqlWriter.php");
-include_once("../src/RandomReaders/SqlRandomReader.php");
 
 class TestSqlWriter extends TestFixture{
     /*private function createWriter($path){
@@ -53,14 +52,10 @@ class TestSqlWriter extends TestFixture{
         }
     }
 
-    private function readAllRows(\SqlRandomReader $reader)
+    private function readAllRows($tableName)
     {
-        $totalRows = $reader->getRowCount();
-        $outputRows = array();
-        for ($i = 0; $i < $totalRows; $i++)
-        {
-            $outputRows[$i] = $reader->readRow($i);
-        }
+        $query = \SQL::select($tableName);
+        $outputRows = $this->connection->query($query);
 
         return $outputRows;
     }
@@ -94,8 +89,7 @@ class TestSqlWriter extends TestFixture{
             $writer->writeRow($row);
         }
 
-        $reader = new \SqlRandomReader(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
-        $outputRows = $this->readAllRows($reader);
+        $outputRows = $this->readAllRows($tableName);
 
         Assert::areIdentical($expected, $outputRows);
     }
@@ -128,8 +122,8 @@ class TestSqlWriter extends TestFixture{
             )
         );
 
-        $reader = new \SqlRandomReader(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
-        $outputRows = $this->readAllRows($reader);
+
+        $outputRows = $this->readAllRows($tableName);
 
         Assert::areIdentical($expected, $outputRows);
     }
