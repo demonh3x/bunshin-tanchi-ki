@@ -8,8 +8,8 @@ include_once("Row.php");
 
 include_once("RowCollection.php");
 
-include_once("RowListener.php");
-include_once("NullRowListener.php");
+include_once("RowListeners/RowListener.php");
+include_once("RowListeners/NullRowListener.php");
 
 class HashUniquesScanner {
     private $hashCalculator, $readers = array();

@@ -259,7 +259,7 @@ class TestHashUniquesScanner extends TestFixture{
     }
 }
 
-include_once(__ROOT_DIR__ . "src/RowListener.php");
+include_once(__ROOT_DIR__ . "src/RowListeners/RowListener.php");
 class MockRowListener implements \RowListener{
     public $duplicates = array();
 

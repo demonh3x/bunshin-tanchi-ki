@@ -6,8 +6,8 @@ include_once("RowCollection.php");
 include_once("HashCalculators/NullRowFilter.php");
 include_once("HashCalculators/NullHashCalculator.php");
 
-include_once("RowListener.php");
-include_once("NullRowListener.php");
+include_once("RowListeners/RowListener.php");
+include_once("RowListeners/NullRowListener.php");
 
 class OccurrenceScanner {
     protected $readers = array(), $regex, $columnsToScan, $rowFilter, $notMatchingListener;
