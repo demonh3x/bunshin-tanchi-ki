@@ -5,6 +5,9 @@ include_once(__ROOT_DIR__ . "src/RandomReaders/FilteringRandomReader.php");
 
 include_once(__ROOT_DIR__ . "src/Writers/RamWriter.php");
 include_once(__ROOT_DIR__ . "src/RandomReaders/RamRandomReader.php");
+
+include_once("mocks/MockRowFilter.php");
+
 class TestFilteringRandomReader extends TestFixture{
 
     public function setUp(){
@@ -38,14 +41,6 @@ class TestFilteringRandomReader extends TestFixture{
         $reader = $this->createReader(array($row));
 
         $filteredRow = $reader->readRow(0);
-        Assert::isTrue(isset($filteredRow[FLAG_INDEX]));
-    }
-}
-
-define("FLAG_INDEX", "filteredRow");
-class MockRowFilter implements \RowFilter {
-    function applyTo($row) {
-        $row[FLAG_INDEX] = "";
-        return $row;
+        Assert::isTrue(MockRowFilter::hasBeenFiltered($filteredRow));
     }
 }
