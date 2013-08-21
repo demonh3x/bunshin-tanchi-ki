@@ -102,6 +102,12 @@ class SQL
         return $sql;
     }
 
+    static function dropTable ($table) {
+        $sql = "drop table $table";
+
+        return $sql;
+    }
+
     static function showTables(){
         return "show tables";
     }

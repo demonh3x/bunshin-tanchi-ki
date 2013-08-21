@@ -79,12 +79,18 @@ class Table
      * @throws InvalidArgumentException
      * Si no se especifica un array en el parámetro condiciones.
      */
-    function delete($conditions){
-        if (!is_array($conditions)){
+    function delete($conditions = null){
+        if (!is_null($conditions) && !is_array($conditions)){
             throw new InvalidArgumentException("El argumento condiciones debe ser un array asociativo");
         }
 
         $sql = SQL::delete($this->name, $conditions);
+
+        return $this->database->query($sql);
+    }
+
+    function drop(){
+        $sql = SQL::dropTable($this->name);
 
         return $this->database->query($sql);
     }
