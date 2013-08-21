@@ -27,7 +27,7 @@ class TestHashGroupExportingRowListener extends TestFixture{
 
     public function testExporting(){
         $factory = new MockRamWriterFactory();
-        $listener = new \HashGroupExportingRowListener($factory);
+        $listener = Core::getCodeCoverageWrapper("HashGroupExportingRowListener", array($factory));
 
         $data = array(
             array("Column1" => "value1"),
