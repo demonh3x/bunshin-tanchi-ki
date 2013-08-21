@@ -5,8 +5,12 @@ namespace Enhance;
 class MockRamWriterFactory implements \WriterFactory{
     public $createdWriters = array();
 
+    function getRamId($id){
+        return "testMockRamWriterFactory_$id";
+    }
+
     function createWriter($id){
-        $ramId = "testMockRamWriterFactory_$id";
+        $ramId = $this->getRamId($id);
         unset($GLOBALS[$ramId]);
 
         $writer = new \RamWriter($ramId);
