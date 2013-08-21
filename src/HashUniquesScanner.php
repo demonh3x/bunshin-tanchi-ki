@@ -6,8 +6,6 @@ include_once("RandomReaders/RandomReader.php");
 include_once("UniquesList.php");
 include_once("Row.php");
 
-include_once("RowCollection.php");
-
 include_once("RowListeners/RowListener.php");
 include_once("RowListeners/NullRowListener.php");
 
@@ -17,7 +15,7 @@ class HashUniquesScanner {
     private $appearedRows;
     private $uniqueRows = array();
 
-    private $duplicatesListener;
+    private $uniquesListener, $duplicatesListener;
 
     function __construct(HashCalculator $calculator, UniquesList $uniquesList, $randomReaders = array()){
         $this->hashCalculator = $calculator;
@@ -28,13 +26,15 @@ class HashUniquesScanner {
         }
     }
 
-    function getUniques(RowListener $duplicatesListener = null){
+    function scan(RowListener $uniques, RowListener $duplicates = null){
+        $this->uniquesListener = $uniques;
+
         $this->setDuplicatesListener(
-            is_null($duplicatesListener)? new NullRowListener(): $duplicatesListener
+            is_null($duplicates)? new NullRowListener(): $duplicates
         );
 
         $this->processAllInputRows();
-        return $this->createResultsIterator();
+        $this->sendUniques();
     }
 
     private function addReader(RandomReader $reader){
@@ -97,8 +97,10 @@ class HashUniquesScanner {
         $this->uniqueRows[$row->getHash()] = $row;
     }
 
-    private function createResultsIterator() {
-        return new RowCollection($this->uniqueRows);
+    private function sendUniques() {
+        foreach ($this->uniqueRows as $row) {
+            $this->uniquesListener->receiveRow($row->getReader(), $row->getIndex(), $row->getHash());
+        }
     }
 
     private function sendDuplicate(Row $row){

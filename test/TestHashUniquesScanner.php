@@ -27,8 +27,11 @@ class TestHashUniquesScanner extends TestFixture{
 
     function testGetUniquesNoReaders(){
         $scanner = $this->createScanner();
+        $rowListener = new MockRowListener();
 
-        $actualData = $this->getResultsArray($scanner->getUniques());
+        $scanner->scan($rowListener);
+
+        $actualData = $rowListener->receivedData;
 
         Assert::areIdentical(array(), $actualData);
     }
@@ -52,15 +55,6 @@ class TestHashUniquesScanner extends TestFixture{
         return $reader;
     }
 
-    function testGetUniquesImplementsIterator(){
-        $input = array();
-        $scanner = $this->createDefaultScanner($input);
-
-        $results = $scanner->getUniques();
-
-        Assert::isTrue($results instanceof \Iterator);
-    }
-
     function testGetUniquesNoDupsOneColumn(){
         $input = array(
             array(
@@ -78,19 +72,12 @@ class TestHashUniquesScanner extends TestFixture{
 
     private function assertUniques($input, $expectedOutput){
         $scanner = $this->createDefaultScanner($input);
+        $rowListener = new MockRowListener();
 
-        $results = $scanner->getUniques();
-        $actualData = $this->getResultsArray($results);
+        $scanner->scan($rowListener);
+        $actualData = $rowListener->receivedData;
 
         Assert::areIdentical($expectedOutput, $actualData);
-    }
-
-    private function getResultsArray($results){
-        $actualData = array();
-        foreach ($results as $value) {
-            $actualData[] = $value;
-        }
-        return $actualData;
     }
 
     function testGetUniquesNoDupsThreeColumns(){
@@ -203,7 +190,10 @@ class TestHashUniquesScanner extends TestFixture{
                 "Column1" => "Qwer"
             )
         );
-        $actual = $this->getResultsArray($scanner->getUniques());
+        $rowListener = new MockRowListener();
+        $scanner->scan($rowListener);
+
+        $actual = $rowListener->receivedData;
 
         Assert::areIdentical($expected, $actual);
     }
@@ -237,7 +227,7 @@ class TestHashUniquesScanner extends TestFixture{
 
         $scanner = $this->createScanner(array($readerA, $readerB));
 
-        $scanner->getUniques($duplicatesListener);
+        $scanner->scan(new MockRowListener(), $duplicatesListener);
 
         $expected = array(
             array(
@@ -253,7 +243,7 @@ class TestHashUniquesScanner extends TestFixture{
                 "Column1" => "Foo"
             )
         );
-        $actual = $duplicatesListener->duplicates;
+        $actual = $duplicatesListener->receivedData;
 
         Assert::areIdentical($expected, $actual);
     }
@@ -261,9 +251,9 @@ class TestHashUniquesScanner extends TestFixture{
 
 include_once(__ROOT_DIR__ . "src/RowListeners/RowListener.php");
 class MockRowListener implements \RowListener{
-    public $duplicates = array();
+    public $receivedData = array();
 
     function receiveRow(\RandomReader $reader, $rowIndex, $rowHash) {
-        $this->duplicates[] = $reader->readRow($rowIndex);
+        $this->receivedData[] = $reader->readRow($rowIndex);
     }
 }

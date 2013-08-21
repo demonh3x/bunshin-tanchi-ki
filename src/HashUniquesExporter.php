@@ -26,7 +26,7 @@ class HashUniquesExporter extends HashUniquesScanner{
             $cleanerFilter
         );
 
-        $uniqueRows = $this->getUniques($duplicatesListener);
+        $uniqueRows = $this->scan($duplicatesListener);
         foreach ($uniqueRows as $uniqueRow){
             $uniquesWriter->writeRow(
                 $cleanerFilter->applyTo($uniqueRow)
