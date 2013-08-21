@@ -7,18 +7,16 @@ include_once("../src/SQL/Table.php");
 include_once("../src/Writers/SqlWriter.php");
 
 class TestSqlWriter extends TestFixture{
-    /*private function createWriter($path){
-        return Core::getCodeCoverageWrapper("CsvWriter", array($path));
-    }*/
 
     private $connection;
+    private $table;
 
     function __construct(){
         if (!$this->databaseExists())
         {
-            $this->createDatabase();
+            \DB::create(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__);
         }
-        $this->connection = $this->createTestConnection();
+        $this->connection = new \DB(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__,__TEST_DB_SCHEMA__);
     }
 
     private function databaseExists() {
@@ -27,49 +25,67 @@ class TestSqlWriter extends TestFixture{
         return $databaseExists;
     }
 
-    private function createDatabase() {
-        \DB::create(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__);
-    }
-
     private function createWriter($ip, $user, $pass, $schema, $table){
         $args = array ($ip, $user, $pass, $schema, $table);
         return Core::getCodeCoverageWrapper("SqlWriter", $args);
     }
 
-    private function createTestConnection(){
-        return new \DB(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__,__TEST_DB_SCHEMA__);
+    private function createTableConnection($tableName) {
+        $this->table = new \Table($this->connection, $tableName);
     }
 
     private function tableExists($tableName)
     {
         $existingTables = \Table::getAvailable($this->connection);
-
         $tableExists = in_array($tableName, $existingTables);
-
         return $tableExists;
     }
 
-    private function deleteTableContent($tableName) {
-            $this->connection->query(\SQL::delete($tableName, null));
-    }
-
-    private function readAllRows($tableName)
+    private function readAllRows()
     {
-        $query = \SQL::select($tableName);
-        $outputRows = $this->connection->query($query);
+        $outputRows = $this->table->search();
 
         return $outputRows;
+    }
+
+    private function emptyTable($tableName)
+    {
+        if ($this->tableExists($tableName))
+        {
+            $this->table->delete();
+        }
+    }
+
+    private function dropTable($tableName)
+    {
+        if ($this->tableExists($tableName))
+        {
+            $this->table->drop();
+        }
+    }
+
+    private function writeRows ($inputRows, $tableName)
+    {
+        $writer = $this->createWriter(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
+
+        foreach ($inputRows as $row)
+        {
+            $writer->writeRow($row);
+        }
+    }
+
+    private function compareRowsAgainstDB ($expected, $tableName) {
+        $outputRows = $this->readAllRows($tableName);
+
+        Assert::areIdentical($expected, $outputRows);
     }
 
     function testWritingRow(){
 
         $tableName = "testWritingRow";
-        if ($this->tableExists($tableName))
-        {
-            $this->deleteTableContent($tableName);
-        }
+        $this->table = new \Table($this->connection, $tableName);
 
-        $expected = array (
+        $inputRows = array (
             array (
                 "id" => "1",
                 "name" => "1",
@@ -85,34 +101,31 @@ class TestSqlWriter extends TestFixture{
             )
         );
 
-
-        $writer = $this->createWriter(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
-
-        foreach ($expected as $row)
-        {
-            $writer->writeRow($row);
-        }
-
-        $outputRows = $this->readAllRows($tableName);
-
-        Assert::areIdentical($expected, $outputRows);
+        $this->emptyTable($tableName);
+        $this->writeRows($inputRows, $tableName);
+        $this->compareRowsAgainstDB($inputRows, $tableName);
     }
 
     function testAddingDataWithANonExistingColumn() {
 
         $tableName = "testAddingDataWithANonExistingColumn";
-        if ($this->tableExists($tableName))
-        {
-            $this->deleteTableContent($tableName);
-        }
+        $this->table = new \Table($this->connection, $tableName);
 
-        $writer = $this->createWriter(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
+        $inputRows = array (
+            array (
+                "name" => "ADRIAN",
+                "surname" => "GONZALEZ"
+            ),
+            array (
+                "name" => "ADRIAN",
+                "surname" => "GONZALEZ",
+                "city" => "VILAREAL",
+                "age" => "20"
+            )
+        );
 
-        $firstInput = array ("name" => "ADRIAN", "surname" => "GONZALEZ");
-        $secondInput = array ("name" => "ADRIAN", "surname" => "GONZALEZ", "city" => "VILAREAL", "age" => "20");
-
-        $writer->writeRow($firstInput);
-        $writer->writeRow($secondInput);
+        $this->emptyTable($tableName);
+        $this->writeRows($inputRows, $tableName);
 
         $expected = array (
             array (
@@ -129,26 +142,27 @@ class TestSqlWriter extends TestFixture{
             )
         );
 
-
-        $outputRows = $this->readAllRows($tableName);
-
-        Assert::areIdentical($expected, $outputRows);
+        $this->compareRowsAgainstDB($expected, $tableName);
     }
 
     function testAddingNonExistingTable() {
 
         $tableName = "testAddingNonExistingTable";
-        if ($this->tableExists($tableName))
-        {
-            $this->deleteTableContent($tableName);
-        }
+        $this->table = new \Table($this->connection, $tableName);
 
-        $writer = $this->createWriter(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
+        $inputRow = array (
+            array(
+                "name" => "ADRIAN",
+                "surname" => "GONZALEZ"
+            )
+        );
 
-        $firstInput = array ("name" => "ADRIAN", "surname" => "GONZALEZ");
+        $this->dropTable($tableName);
 
-        $writer->writeRow($firstInput);
+        $tableExists = $this->tableExists($tableName);
+        Assert::areIdentical(false, $tableExists);
 
+        $this->writeRows($inputRow, $tableName);
         $tableExists = $this->tableExists($tableName);
         Assert::areIdentical(true, $tableExists);
     }
