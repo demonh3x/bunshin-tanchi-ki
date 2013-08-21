@@ -15,7 +15,7 @@ class TestExportingRowListener extends TestFixture{
     }
 
     private function createRowListener(\Writer $writer, \RowFilter $rowFilter = null){
-        return new \ExportingRowListener($writer, $rowFilter);
+        return Core::getCodeCoverageWrapper("ExportingRowListener", array($writer, $rowFilter));
     }
 
     private function createReaderWithData($ramId, $data = array()){
