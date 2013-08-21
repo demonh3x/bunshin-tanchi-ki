@@ -8,23 +8,80 @@ include_once("../src/RandomReaders/SqlRandomReader.php");
 
 class TestSqlRandomReader extends TestFixture{
     private $connection;
+    private $table;
     private $defaultDataType = "varchar(100)";
     private $tableName = "testSqlRandomReader";
+    private $data = array (
+        array (
+            "0" => "",
+            "1" => "Finchatton",
+            "2" => "",
+            "3" => "Adam",
+            "4" => "Hunter",
+            "5" => "www.amayadesign.co.uk/AdamHunter",
+            "6" => "www.amayadesign.co.uk/",
+            "7" => "AdamHunter",
+            "8" => "Y",
+            "9" => "£�"
+        ),
+        array(
+            "0" => "",
+            "1" => "Luxlo",
+            "2" => "Property",
+            "3" => "Amit",
+            "4" => "Chadha",
+            "5" => "www.amayadesign.co.uk/AmitChadha",
+            "6" => "www.amayadesign.co.uk/",
+            "7" => "AmitChadha",
+            "8" => "Y",
+            "9" => "£�"
+        ),
+        array(
+            "0" => "",
+            "1" => "タマ",
+            "2" => "いぬ",
+            "3" => "",
+            "4" => "",
+            "5" => "",
+            "6" => "",
+            "7" => "",
+            "8" => "",
+            "9" => "£�"
+        ),
+        array(
+            "0" => "",
+            "1" => "Finchatton",
+            "2" => "",
+            "3" => "Adam",
+            "4" => "Hunter",
+            "5" => "www.amayadesign.co.uk/AdamHunter",
+            "6" => "www.amayadesign.co.uk/",
+            "7" => "AdamHunter",
+            "8" => "Y",
+            "9" => "£�"
+        )
+    );
+
 
     function __construct(){
         if (!$this->databaseExists())
         {
-            $this->createDatabase();
+            \DB::create(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__);
         }
-        $this->connection = $this->createTestConnection();
+
+        $this->connection = new \DB(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__,__TEST_DB_SCHEMA__);
+        $this->table = new \Table($this->connection, $this->tableName);
 
         if (!$this->tableExists())
         {
             $this->createTable();
         }
 
-        $this->deleteTableContent($this->tableName);
-        $this->addContentToTable($this->data());
+        $this->table->delete();
+        foreach ($this->data as $row)
+        {
+            $this->table->insert($row);
+        }
     }
 
     private function createReader(){
@@ -37,86 +94,11 @@ class TestSqlRandomReader extends TestFixture{
         return $databaseExists;
     }
 
-    private function createDatabase() {
-        \DB::create(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__);
-    }
-
-    private function createTestConnection(){
-        return new \DB(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__,__TEST_DB_SCHEMA__);
-    }
-
     private function tableExists()
     {
         $existingTables = \Table::getAvailable($this->connection);
         $tableExists = in_array($this->tableName, $existingTables);
         return $tableExists;
-    }
-
-    private function deleteTableContent() {
-        $this->connection->query(\SQL::delete($this->tableName, null));
-    }
-
-    private function addContentToTable($data) {
-        $table = new \Table($this->connection, $this->tableName);
-        foreach ($data as $row)
-        {
-            $table->insert($row);
-        }
-    }
-
-    private function data() {
-        $data = array (
-            array (
-                "0" => "",
-                "1" => "Finchatton",
-                "2" => "",
-                "3" => "Adam",
-                "4" => "Hunter",
-                "5" => "www.amayadesign.co.uk/AdamHunter",
-                "6" => "www.amayadesign.co.uk/",
-                "7" => "AdamHunter",
-                "8" => "Y",
-                "9" => "£�"
-            ),
-            array(
-                "0" => "",
-                "1" => "Luxlo",
-                "2" => "Property",
-                "3" => "Amit",
-                "4" => "Chadha",
-                "5" => "www.amayadesign.co.uk/AmitChadha",
-                "6" => "www.amayadesign.co.uk/",
-                "7" => "AmitChadha",
-                "8" => "Y",
-                "9" => "£�"
-            ),
-            array(
-                "0" => "",
-                "1" => "タマ",
-                "2" => "いぬ",
-                "3" => "",
-                "4" => "",
-                "5" => "",
-                "6" => "",
-                "7" => "",
-                "8" => "",
-                "9" => "£�"
-            ),
-            array(
-                "0" => "",
-                "1" => "Finchatton",
-                "2" => "",
-                "3" => "Adam",
-                "4" => "Hunter",
-                "5" => "www.amayadesign.co.uk/AdamHunter",
-                "6" => "www.amayadesign.co.uk/",
-                "7" => "AdamHunter",
-                "8" => "Y",
-                "9" => "£�"
-            )
-        );
-
-        return $data;
     }
 
     private function getColumnsFromData($data) {
@@ -129,68 +111,13 @@ class TestSqlRandomReader extends TestFixture{
     }
 
     private function createTable() {
-        \Table::create($this->connection, $this->tableName, $this->getColumnsFromData($this->data()));
+        \Table::create($this->connection, $this->tableName, $this->getColumnsFromData($this->data));
     }
 
-    function testReadFirstRow(){
-        $reader = $this->createReader();
+    private function compareRowAgainstDB ($reader, $rowIndex) {
+        $expected = $this->data[$rowIndex];
 
-        $expected = array(
-            "0" => "",
-            "1" => "Finchatton",
-            "2" => "",
-            "3" => "Adam",
-            "4" => "Hunter",
-            "5" => "www.amayadesign.co.uk/AdamHunter",
-            "6" => "www.amayadesign.co.uk/",
-            "7" => "AdamHunter",
-            "8" => "Y",
-            "9" => "£�"
-        );
-
-        $current = $reader->readRow(0);
-
-        Assert::areIdentical($expected, $current);
-    }
-
-    function testReadThirdRow(){
-        $reader = $this->createReader();
-
-        $expected = array(
-            "0" => "", "1" => "タマ", "2" => "いぬ", "3" => "", "4" => "",
-            "5" => "", "6" => "",
-            "7" => "", "8" => "", "9" => "£�"
-        );
-        $current = $reader->readRow(2);
-
-        Assert::areIdentical($expected, $current);
-    }
-
-    function testJumpingForthToSecondRow(){
-        $reader = $this->createReader();
-
-        $expected = array(
-            "0" => "",
-            "1" => "Finchatton",
-            "2" => "",
-            "3" => "Adam",
-            "4" => "Hunter",
-            "5" => "www.amayadesign.co.uk/AdamHunter",
-            "6" => "www.amayadesign.co.uk/",
-            "7" => "AdamHunter",
-            "8" => "Y",
-            "9" => "£�"
-        );
-        $current = $reader->readRow(3);
-
-        Assert::areIdentical($expected, $current);
-
-        $expected = array(
-            "0" => "", "1" => "Luxlo", "2" => "Property", "3" => "Amit", "4" => "Chadha",
-            "5" => "www.amayadesign.co.uk/AmitChadha", "6" => "www.amayadesign.co.uk/",
-            "7" => "AmitChadha", "8" => "Y", "9" => "£�"
-        );
-        $current = $reader->readRow(1);
+        $current = $reader->readRow($rowIndex);
 
         Assert::areIdentical($expected, $current);
     }
@@ -199,5 +126,14 @@ class TestSqlRandomReader extends TestFixture{
         $reader = $this->createReader();
 
         Assert::areIdentical(4, $reader->getRowCount());
+    }
+
+    function testReadAllRows() {
+        $reader = $this->createReader();
+
+        for ($rowIndex = 0; $rowIndex < count($this->data); $rowIndex++)
+        {
+            $this->compareRowAgainstDB($reader, $rowIndex);
+        }
     }
 }
