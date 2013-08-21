@@ -79,8 +79,8 @@ class Table
      * @throws InvalidArgumentException
      * Si no se especifica un array en el parámetro condiciones.
      */
-    function delete($conditions){
-        if (!is_array($conditions)){
+    function delete($conditions = null){
+        if (!is_null($conditions) && !is_array($conditions)){
             throw new InvalidArgumentException("El argumento condiciones debe ser un array asociativo");
         }
 
