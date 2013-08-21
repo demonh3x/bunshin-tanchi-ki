@@ -33,14 +33,15 @@ class TestExportingRowListener extends TestFixture{
         $listener = $this->createRowListener($outputWriter);
         $assertingReader = new \RamRandomReader($ramId);
 
+        $data = array(
+            array("Column" => "value")
+        );
         $inputDataReader = $this->createReaderWithData(
             "testWritingRowInputData",
-            array(
-                array("Column" => "value")
-            )
+            $data
         );
         $listener->receiveRow($inputDataReader, 0, "");
 
-        Assert::areIdentical($inputDataReader->readRow(0), $assertingReader->readRow(0));
+        Assert::areIdentical($data[0], $assertingReader->readRow(0));
     }
 }
