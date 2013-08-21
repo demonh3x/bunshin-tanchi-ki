@@ -12,27 +12,33 @@ class TestSqlRandomReader extends TestFixture{
     private $tableName = "testSqlRandomReader";
 
     function __construct(){
-        $this->createDatabaseIfNotExists();
+        if (!$this->databaseExists())
+        {
+            $this->createDatabase();
+        }
         $this->connection = $this->createTestConnection();
-        $this->createTableIfNotExists();
-    }
 
-    public function setUp(){
-        $this->createDatabaseIfNotExists();
-        $this->createTableIfNotExists();
+        if (!$this->tableExists())
+        {
+            $this->createTable();
+        }
+
+        $this->deleteTableContent($this->tableName);
+        $this->addContentToTable($this->data());
     }
 
     private function createReader(){
         return Core::getCodeCoverageWrapper("SqlRandomReader", array(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $this->tableName));
     }
 
-    private function createDatabaseIfNotExists() {
+    private function databaseExists() {
         $existingDatabases = \DB::getAvailable(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__);
+        $databaseExists = in_array(__TEST_DB_SCHEMA__, $existingDatabases );
+        return $databaseExists;
+    }
 
-        if (!in_array(__TEST_DB_SCHEMA__, $existingDatabases ))
-        {
-            \DB::create(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__);
-        }
+    private function createDatabase() {
+        \DB::create(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__);
     }
 
     private function createTestConnection(){
@@ -42,9 +48,7 @@ class TestSqlRandomReader extends TestFixture{
     private function tableExists()
     {
         $existingTables = \Table::getAvailable($this->connection);
-
         $tableExists = in_array($this->tableName, $existingTables);
-
         return $tableExists;
     }
 
@@ -54,81 +58,78 @@ class TestSqlRandomReader extends TestFixture{
 
     private function addContentToTable($data) {
         $table = new \Table($this->connection, $this->tableName);
-
-        $table->insert($data);
+        foreach ($data as $row)
+        {
+            $table->insert($row);
+        }
     }
 
-    private function createTableIfNotExists() {
+    private function data() {
+        $data = array (
+            array (
+                "0" => "",
+                "1" => "Finchatton",
+                "2" => "",
+                "3" => "Adam",
+                "4" => "Hunter",
+                "5" => "www.amayadesign.co.uk/AdamHunter",
+                "6" => "www.amayadesign.co.uk/",
+                "7" => "AdamHunter",
+                "8" => "Y",
+                "9" => "£�"
+            ),
+            array(
+                "0" => "",
+                "1" => "Luxlo",
+                "2" => "Property",
+                "3" => "Amit",
+                "4" => "Chadha",
+                "5" => "www.amayadesign.co.uk/AmitChadha",
+                "6" => "www.amayadesign.co.uk/",
+                "7" => "AmitChadha",
+                "8" => "Y",
+                "9" => "£�"
+            ),
+            array(
+                "0" => "",
+                "1" => "タマ",
+                "2" => "いぬ",
+                "3" => "",
+                "4" => "",
+                "5" => "",
+                "6" => "",
+                "7" => "",
+                "8" => "",
+                "9" => "£�"
+            ),
+            array(
+                "0" => "",
+                "1" => "Finchatton",
+                "2" => "",
+                "3" => "Adam",
+                "4" => "Hunter",
+                "5" => "www.amayadesign.co.uk/AdamHunter",
+                "6" => "www.amayadesign.co.uk/",
+                "7" => "AdamHunter",
+                "8" => "Y",
+                "9" => "£�"
+            )
+        );
 
-            $data = array (
-                array (
-                    "0" => "",
-                    "1" => "Finchatton",
-                    "2" => "",
-                    "3" => "Adam",
-                    "4" => "Hunter",
-                    "5" => "www.amayadesign.co.uk/AdamHunter",
-                    "6" => "www.amayadesign.co.uk/",
-                    "7" => "AdamHunter",
-                    "8" => "Y",
-                    "9" => "£�"
-                ),
-                array(
-                    "0" => "",
-                    "1" => "Luxlo",
-                    "2" => "Property",
-                    "3" => "Amit",
-                    "4" => "Chadha",
-                    "5" => "www.amayadesign.co.uk/AmitChadha",
-                    "6" => "www.amayadesign.co.uk/",
-                    "7" => "AmitChadha",
-                    "8" => "Y",
-                    "9" => "£�"
-                ),
-                array(
-                    "0" => "",
-                    "1" => "タマ",
-                    "2" => "いぬ",
-                    "3" => "",
-                    "4" => "",
-                    "5" => "",
-                    "6" => "",
-                    "7" => "",
-                    "8" => "",
-                    "9" => "£�"
-                ),
-                array(
-                    "0" => "",
-                    "1" => "Finchatton",
-                    "2" => "",
-                    "3" => "Adam",
-                    "4" => "Hunter",
-                    "5" => "www.amayadesign.co.uk/AdamHunter",
-                    "6" => "www.amayadesign.co.uk/",
-                    "7" => "AdamHunter",
-                    "8" => "Y",
-                    "9" => "£�"
-                )
-            );
+        return $data;
+    }
 
-            $columns = array();
-            foreach ($data[0] as $columnName => $value){
-                $columns[$columnName] = $this->defaultDataType;
-            }
+    private function getColumnsFromData($data) {
+        $columns = array();
+        foreach ($data[0] as $columnName => $value){
+            $columns[$columnName] = $this->defaultDataType;
+        }
 
-            $tableExists = $this->tableExists($this->tableName);
-            if ($tableExists)
-            {
-                $this->deleteTableContent($this->tableName);
-                foreach ($data as $row)
-                {
-                    $this->addContentToTable($row);
-                }
-            }
-            else
-            {
-                $this->tableName = \Table::create($this->connection, $this->tableName, $columns);
-            }
+        return $columns;
+    }
+
+    private function createTable() {
+        \Table::create($this->connection, $this->tableName, $this->getColumnsFromData($this->data()));
     }
 
     function testReadFirstRow(){

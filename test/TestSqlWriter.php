@@ -14,21 +14,21 @@ class TestSqlWriter extends TestFixture{
     private $connection;
 
     function __construct(){
-        $this->createDatabaseIfNotExists();
+        if (!$this->databaseExists())
+        {
+            $this->createDatabase();
+        }
         $this->connection = $this->createTestConnection();
     }
 
-    public function setUp(){
-        $this->createDatabaseIfNotExists();
+    private function databaseExists() {
+        $existingDatabases = \DB::getAvailable(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__);
+        $databaseExists = in_array(__TEST_DB_SCHEMA__, $existingDatabases );
+        return $databaseExists;
     }
 
-    private function createDatabaseIfNotExists() {
-        $existingDatabases = \DB::getAvailable(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__);
-
-        if (!in_array(__TEST_DB_SCHEMA__, $existingDatabases ))
-        {
-            \DB::create(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__);
-        }
+    private function createDatabase() {
+        \DB::create(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__);
     }
 
     private function createWriter($ip, $user, $pass, $schema, $table){
@@ -49,12 +49,8 @@ class TestSqlWriter extends TestFixture{
         return $tableExists;
     }
 
-    private function deleteTableContentIfExists($tableName) {
-        $tableExists = $this->tableExists($tableName);
-        if ($tableExists)
-        {
+    private function deleteTableContent($tableName) {
             $this->connection->query(\SQL::delete($tableName, null));
-        }
     }
 
     private function readAllRows($tableName)
@@ -68,7 +64,10 @@ class TestSqlWriter extends TestFixture{
     function testWritingRow(){
 
         $tableName = "testWritingRow";
-        $this->deleteTableContentIfExists($tableName);
+        if ($this->tableExists($tableName))
+        {
+            $this->deleteTableContent($tableName);
+        }
 
         $expected = array (
             array (
@@ -102,7 +101,10 @@ class TestSqlWriter extends TestFixture{
     function testAddingDataWithANonExistingColumn() {
 
         $tableName = "testAddingDataWithANonExistingColumn";
-        $this->deleteTableContentIfExists($tableName);
+        if ($this->tableExists($tableName))
+        {
+            $this->deleteTableContent($tableName);
+        }
 
         $writer = $this->createWriter(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
 
@@ -136,7 +138,10 @@ class TestSqlWriter extends TestFixture{
     function testAddingNonExistingTable() {
 
         $tableName = "testAddingNonExistingTable";
-        $this->deleteTableContentIfExists($tableName);
+        if ($this->tableExists($tableName))
+        {
+            $this->deleteTableContent($tableName);
+        }
 
         $writer = $this->createWriter(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
 
