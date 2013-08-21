@@ -89,6 +89,12 @@ class Table
         return $this->database->query($sql);
     }
 
+    function drop(){
+        $sql = SQL::dropTable($this->name);
+
+        return $this->database->query($sql);
+    }
+
     function getColumns(){
         $return = array();
 
