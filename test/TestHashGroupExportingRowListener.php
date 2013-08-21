@@ -25,9 +25,13 @@ class TestHashGroupExportingRowListener extends TestFixture{
         return new \RamRandomReader($ramId);
     }
 
+    private function createListener(\WriterFactory $factory){
+        return Core::getCodeCoverageWrapper("HashGroupExportingRowListener", array($factory));
+    }
+
     public function testExporting(){
         $factory = new MockRamWriterFactory();
-        $listener = Core::getCodeCoverageWrapper("HashGroupExportingRowListener", array($factory));
+        $listener = $this->createListener($factory);
 
         $data = array(
             array("Column1" => "value1"),
@@ -47,5 +51,30 @@ class TestHashGroupExportingRowListener extends TestFixture{
         Assert::areIdentical(2, count($factory->createdWriters));
         $readerForCreatedWriter = new \RamRandomReader($factory->getRamId("hash2"));
         Assert::areIdentical($data[1], $readerForCreatedWriter->readRow(0));
+    }
+
+    public function testDoNotCreateSameWriterTwice(){
+        $factory = new MockRamWriterFactory();
+        $listener = $this->createListener($factory);
+
+        $data = array(
+            array("Column1" => "value1"),
+        );
+        $reader = $this->createReaderWithData("testDoNotCreateSameWriterTwice", $data);
+
+        $hash1 = "hash1";
+        Assert::isTrue(!isset(
+            $factory->createdWriters[$factory->getRamId($hash1)]
+        ));
+        $listener->receiveRow($reader, 0, $hash1);
+        Assert::isTrue(isset(
+            $factory->createdWriters[$factory->getRamId($hash1)]
+        ));
+
+        unset($factory->createdWriters[$factory->getRamId($hash1)]);
+        $listener->receiveRow($reader, 0, $hash1);
+        Assert::isTrue(!isset(
+            $factory->createdWriters[$factory->getRamId($hash1)]
+        ));
     }
 }
