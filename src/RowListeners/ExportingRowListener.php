@@ -6,18 +6,15 @@ include_once(__ROOT_DIR__ . "src/HashCalculators/RowFilter.php");
 include_once(__ROOT_DIR__ . "src/HashCalculators/NullRowFilter.php");
 
 class ExportingRowListener implements RowListener{
-    private $writer, $cleaningRowFilter;
+    private $writer;
 
-    function __construct(Writer $writer, RowFilter $cleaning = null){
-        $this->cleaningRowFilter = is_null($cleaning)? new NullRowFilter(): $cleaning;
+    function __construct(Writer $writer){
         $this->writer = $writer;
     }
 
     function receiveRow(RandomReader $reader, $rowIndex, $rowHash){
-        $data = $reader->readRow($rowIndex);
-
         $this->writer->writeRow(
-            $this->cleaningRowFilter->applyTo($data)
+            $reader->readRow($rowIndex)
         );
     }
 }

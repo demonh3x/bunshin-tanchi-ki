@@ -4,7 +4,6 @@ namespace Enhance;
 include_once(__ROOT_DIR__ . "src/RowListeners/ExportingRowListener.php");
 include_once(__ROOT_DIR__ . "src/Writers/RamWriter.php");
 include_once(__ROOT_DIR__ . "src/RandomReaders/RamRandomReader.php");
-include_once("mocks/MockRowFilter.php");
 
 class TestExportingRowListener extends TestFixture{
 
@@ -14,8 +13,8 @@ class TestExportingRowListener extends TestFixture{
     public function tearDown(){
     }
 
-    private function createRowListener(\Writer $writer, \RowFilter $rowFilter = null){
-        return Core::getCodeCoverageWrapper("ExportingRowListener", array($writer, $rowFilter));
+    private function createRowListener(\Writer $writer){
+        return Core::getCodeCoverageWrapper("ExportingRowListener", array($writer));
     }
 
     private function createReaderWithData($ramId, $data = array()){
@@ -44,23 +43,4 @@ class TestExportingRowListener extends TestFixture{
 
         Assert::areIdentical($inputDataReader->readRow(0), $assertingReader->readRow(0));
     }
-
-    function testFilteringRow(){
-        $ramId = "testFilteringRow";
-
-        $outputWriter = new \RamWriter($ramId);
-        $listener = $this->createRowListener($outputWriter, new MockRowFilter());
-        $assertingReader = new \RamRandomReader($ramId);
-
-        $inputDataReader = $this->createReaderWithData(
-            "testFilteringRowInputData",
-            array(
-                array("Column" => "value")
-            )
-        );
-        $listener->receiveRow($inputDataReader, 0, "");
-
-        Assert::isTrue(MockRowFilter::hasBeenFiltered($assertingReader->readRow(0)));
-    }
-
 }
