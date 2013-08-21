@@ -3,6 +3,7 @@ namespace Enhance;
 
 include_once(__ROOT_DIR__ . "src/HashUniquesScanner.php");
 include_once(__ROOT_DIR__ . "src/HashCalculators/StringHashCalculator.php");
+include_once(__ROOT_DIR__ . "src/HashList.php");
 
 include_once(__ROOT_DIR__ . "src/RandomReaders/RamRandomReader.php");
 
@@ -258,7 +259,7 @@ class TestHashUniquesScanner extends TestFixture{
     }
 }
 
-include_once(__ROOT_DIR__ . "src/RowListener.php");
+include_once(__ROOT_DIR__ . "src/RowListeners/RowListener.php");
 class MockRowListener implements \RowListener{
     public $duplicates = array();
 
