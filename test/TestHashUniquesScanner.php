@@ -211,6 +211,40 @@ class TestHashUniquesScanner extends TestFixture{
             )
         );
 
+        $readerA = $this->createRamReader($inputA, "testReceivingDuplicatesDataA");
+
+        $duplicatesListener = new MockRowListener();
+
+        $scanner = $this->createScanner(array($readerA));
+
+        $scanner->scan(new MockRowListener(), $duplicatesListener);
+
+        $expected = array(
+            array(
+                "Column1" => "Bar"
+            ),
+            array(
+                "Column1" => "Bar"
+            ),
+        );
+        $actual = $duplicatesListener->receivedData;
+
+        Assert::areIdentical($expected, $actual);
+    }
+
+    function testReceivingDuplicatesMultipleInputs(){
+        $inputA = array(
+            array(
+                "Column1" => "Foo"
+            ),
+            array(
+                "Column1" => "Bar"
+            ),
+            array(
+                "Column1" => "Bar"
+            )
+        );
+
         $inputB = array(
             array(
                 "Column1" => "Foo"
