@@ -22,6 +22,10 @@ class TestSqlRandomReader extends TestFixture{
         $this->createTableIfNotExists();
     }
 
+    private function createReader(){
+        return Core::getCodeCoverageWrapper("SqlRandomReader", array(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $this->tableName));
+    }
+
     private function createDatabaseIfNotExists() {
         $existingDatabases = \DB::getAvailable(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__);
 
@@ -128,7 +132,7 @@ class TestSqlRandomReader extends TestFixture{
     }
 
     function testReadFirstRow(){
-        $reader = new \SqlRandomReader(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $this->tableName);
+        $reader = $this->createReader();
 
         $expected = array(
             "0" => "",
@@ -149,7 +153,7 @@ class TestSqlRandomReader extends TestFixture{
     }
 
     function testReadThirdRow(){
-        $reader = new \SqlRandomReader(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $this->tableName);
+        $reader = $this->createReader();
 
         $expected = array(
             "0" => "", "1" => "タマ", "2" => "いぬ", "3" => "", "4" => "",
@@ -162,7 +166,7 @@ class TestSqlRandomReader extends TestFixture{
     }
 
     function testJumpingForthToSecondRow(){
-        $reader = new \SqlRandomReader(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $this->tableName);
+        $reader = $this->createReader();
 
         $expected = array(
             "0" => "",
@@ -188,5 +192,11 @@ class TestSqlRandomReader extends TestFixture{
         $current = $reader->readRow(1);
 
         Assert::areIdentical($expected, $current);
+    }
+
+    function testGetRowCount() {
+        $reader = $this->createReader();
+
+        Assert::areIdentical(4, $reader->getRowCount());
     }
 }

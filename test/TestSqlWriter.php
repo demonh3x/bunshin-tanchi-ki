@@ -31,6 +31,11 @@ class TestSqlWriter extends TestFixture{
         }
     }
 
+    private function createWriter($ip, $user, $pass, $schema, $table){
+        $args = array ($ip, $user, $pass, $schema, $table);
+        return Core::getCodeCoverageWrapper("SqlWriter", $args);
+    }
+
     private function createTestConnection(){
         return new \DB(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__,__TEST_DB_SCHEMA__);
     }
@@ -82,7 +87,7 @@ class TestSqlWriter extends TestFixture{
         );
 
 
-        $writer = new \SqlWriter(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
+        $writer = $this->createWriter(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
 
         foreach ($expected as $row)
         {
@@ -99,7 +104,7 @@ class TestSqlWriter extends TestFixture{
         $tableName = "testAddingDataWithANonExistingColumn";
         $this->deleteTableContentIfExists($tableName);
 
-        $writer = new \SqlWriter(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
+        $writer = $this->createWriter(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
 
         $firstInput = array ("name" => "ADRIAN", "surname" => "GONZALEZ");
         $secondInput = array ("name" => "ADRIAN", "surname" => "GONZALEZ", "city" => "VILAREAL", "age" => "20");
@@ -133,7 +138,7 @@ class TestSqlWriter extends TestFixture{
         $tableName = "testAddingNonExistingTable";
         $this->deleteTableContentIfExists($tableName);
 
-        $writer = new \SqlWriter(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
+        $writer = $this->createWriter(__TEST_DB_IP__, __TEST_DB_USER__, __TEST_DB_PASSWORD__, __TEST_DB_SCHEMA__, $tableName);
 
         $firstInput = array ("name" => "ADRIAN", "surname" => "GONZALEZ");
 
