@@ -47,11 +47,10 @@ class Table
      * La clave de cada elemento de los arrays asociativos es el atributo o columna y
      * el valor de cada elemento de los arrays asociativos es el valor de esa columna.
      */
-    function search($conditions = array()){
-        $sql = SQL::select($this->name, null, $conditions);
+    function search($conditions = array(), $limitLength = null, $limitStart = null){
+        $sql = SQL::select($this->name, null, $conditions, $limitLength, $limitStart);
 
         $results = $this->database->query($sql);
-
         return $results;
     }
 

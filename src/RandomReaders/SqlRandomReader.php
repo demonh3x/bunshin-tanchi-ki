@@ -8,21 +8,22 @@ class SqlRandomReader implements RandomReader{
 
     private $connection = null;
     private $table;
+    private $tableName;
 
     function __construct ($ip, $user, $password, $database, $table)
     {
+        $this->tableName = $table;
         $this->connection = new DB($ip, $user, $password, $database);
-        $this->table = $table;
+        $this->table = new Table($this->connection, $this->tableName);
     }
 
     function readRow($index) {
-        $query = SQL::select($this->table, null, null, 1, $index);
-        $res = $this->connection->query($query);
+        $res = $this->table->search(null, 1, $index);
         return $res[0];
     }
 
     function getRowCount() {
-        $query = SQL::select($this->table, "COUNT(*)", null);
+        $query = SQL::select($this->tableName, "COUNT(*)", null);
         $rowCount = $this->connection->query($query);
 
         return intval($rowCount[0]["COUNT(*)"]);
