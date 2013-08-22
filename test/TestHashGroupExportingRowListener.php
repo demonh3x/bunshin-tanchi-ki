@@ -2,7 +2,7 @@
 
 namespace Enhance;
 
-include_once(__ROOT_DIR__ . "src/RowListeners/HashGroupExportingRowListener.php");
+include_once(__ROOT_DIR__ . "src/RowListeners/HashGroupsExportingRowListener.php");
 include_once(__ROOT_DIR__ . "src/Writers/RamWriter.php");
 include_once(__ROOT_DIR__ . "src/RandomReaders/RamRandomReader.php");
 
@@ -26,7 +26,7 @@ class TestHashGroupExportingRowListener extends TestFixture{
     }
 
     private function createListener(\WriterFactory $factory){
-        return Core::getCodeCoverageWrapper("HashGroupExportingRowListener", array($factory));
+        return Core::getCodeCoverageWrapper("HashGroupsExportingRowListener", array($factory));
     }
 
     public function testExporting(){

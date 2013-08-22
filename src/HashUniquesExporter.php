@@ -11,7 +11,7 @@ include_once("HashCalculators/NullRowFilter.php");
 include_once("RowListeners/ExportingRowListener.php");
 include_once("Writers/FilteringWriter.php");
 include_once("Writers/FilteringWriterFactory.php");
-include_once("RowListeners/HashGroupExportingRowListener.php");
+include_once("RowListeners/HashGroupsExportingRowListener.php");
 class HashUniquesExporter extends HashUniquesScanner{
     function __construct(HashCalculator $hashCalculator, UniquesList $uniquesList, $randomReaders = array()){
         parent::__construct($hashCalculator, $uniquesList, $randomReaders);
@@ -29,7 +29,7 @@ class HashUniquesExporter extends HashUniquesScanner{
             new ExportingRowListener(
                 new FilteringWriter($uniquesWriter, $cleanerFilter)
             ),
-            new HashGroupExportingRowListener(
+            new HashGroupsExportingRowListener(
                 new FilteringWriterFactory($duplicatesFactory, $cleanerFilter)
             )
         );
