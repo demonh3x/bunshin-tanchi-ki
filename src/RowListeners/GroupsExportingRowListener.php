@@ -20,4 +20,12 @@ abstract class GroupsExportingRowListener implements RowListener {
 
         return $writer;
     }
+
+    function receiveRow(RandomReader $reader, $rowIndex, $rowHash){
+        $id = $this->getGroupId($reader, $rowIndex, $rowHash);
+        $writer = $this->getWriter($id);
+        $writer->writeRow($reader->readRow($rowIndex));
+    }
+
+    abstract protected function getGroupId(RandomReader $reader, $rowIndex, $rowHash);
 }
