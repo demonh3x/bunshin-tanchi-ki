@@ -14,7 +14,7 @@
         set_time_limit(0);
         ini_set('memory_limit', '-1');
 
-        include_once(__ROOT_DIR__ . "src/HashUniquesExporter.php");
+        include_once(__ROOT_DIR__ . "src/HashUniquesScanner.php");
         include_once(__ROOT_DIR__ . "src/HashList.php");
         include_once(__ROOT_DIR__ . "src/RandomReaders/CsvRandomReader.php");
         include_once(__ROOT_DIR__ . "src/HashCalculators/StringHashCalculator.php");
@@ -23,6 +23,9 @@
             include_once($filename);
         }
         foreach (glob(__ROOT_DIR__ . "src/RandomReaders/*.php") as $filename){
+            include_once($filename);
+        }
+        foreach (glob(__ROOT_DIR__ . "src/RowListeners/*.php") as $filename){
             include_once($filename);
         }
 
@@ -76,8 +79,6 @@
         $rowFilter = new PerColumnRowFilter($rowFilters);
         $calculator = new StringHashCalculator($WATCH_COLUMNS, $rowFilter);
 
-        $scanner = new HashUniquesExporter($calculator, new HashList(), $readers);
-
         $uniquesWriter = new CsvWriter($UNIQUES_FILE);
 
         foreach ($CLEANING_COLUMN_FILTERS as $column => $filters){
@@ -96,7 +97,16 @@
         $memoryUsage = memory_get_usage(true) / 1024 / 1024;
         echo "<h1>Memory Usage: $memoryUsage MB</h1>";
 
-        $scanner->export($uniquesWriter, new CustomWriterFactory(), $cleaningFilters);
+        $scanner = new HashUniquesScanner($calculator, new HashList(), $readers);
+        $scanner->scan(
+            new ExportingRowListener(
+                new FilteringWriter($uniquesWriter, $cleaningFilters)
+            ),
+            new ExcludingReadersGroupsExportingRowListener(
+                new FilteringWriterFactory(new CustomWriterFactory(), $cleaningFilters),
+                array()
+            )
+        );
 
         echo "<h1>Done!</h1>";
 
