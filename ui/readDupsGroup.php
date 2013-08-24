@@ -1,6 +1,6 @@
 <?php
 
-include_once("../src/RandomReaders/CsvRandomReader.php");
+include_once("../src/RandomReaders/CsvColumnRandomReader.php");
 
 class Arrays {
 
@@ -12,17 +12,17 @@ class Arrays {
         $identifyingFile = $this->getIdentifyingValuesFile($dupsGroupPath);
 
 
-        $CsvRandomReader = new CsvRandomReader($dupsGroupPath);
+        $CsvRandomReader = new CsvColumnRandomReader($dupsGroupPath);
         for ($i = 0; $i < $CsvRandomReader->getRowCount(); $i++)
         {
             array_push( $this->arrayRows, $CsvRandomReader->readRow($i) );
         }
 
-        $identifyingFileReader = new CsvRandomReader($identifyingFile);
+        $identifyingFileReader = new CsvColumnRandomReader($identifyingFile);
         for ($i = 0; $i < $identifyingFileReader->getRowCount(); $i++)
         {
             $value = $identifyingFileReader->readRow($i);
-            $this->arrayPURLs[$value[0]] = "";
+            $this->arrayPURLs[reset($value)] = "";
         }
     }
 

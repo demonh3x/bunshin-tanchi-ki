@@ -9,8 +9,8 @@
         ini_set('memory_limit', '-1');
 
         include_once("common.php");
-        include_once(__ROOT_DIR__ . "src/Writers/CsvWriter.php");
-        include_once(__ROOT_DIR__ . "src/RandomReaders/CsvRandomReader.php");
+        include_once(__ROOT_DIR__ . "src/Writers/CsvColumnWriter.php");
+        include_once(__ROOT_DIR__ . "src/RandomReaders/CsvColumnRandomReader.php");
         include_once(__ROOT_DIR__ . "src/CellGenerators/UniquePURLGenerator.php");
         foreach (glob(__ROOT_DIR__ . "src/HashCalculators/Filters/*.php") as $filename){
             include_once($filename);
@@ -86,7 +86,7 @@
         }
 
         function getArrayOfExistingPURLs($file) {
-            $reader = new CsvRandomReader($file);
+            $reader = new CsvColumnRandomReader($file);
             $arrayUsedPurls = array();
 
             for ($i = 0; $i < $reader->getRowCount(); $i++){
@@ -99,10 +99,10 @@
 
 
     <?php
-        $reader = new CsvRandomReader($file);
+        $reader = new CsvColumnRandomReader($file);
 
         $outputFile = getNonExistingOutputFile($file);
-        $writer = new CsvWriter($outputFile);
+        $writer = new CsvColumnWriter($outputFile);
 
         $purlColumn = $_REQUEST["PurlColumn"];
         $firstNameColumn = $_REQUEST["FirstNameColumn"];

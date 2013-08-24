@@ -21,7 +21,7 @@ define("__GENERATE_FIELDS_FILE__", "generateFields.php");
 define("__CUSTOMIZE_FIELDS_GENERATOR__", "customizePURLGenerator.php");
 
 include_once("HTML.php");
-include_once(__ROOT_DIR__ . "src/RandomReaders/CsvRandomReader.php");
+include_once(__ROOT_DIR__ . "src/RandomReaders/CsvColumnRandomReader.php");
 
 function getNotExistingDedupDirName(){
     $i = 0;
@@ -60,7 +60,7 @@ function getUniquesFileLinkHTML(){
 
     $uniquesLink = "";
     if (!empty($file)){
-        $reader = new CsvRandomReader($file);
+        $reader = new CsvColumnRandomReader($file);
 
         $uniquesLink = HTML::a($file, $file) . " - Rows: " . $reader->getRowCount();
     }
@@ -78,7 +78,7 @@ function getInputFiles(){
 function getInputFilesListHTML(){
     $input_files = getInputFiles();
     foreach ($input_files as $id => $input_file){
-        $reader = new CsvRandomReader($input_file);
+        $reader = new CsvColumnRandomReader($input_file);
 
         $input_files[$id] = HTML::a($input_file, $input_file) . " - Rows: " . $reader->getRowCount();
     }
@@ -93,7 +93,7 @@ function getInputFilePreviewHTML($inputFiles, $rowCount){
 
     $html = "";
     foreach ($inputFiles as $file){
-        $reader = new CsvRandomReader($file);
+        $reader = new CsvColumnRandomReader($file);
 
         $rows = array();
         for ($i = 0; $i < $rowCount && $reader->getRowCount() > $i; $i++){
@@ -107,7 +107,7 @@ function getInputFilePreviewHTML($inputFiles, $rowCount){
 }
 
 function getInputFileColumns($inputFile){
-    $reader = new CsvRandomReader($inputFile);
+    $reader = new CsvColumnRandomReader($inputFile);
     if ($reader->getRowCount() > 0){
         $row = $reader->readRow(0);
         return array_keys($row);
@@ -130,7 +130,7 @@ function getDupGroups(){
 }
 
 function getRowCount($file){
-    $reader = new CsvRandomReader($file);
+    $reader = new CsvColumnRandomReader($file);
 
     return $reader->getRowCount();
 }

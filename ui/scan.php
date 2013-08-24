@@ -69,7 +69,7 @@
 
         $readers = array();
         foreach ($INPUT_FILES as $inputFile){
-            $readers[] = new CsvRandomReader($inputFile);
+            $readers[] = new CsvColumnRandomReader($inputFile);
         }
 
         $rowFilters = array();
@@ -79,7 +79,7 @@
         $rowFilter = new PerColumnRowFilter($rowFilters);
         $calculator = new StringHashCalculator($WATCH_COLUMNS, $rowFilter);
 
-        $uniquesWriter = new CsvWriter($UNIQUES_FILE);
+        $uniquesWriter = new CsvColumnWriter($UNIQUES_FILE);
 
         foreach ($CLEANING_COLUMN_FILTERS as $column => $filters){
             $CLEANING_COLUMN_FILTERS[$column] = getFilterGroup($filters);
@@ -89,7 +89,7 @@
         class CustomWriterFactory implements WriterFactory{
             function createWriter($id){
                 global $DUPS_DIR;
-                $writer = new CsvWriter($DUPS_DIR . "$id.csv");
+                $writer = new CsvColumnWriter($DUPS_DIR . "$id.csv");
                 return $writer;
             }
         }
@@ -131,13 +131,13 @@
                 unlink($IDENTIFYING_VALUES_FILE);
             }
 
-            $reader = new CsvRandomReader($UNIQUES_FILE);
+            $reader = new CsvColumnRandomReader($UNIQUES_FILE);
 
-            $writer = new CsvWriter($IDENTIFYING_VALUES_FILE);
+            $writer = new CsvColumnWriter($IDENTIFYING_VALUES_FILE);
 
             for ($rowIndex = 0; $rowIndex < $reader->getRowCount(); $rowIndex++){
                 $row = $reader->readRow($rowIndex);
-                $identifyingData = array($row[$IDENTIFYING_COLUMN]);
+                $identifyingData = array($IDENTIFYING_COLUMN => $row[$IDENTIFYING_COLUMN]);
                 $writer->writeRow($identifyingData);
             }
         }
