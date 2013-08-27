@@ -122,9 +122,11 @@ include_once("common.php");
 
             $(".scanForm input[type=submit]").on("click", function(){
                 $(".scanForm input[name=identifyingColumn]").val(
-                    $("#identifyingColumnEnabled").is(':checked')?
-                        $(".identifyingColumn select").find(":selected").text():
-                        ""
+                    JSON.stringify(
+                        $("#identifyingColumnEnabled").is(':checked')?
+                            $(".identifyingColumn select").find(":selected").text():
+                            ""
+                    )
                 );
                 $(".scanForm input[name=compareFilters]").val(
                     JSON.stringify(getColumnsFilters(".columns-to-compare"))

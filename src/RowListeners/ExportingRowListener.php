@@ -12,7 +12,7 @@ class ExportingRowListener implements RowListener{
         $this->writer = $writer;
     }
 
-    function receiveRow(RandomReader $reader, $rowIndex, $rowHash){
+    function receiveRow(RandomReader $reader, $rowIndex){
         $this->writer->writeRow(
             $reader->readRow($rowIndex)
         );

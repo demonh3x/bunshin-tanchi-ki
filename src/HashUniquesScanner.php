@@ -99,11 +99,11 @@ class HashUniquesScanner {
 
     private function sendUniques() {
         foreach ($this->uniqueRows as $row) {
-            $this->uniquesListener->receiveRow($row->getReader(), $row->getIndex(), $row->getHash());
+            $this->uniquesListener->receiveRow($row->getReader(), $row->getIndex());
         }
     }
 
     private function sendDuplicate(Row $row){
-        $this->duplicatesListener->receiveRow($row->getReader(), $row->getIndex(), $row->getHash());
+        $this->duplicatesListener->receiveRow($row->getReader(), $row->getIndex());
     }
 }

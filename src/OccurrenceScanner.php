@@ -75,7 +75,7 @@ class OccurrenceScanner {
     }
 
     protected function sendNotMatching(Row $row){
-        $this->notMatchingListener->receiveRow($row->getReader(), $row->getIndex(), $row->getHash());
+        $this->notMatchingListener->receiveRow($row->getReader(), $row->getIndex());
     }
 
     protected function getResultsList(){

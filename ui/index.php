@@ -29,7 +29,6 @@
 
     <?php
         include_once("common.php");
-        include_once(__ROOT_DIR__ . "src/HashUniquesExporter.php");
     ?>
 
     <h2>Create new work:</h2>
