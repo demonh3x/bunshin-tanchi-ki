@@ -5,12 +5,12 @@ include_once("GroupsExportingRowListener.php");
 
 class ExcludingReadersGroupsExportingRowListener extends GroupsExportingRowListener implements RowListener {
     private $excludeRowsFrom = array();
-    private $excludeString;
+    private $additionalExcludedGroupId;
 
-    function __construct(WriterFactory $factory, $excludeRowsFrom, $excludeString = ".excluded"){
+    function __construct(WriterFactory $factory, $excludeRowsFrom, $excludedGroupId = ".excluded"){
         parent::__construct($factory);
 
-        $this->excludeString = $excludeString;
+        $this->additionalExcludedGroupId = $excludedGroupId;
         foreach ($excludeRowsFrom as $reader){
             $this->addExclusion($reader);
         }
@@ -23,7 +23,7 @@ class ExcludingReadersGroupsExportingRowListener extends GroupsExportingRowListe
     protected function getGroupId(RandomReader $reader, $rowIndex, $rowHash){
         $groupId = $rowHash;
         if (in_array($reader, $this->excludeRowsFrom)){
-            $groupId .= $this->excludeString;
+            $groupId .= $this->additionalExcludedGroupId;
         }
         return $groupId;
     }
