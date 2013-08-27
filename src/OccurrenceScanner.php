@@ -1,7 +1,6 @@
 <?php
 
 include_once("Row.php");
-include_once("RowCollection.php");
 
 include_once("HashCalculators/NullRowFilter.php");
 include_once("HashCalculators/NullHashCalculator.php");
@@ -10,8 +9,8 @@ include_once("RowListeners/RowListener.php");
 include_once("RowListeners/NullRowListener.php");
 
 class OccurrenceScanner {
-    protected $readers = array(), $regex, $columnsToScan, $rowFilter, $notMatchingListener;
-    protected $rowList = array();
+    protected $readers = array(), $regex, $columnsToScan, $rowFilter;
+    protected $matchingListener, $notMatchingListener;
 
     function __construct($regex, $readers = array(), $columns = array(), RowFilter $rowFilter = null){
         $this->regex = $regex;
@@ -26,10 +25,10 @@ class OccurrenceScanner {
         $this->readers[] = $reader;
     }
 
-    function getOccurrences(RowListener $notMatching = null){
+    function scan(RowListener $matching, RowListener $notMatching = null){
+        $this->matchingListener = $matching;
         $this->notMatchingListener = is_null($notMatching)? new NullRowListener(): $notMatching;
         $this->processAllReaders();
-        return $this->getResultsList();
     }
 
     private function processAllReaders(){
@@ -71,14 +70,10 @@ class OccurrenceScanner {
     }
 
     protected function addOccurrence(Row $row){
-        $this->rowList[] = $row;
+        $this->matchingListener->receiveRow($row->getReader(), $row->getIndex());
     }
 
     protected function sendNotMatching(Row $row){
         $this->notMatchingListener->receiveRow($row->getReader(), $row->getIndex());
-    }
-
-    protected function getResultsList(){
-        return new RowCollection($this->rowList);
     }
 }

@@ -7,7 +7,9 @@ include_once(__ROOT_DIR__ . "src/Writers/RamWriter.php");
 include_once(__ROOT_DIR__ . "src/RandomReaders/RamRandomReader.php");
 
 include_once(__ROOT_DIR__ . "src/HashCalculators/PerColumnRowFilter.php");
+
 include_once("mocks/LowercaseMockFilter.php");
+include_once("mocks/MockRowListener.php");
 
 class TestOccurrenceScanner extends TestFixture{
 
@@ -41,20 +43,11 @@ class TestOccurrenceScanner extends TestFixture{
         return $reader;
     }
 
-    function testGetResultsReturnsAnInstanceOfIterator(){
-        $scanner = $this->createScanner(array(), "//");
-        Assert::isTrue($scanner->getOccurrences() instanceof \Iterator);
-    }
-
     private function getScannerOccurrences($scanner){
-        $output = $scanner->getOccurrences();
+        $listener = new MockRowListener();
+        $scanner->scan($listener);
 
-        $outputArray = array();
-        foreach ($output as $row){
-            $outputArray[] = $row;
-        }
-
-        return $outputArray;
+        return  $listener->receivedData;
     }
 
     private function assertOccurrences($input, $expected, $regex, $columns = array(), $rowFilter = null){
@@ -137,10 +130,10 @@ class TestOccurrenceScanner extends TestFixture{
     private function assertNotMatching($input, $expected, $regex, $columns = array(), $rowFilter = null){
         $scanner = $this->createScanner($input, $regex, $columns, $rowFilter);
 
-        $listener = new NotMatchingReceiver();
-        $scanner->getOccurrences($listener);
+        $listener = new MockRowListener();
+        $scanner->scan(new MockRowListener(), $listener);
 
-        Assert::areIdentical($expected, $listener->rows);
+        Assert::areIdentical($expected, $listener->receivedData);
     }
 
     function testReceivingNotMatching(){
@@ -176,11 +169,5 @@ class TestOccurrenceScanner extends TestFixture{
             array("0" => "Foo2")
         );
         Assert::areIdentical($expected, $this->getScannerOccurrences($scanner));
-    }
-}
-class NotMatchingReceiver implements \RowListener{
-    public $rows = array();
-    function receiveRow(\RandomReader $reader, $rowIndex){
-        $this->rows[] = $reader->readRow($rowIndex);
     }
 }
