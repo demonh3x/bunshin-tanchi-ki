@@ -136,10 +136,13 @@
 
             $writer = new CsvColumnWriter($IDENTIFYING_VALUES_FILE);
 
-            for ($rowIndex = 0; $rowIndex < $reader->getRowCount(); $rowIndex++){
-                $row = $reader->readRow($rowIndex);
-                $identifyingData = array($IDENTIFYING_COLUMN => $row[$IDENTIFYING_COLUMN]);
-                $writer->writeRow($identifyingData);
+            if (isset($reader->readRow(0)[$IDENTIFYING_COLUMN]))
+            {
+                for ($rowIndex = 0; $rowIndex < $reader->getRowCount(); $rowIndex++){
+                    $row = $reader->readRow($rowIndex);
+                    $identifyingData = array($IDENTIFYING_COLUMN => $row[$IDENTIFYING_COLUMN]);
+                    $writer->writeRow($identifyingData);
+                }
             }
         }
         createIdentifyingFile();
