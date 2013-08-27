@@ -1,9 +1,6 @@
 <?php
 
-include_once("Row.php");
-
 include_once("HashCalculators/NullRowFilter.php");
-include_once("HashCalculators/NullHashCalculator.php");
 
 include_once("RowListeners/RowListener.php");
 include_once("RowListeners/NullRowListener.php");
@@ -39,13 +36,12 @@ class OccurrenceScanner {
 
     protected function processAllRows(RandomReader $reader){
         for ($rowIndex = 0; $rowIndex < $reader->getRowCount(); $rowIndex++) {
-            $row = $this->readRow($reader, $rowIndex);
-            $this->processRow($row);
+            $this->processRow($reader, $rowIndex);
         }
     }
 
-    protected function processRow(Row $row){
-        $filteredData = $this->rowFilter->applyTo($row->getData());
+    protected function processRow(RandomReader $reader, $rowIndex){
+        $filteredData = $this->rowFilter->applyTo($reader->readRow($rowIndex));
 
         $rowColumns = array_keys($filteredData);
         $columns = $this->areColumnsDefined()? $this->columnsToScan : $rowColumns;
@@ -53,27 +49,23 @@ class OccurrenceScanner {
         foreach ($columns as $column) {
             $value = &$filteredData[$column];
             if (preg_match($this->regex, $value)) {
-                $this->addOccurrence($row);
+                $this->addOccurrence($reader, $rowIndex);
                 return;
             }
         }
 
-        $this->sendNotMatching($row);
+        $this->sendNotMatching($reader, $rowIndex);
     }
 
     protected function areColumnsDefined(){
         return !empty($this->columnsToScan);
     }
 
-    protected function readRow(RandomReader $reader, $rowIndex){
-        return new Row($reader, $rowIndex, new NullHashCalculator());
+    protected function addOccurrence(RandomReader $reader, $rowIndex){
+        $this->matchingListener->receiveRow($reader, $rowIndex);
     }
 
-    protected function addOccurrence(Row $row){
-        $this->matchingListener->receiveRow($row->getReader(), $row->getIndex());
-    }
-
-    protected function sendNotMatching(Row $row){
-        $this->notMatchingListener->receiveRow($row->getReader(), $row->getIndex());
+    protected function sendNotMatching(RandomReader $reader, $rowIndex){
+        $this->notMatchingListener->receiveRow($reader, $rowIndex);
     }
 }
