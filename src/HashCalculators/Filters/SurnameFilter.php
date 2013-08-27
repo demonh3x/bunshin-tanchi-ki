@@ -53,12 +53,12 @@ class SurnameFilter implements Filter{
     }
 
     private function uppercasesSpacesApostrophesAndHyphensCount($string){
-        $string = preg_match_all("/([A-ZÀÁÂÃÄÅÆÉÈËÊÍÌÏÎÓÒÖÔÕØÚÙÜÛÑÇÐÝŸÞ' -]{1})/",$string,$foo);
+        $string = preg_match_all("/([A-ZÀÁÂÃÄÅÆÉÈËÊÍÌÏÎÓÒÖÔÕØÚÙÜÛÑÇÐÝŸÞ' -]{1})/",$string);
         return $string;
     }
 
     private function lowercasesSpacesApostrophesAndHyphensCount($string){
-        $string = preg_match_all("/([a-zàáâãäåæéèëêíìïîóòöôõøúùüûñçðýÿþ' -]{1})/",$string,$foo);
+        $string = preg_match_all("/([a-zàáâãäåæéèëêíìïîóòöôõøúùüûñçðýÿþ' -]{1})/",$string);
         return $string;
     }
 
