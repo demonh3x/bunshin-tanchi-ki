@@ -57,40 +57,52 @@ class FirstNameFilter implements Filter{
         return $string;
     }
 
+    private function simpleName($string)
+    {
+        $firstPartOfTheName = $this->delimitNameBySpaces($string)[0];
+        $firstLetterUppercase = $this->stringToUppercase(mb_substr($firstPartOfTheName, 0, 1, 'utf-8'));
+        $string = $firstLetterUppercase . mb_strtolower(mb_substr($firstPartOfTheName, 1, mb_strlen($firstPartOfTheName), 'utf-8'), 'utf-8');
+        return $string;
+    }
+
+    private function compositeNamesWithOneHyphen($string)
+    {
+        $string = $this->delimitNameBySpaces($string)[0];
+        $delimitedNameByHyphens = $this->delimitNameByHyphens($string);
+        $firstCharacterAfterHyphen = $this->stringToUppercase(mb_substr($delimitedNameByHyphens[1], 0, 1, 'utf-8'));
+
+        $remainingCharacters = mb_strtolower(substr($delimitedNameByHyphens[1], 1), "utf-8");
+        $string = $delimitedNameByHyphens[0] . "-" . $firstCharacterAfterHyphen . $remainingCharacters;
+
+        return $string;
+    }
+
+    private function delimitNameBySpaces($text)
+    {
+        $delimitedNameBySpaces = mb_split(" ", $text);
+        return $delimitedNameBySpaces;
+    }
+
+    private function delimitNameByHyphens($text)
+    {
+        $delimitedNameByHyphens = mb_split("-", $text);
+        return $delimitedNameByHyphens;
+    }
+
     function applyTo($text){
 
+        $text = $this->delimitNameBySpaces($text)[0];
+        $foundUppers = $this->UpperCount($this->delimitNameByHyphens($text)[0]);
 
-        $delimitedNameBySpaces = mb_split(" ", $text);
-        $text = $delimitedNameBySpaces[0];
-
-        $delimitedNameByHyphens = mb_split("-", $text);
-
-        $firstLetterUppercase = $this->stringToUppercase(mb_substr($delimitedNameByHyphens[0], 0, 1, 'utf-8'));
-
-        $allButTheFirstCharacter = mb_substr($delimitedNameByHyphens[0], 1, mb_strlen($delimitedNameByHyphens[0]), 'utf-8');
-
-        $foundUppers = $this->UpperCount($delimitedNameByHyphens[0]);
-
-        if ($foundUppers == 2)
+        if ($foundUppers != 2)
         {
-            $delimitedNameByHyphens[0] =  $firstLetterUppercase . $allButTheFirstCharacter;
-            $text = $delimitedNameByHyphens[0];
-        }
-        else
-        {
-            $delimitedNameByHyphens[0] = mb_strtolower($delimitedNameByHyphens[0], "utf-8");
-
-            $delimitedNameByHyphens[0] = $firstLetterUppercase . mb_substr($delimitedNameByHyphens[0], 1, mb_strlen($delimitedNameByHyphens[0]), 'utf-8');
-            $text = $delimitedNameByHyphens[0];
+            $text = $this->simpleName($text);
         }
 
 
-        if (count($delimitedNameByHyphens) > 1)
+        if (count($this->delimitNameByHyphens($text)) > 1)
         {
-            $firstCharacterAfterHyphen = $this->stringToUppercase(mb_substr($delimitedNameByHyphens[1], 0, 1, 'utf-8'));
-
-            $remainingCharacters = mb_strtolower(substr($delimitedNameByHyphens[1], 1), "utf-8");
-            $text = $text . "-" . $firstCharacterAfterHyphen . $remainingCharacters;
+            $text = $this->compositeNamesWithOneHyphen($text);
         }
 
         return $text;
