@@ -5,22 +5,24 @@ include_once("AbstractTestGroupsExportingRowListener.php");
 include_once(__ROOT_DIR__ . "src/RowListeners/ExcludingReadersGroupsExportingRowListener.php");
 class TestExcludingReadersGroupsExportingRowListener extends AbstractTestGroupsExportingRowListener{
 
-    protected function createListener(\WriterFactory $factory, $excludeRowsFrom = array(), $excludedString = ".excluded"){
-        return Core::getCodeCoverageWrapper("ExcludingReadersGroupsExportingRowListener", array($factory, $excludeRowsFrom, $excludedString));
+    protected function createListener(\HashCalculator $hashCalculator, \WriterFactory $factory, $excludeRowsFrom = array(), $excludedString = ".excluded"){
+        return Core::getCodeCoverageWrapper("ExcludingReadersGroupsExportingRowListener", array($hashCalculator, $factory, $excludeRowsFrom, $excludedString));
     }
 
     function testNoExcludedReaders(){
+        $hCalc = new \StringHashCalculator();
         $mockFactory = new MockRamWriterFactory();
-        $listener = $this->createListener($mockFactory, array());
+        $listener = $this->createListener($hCalc, $mockFactory, array());
 
-        $reader = $this->createRamReader("testNoExcludedReaders", array(
+        $data = array(
             array("column" => "value")
-        ));
-        $hash = "hash";
+        );
+        $reader = $this->createRamReader("testNoExcludedReaders", $data);
+        $hash = $hCalc->calculate($data[0]);
 
         Assert::areIdentical(0, count($mockFactory->createdWriters));
 
-        $listener->receiveRow($reader, 0, $hash);
+        $listener->receiveRow($reader, 0);
 
         Assert::areIdentical(1, count($mockFactory->createdWriters));
 
@@ -30,19 +32,22 @@ class TestExcludingReadersGroupsExportingRowListener extends AbstractTestGroupsE
     }
 
     function testExcludingReader(){
+        $hCalc = new \StringHashCalculator();
         $mockFactory = new MockRamWriterFactory();
-        $reader = $this->createRamReader("testNoExcludedReaders", array(
-            array("column" => "value")
-        ));
-        $excludingString = ".excluded";
-        $listener = $this->createListener($mockFactory, array($reader), $excludingString);
 
-        $hash = "hash";
+        $data = array(
+            array("column" => "value")
+        );
+        $reader = $this->createRamReader("testNoExcludedReaders", $data);
+        $excludingString = ".excluded";
+        $listener = $this->createListener($hCalc, $mockFactory, array($reader), $excludingString);
+
+        $hash = $hCalc->calculate($data[0]);
         $excludedHash = $hash . $excludingString;
 
         Assert::areIdentical(0, count($mockFactory->createdWriters));
 
-        $listener->receiveRow($reader, 0, $hash);
+        $listener->receiveRow($reader, 0);
 
         Assert::areIdentical(1, count($mockFactory->createdWriters));
 

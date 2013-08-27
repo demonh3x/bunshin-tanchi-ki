@@ -11,7 +11,7 @@ include_once("mocks/MockRamWriterFactory.php");
 
 abstract class AbstractTestGroupsExportingRowListener extends TestFixture{
 
-    abstract protected function createListener(\WriterFactory $factory);
+    abstract protected function createListener(\HashCalculator $hashCalculator, \WriterFactory $factory);
 
     protected function createRamReader($ramId, $readerData){
         unset($GLOBALS[$ramId]);
@@ -26,24 +26,24 @@ abstract class AbstractTestGroupsExportingRowListener extends TestFixture{
     }
 
     protected function assertCreatedGroups($expectedGroups = 0, $readers = 0, $hashes = 0){
+        $hCalc = new \StringHashCalculator();
         $factory = new MockRamWriterFactory();
-        $listener = $this->createListener($factory);
+        $listener = $this->createListener($hCalc, $factory);
 
         Assert::areIdentical(0, count($factory->createdWriters));
         $data = array();
         for ($readerIndex = 0; $readerIndex < $readers; $readerIndex++){
             for ($hashIndex = 0; $hashIndex < $hashes; $hashIndex++){
-                $data[] = array("reader$readerIndex" => "hash$hashIndex");
+                $data[] = array("column" => "value$hashIndex");
             }
         }
 
         for ($readerIndex = 0; $readerIndex < $readers; $readerIndex++){
             $readerN = $this->createRamReader("assertCreatedGroups-Reader$readerIndex", $data);
             for ($hashIndex = 0; $hashIndex < $hashes; $hashIndex++){
-                $hashN = "hash$hashIndex";
                 $n = $readerIndex + $hashIndex;
 
-                $listener->receiveRow($readerN, $n, $hashN);
+                $listener->receiveRow($readerN, $n);
             }
         }
 
@@ -51,25 +51,26 @@ abstract class AbstractTestGroupsExportingRowListener extends TestFixture{
     }
 
     public function testDoNotCreateSameWriterTwice(){
+        $hCalc = new \StringHashCalculator();
         $factory = new MockCreateOnceWriterFactory();
-        $listener = $this->createListener($factory);
+        $listener = $this->createListener($hCalc, $factory);
 
-        $hash = "Foo";
         $reader = $this->createRamReader("testDoNotCreateSameWriterTwice", array(
             array("column" => "value")
         ));
 
-        $listener->receiveRow($reader, 0, $hash);
+        $listener->receiveRow($reader, 0);
         try {
-            $listener->receiveRow($reader, 0, $hash);
+            $listener->receiveRow($reader, 0);
         } catch (\Exception $e){
             throw $e;
         }
     }
 
     public function testExporting(){
+        $hCalc = new \StringHashCalculator();
         $mockFactory = new MockRamWriterFactory();
-        $listener = $this->createListener($mockFactory);
+        $listener = $this->createListener($hCalc, $mockFactory);
 
         Assert::areIdentical(0, count($mockFactory->createdWriters));
 
@@ -77,10 +78,9 @@ abstract class AbstractTestGroupsExportingRowListener extends TestFixture{
             array("column1" => "value1"),
             array("column1" => "value2"),
         );
-        $hash1 = "hash1";
         $reader1 = $this->createRamReader("reader1", $data);
 
-        $listener->receiveRow($reader1, 0, $hash1);
+        $listener->receiveRow($reader1, 0);
         Assert::areIdentical(1, count($mockFactory->createdWriters));
         $assertingReader1 = new \RamRandomReader($mockFactory->lastCreatedRamId);
         Assert::areIdentical(1, $assertingReader1->getRowCount());

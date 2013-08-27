@@ -180,7 +180,7 @@ class TestOccurrenceScanner extends TestFixture{
 }
 class NotMatchingReceiver implements \RowListener{
     public $rows = array();
-    function receiveRow(\RandomReader $reader, $rowIndex, $rowHash){
+    function receiveRow(\RandomReader $reader, $rowIndex){
         $this->rows[] = $reader->readRow($rowIndex);
     }
 }

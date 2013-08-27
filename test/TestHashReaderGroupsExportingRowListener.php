@@ -5,8 +5,8 @@ include_once("AbstractTestGroupsExportingRowListener.php");
 include_once(__ROOT_DIR__ . "src/RowListeners/HashReaderGroupsExportingRowListener.php");
 class TestHashReaderGroupsExportingRowListener extends AbstractTestGroupsExportingRowListener{
 
-    protected function createListener(\WriterFactory $factory){
-        return Core::getCodeCoverageWrapper("HashReaderGroupsExportingRowListener", array($factory));
+    protected function createListener(\HashCalculator $hashCalculator, \WriterFactory $factory){
+        return Core::getCodeCoverageWrapper("HashReaderGroupsExportingRowListener", array($hashCalculator, $factory));
     }
 
     function testSameGroupIfSameHashAndReader(){

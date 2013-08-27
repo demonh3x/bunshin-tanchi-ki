@@ -7,8 +7,8 @@ class ExcludingReadersGroupsExportingRowListener extends GroupsExportingRowListe
     private $excludeRowsFrom = array();
     private $additionalExcludedGroupId;
 
-    function __construct(WriterFactory $factory, $excludeRowsFrom, $excludedGroupId = ".excluded"){
-        parent::__construct($factory);
+    function __construct(HashCalculator $hashCalculator, WriterFactory $factory, $excludeRowsFrom, $excludedGroupId = ".excluded"){
+        parent::__construct($hashCalculator, $factory);
 
         $this->additionalExcludedGroupId = $excludedGroupId;
         foreach ($excludeRowsFrom as $reader){
