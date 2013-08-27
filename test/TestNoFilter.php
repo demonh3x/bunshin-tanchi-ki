@@ -1,7 +1,7 @@
 <?php
 namespace Enhance;
 
-include_once(__ROOT_DIR__ . "src/HashCalculators/Filters/NoFilter.php");
+include_once(__ROOT_DIR__ . "src/HashCalculators/Filters/NullFilter.php");
 
 class TestNoFilter extends TestFixture{
 
@@ -12,7 +12,7 @@ class TestNoFilter extends TestFixture{
     }
 
     function testSameInputAndOutput(){
-        $filter = Core::getCodeCoverageWrapper("NoFilter");
+        $filter = Core::getCodeCoverageWrapper("NullFilter");
         $input = "Hello World!";
         Assert::areIdentical($input, $filter->applyTo($input));
     }
