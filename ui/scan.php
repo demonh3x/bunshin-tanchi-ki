@@ -103,6 +103,7 @@
                 new FilteringWriter($uniquesWriter, $cleaningFilters)
             ),
             new ExcludingReadersGroupsExportingRowListener(
+                $calculator,
                 new FilteringWriterFactory(new CustomWriterFactory(), $cleaningFilters),
                 array()
             )
