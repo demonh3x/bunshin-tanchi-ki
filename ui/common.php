@@ -151,7 +151,7 @@ function getDupGroupsHTML($dedupsPageURL){
 function getAvailableFilters(){
     $filters_match = __FILTERS_DIR__ . "*Filter.php";
     $filters = glob($filters_match);
-    $excludedFilters = array("No", "");
+    $excludedFilters = array("Null", "");
 
     foreach ($filters as $key => $filter){
         $parts = explode("/", $filter);
