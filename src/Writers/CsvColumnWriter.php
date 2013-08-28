@@ -38,6 +38,7 @@ class CsvColumnWriter extends CsvWriter{
     private function readColumns(){
         $fp = fopen($this->filePath, "r");
         $this->columnsOrder = array_values(fgetcsv($fp));
+        fclose($fp);
     }
 
     private function sort($data){
