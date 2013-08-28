@@ -25,7 +25,7 @@
          * Create the CsvRandomReader object.
          * It receives the file path in the constructor.
          */
-        $reader = new CsvRandomReader("amaya_data_template.csv");
+        $reader = new CsvRandomReader("data.csv");
 
 
         /*

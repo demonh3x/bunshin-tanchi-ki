@@ -14,6 +14,8 @@
 <body>
     <h1>FilteringRandomReader example (RandomReader interface)</h1>
     <p>A RandomReader reads data rows from somewhere (depends on the implementation).</p>
+    <p>The FilteringRandomReader applies a RowFilter when reading the data from another RandomReader.<br>
+        In this example: ColumnMapperRowFilter to change the column names, because they are not defined in the CSV file.</p>
     <?php
         define("__ROOT_DIR__", "../../");
 
@@ -32,7 +34,7 @@
          * - the RowFilter to apply to the read data
          */
         $reader = new FilteringRandomReader(
-            new CsvRandomReader("amaya_data_template.csv"),
+            new CsvRandomReader("data.csv"),
             new ColumnMapperRowFilter(array(
                 "0" => "ID",
                 "1" => "Company",

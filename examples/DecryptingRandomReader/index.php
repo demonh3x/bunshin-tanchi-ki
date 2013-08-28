@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>CsvColumnRandomReader example (RandomReader interface)</title>
+    <title>DecryptingRandomReader example (RandomReader interface)</title>
     <style type="text/css">
         table tr:first-child {
             background: lightgrey;
@@ -12,24 +12,33 @@
     </style>
 </head>
 <body>
-    <h1>CsvColumnRandomReader example (RandomReader interface)</h1>
-    <p>A RandomReader reads data rows from somewhere (depends on the implementation, in this case: from a CSV file).</p>
+    <h1>DecryptingRandomReader example (RandomReader interface)</h1>
+    <p>A RandomReader reads data rows from somewhere (depends on the implementation).</p>
+    <p>The DecryptingRandomReader decrypts the data when reading from another RandomReader.</p>
     <?php
         define("__ROOT_DIR__", "../../");
+
+        include_once(__ROOT_DIR__ . "src/RandomReaders/DecryptingRandomReader.php");
 
         include_once(__ROOT_DIR__ . "src/RandomReaders/CsvColumnRandomReader.php");
 
         include_once(__ROOT_DIR__ . "HTML.php");
 
         /*
-         * Create the CsvColumnRandomReader object.
-         * It receives the file path in the constructor.
+         * Create the DecryptingRandomReader object.
+         *
+         * It receives in the constructor:
+         * - another RandomReader where to get the data from
+         * - the password to decrypt the data with
          */
-        $reader = new CsvColumnRandomReader("data.csv");
-
+        $decryptingPassword = "Foo";
+        $reader = new DecryptingRandomReader(
+            new CsvColumnRandomReader("encrypted_file.csv"),
+            $decryptingPassword
+        );
 
         /*
-         * The class CsvColumnRandomReader implements the RandomReader interface.
+         * The class DecryptingRandomReader implements the RandomReader interface.
          *
          * That interface defines a method called:
          * getRowCount()
@@ -39,9 +48,8 @@
         $rowCount = $reader->getRowCount();
         echo "<h2>Row count: <input type='text' disabled='disabled' value='$rowCount'/></h2>";
 
-
         /*
-         * The class CsvColumnRandomReader implements the RandomReader interface.
+         * The class DecryptingRandomReader implements the RandomReader interface.
          *
          * That interface defines another method:
          * readRow($index)
@@ -56,6 +64,5 @@
         echo HTML::table($data);
 
     ?>
-    <p>Notice that the first row is interpreted as the column names.</p>
 </body>
 </html>
