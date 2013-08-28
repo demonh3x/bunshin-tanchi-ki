@@ -68,7 +68,7 @@ class TestExcludingRowListener extends TestFixture{
             $excludingRowListener->receiveRow($ramReader, $rowIndex);
         }
 
-        Assert::areIdentical($data[0], $fakeRowListener->data[0]);
+        Assert::areIdentical($data, $fakeRowListener->data);
     }
 
     function testReadingRowFromExcludedReader(){
@@ -85,8 +85,19 @@ class TestExcludingRowListener extends TestFixture{
                 "surname" => "Adsuara"
             )
         );
+        $data2 = array (
+            array (
+                "name" => "XXXXXXXX",
+                "surname" => "XXXXXXXX"
+            ),
+            array (
+                "name" => "111111111",
+                "surname" => "111111111"
+            )
+        );
 
         $ramReader = $this->createRamReader("reader1", $data);
+        $ramReader2 = $this->createRamReader("reader2", $data2);
 
         $excludeRowsFrom = array(
             $ramReader
@@ -97,7 +108,11 @@ class TestExcludingRowListener extends TestFixture{
         {
             $excludingRowListener->receiveRow($ramReader, $rowIndex);
         }
+        for ($rowIndex = 0; $rowIndex < $ramReader2->getRowCount(); $rowIndex++)
+        {
+            $excludingRowListener->receiveRow($ramReader2, $rowIndex);
+        }
 
-        Assert::areNotIdentical($data[0], $fakeRowListener->data[0]);
+        Assert::areIdentical($data2, $fakeRowListener->data);
     }
 }
