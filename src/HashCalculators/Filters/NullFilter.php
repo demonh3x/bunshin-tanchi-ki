@@ -2,7 +2,7 @@
 
 include_once("Filter.php");
 
-class NoFilter implements Filter{
+class NullFilter implements Filter{
     function applyTo($text){
         return $text;
     }

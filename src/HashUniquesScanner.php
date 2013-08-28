@@ -4,7 +4,6 @@ include_once("HashCalculators/HashCalculator.php");
 include_once("RandomReaders/RandomReader.php");
 
 include_once("UniquesList.php");
-include_once("Row.php");
 
 include_once("RowListeners/RowListener.php");
 include_once("RowListeners/NullRowListener.php");
@@ -105,5 +104,41 @@ class HashUniquesScanner {
 
     private function sendDuplicate(Row $row){
         $this->duplicatesListener->receiveRow($row->getReader(), $row->getIndex());
+    }
+}
+
+class Row {
+    private $reader, $index;
+    private $hash, $hashCalculator;
+    private $data;
+
+    function __construct(RandomReader $reader, $index, HashCalculator $hashCalculator){
+        $this->reader = $reader;
+        $this->index = $index;
+
+        $this->setHashCalculator($hashCalculator);
+    }
+
+    private function setHashCalculator(HashCalculator $hashCalculator){
+        $this->hashCalculator = $hashCalculator;
+        $this->hash = $this->hashCalculator->calculate(
+            $this->getData()
+        );
+    }
+
+    function getData(){
+        return $this->reader->readRow($this->index);
+    }
+
+    function getHash(){
+        return $this->hash;
+    }
+
+    function getReader(){
+        return $this->reader;
+    }
+
+    function getIndex(){
+        return $this->index;
     }
 }
