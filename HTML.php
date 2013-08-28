@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by JetBrains PhpStorm.
- * User: Mateu Adsuara Sabater
- * Date: 19/02/13
- * Time: 1:09
- */
+
 class HTML
 {
     static function table($array){
