@@ -19,9 +19,11 @@ define("__VIEW_DEDUP_FILE__", "dedup.php");
 define("__VIEW_DUPS_GROUP_FILE__", "editDupsGroup.php");
 define("__GENERATE_FIELDS_FILE__", "generateFields.php");
 define("__CUSTOMIZE_FIELDS_GENERATOR__", "customizePURLGenerator.php");
+define("__MERGE_DUPS_GROUP_TO_UNIQUES__", "mergeToUniques.php");
 
 include_once("HTML.php");
 include_once(__ROOT_DIR__ . "src/RandomReaders/CsvColumnRandomReader.php");
+include_once(__ROOT_DIR__ . "src/Writers/CsvWriter.php");
 
 function getNotExistingDedupDirName(){
     $i = 0;
@@ -42,9 +44,21 @@ function getViewDupsGroupLink($file){
     return  __VIEW_DUPS_GROUP_FILE__ . "?dupsGroup=" . urlencode($file) . $idColParameter;
 }
 
+
 function getCustomizeFieldsGeneratorLink($file, $dedupsPageURL){
     return __CUSTOMIZE_FIELDS_GENERATOR__ . "?file=" . $file . "&dedupsPageURL=" . $dedupsPageURL;
 }
+
+function getMergeDupsGroupToUniquesLink($file, $dedupsPageURL){
+
+    $separateDupsGroupPath = explode(__DUPLICATES_FOLDER__, $file);
+    $dedupDir = substr($separateDupsGroupPath[0], 0, -1);
+    $uniquesFilePath = $dedupDir. "/uniques.csv";
+
+    return  __MERGE_DUPS_GROUP_TO_UNIQUES__ . "?file=" . urlencode($file) . "&dedupsPageURL=" . $dedupsPageURL .
+        "&uniquesFilePath=" . $uniquesFilePath;
+}
+
 
 function getUniquesFile(){
     $uniques_file_match = $_REQUEST["dir"] . "/" . __UNIQUES_FILE__;
@@ -141,8 +155,11 @@ function getDupGroupsHTML($dedupsPageURL){
     foreach ($dedups as $id => $dedup){
         $link = getViewDupsGroupLink($dedup);
         $generateLink = getCustomizeFieldsGeneratorLink($dedup, $dedupsPageURL);
-        $dedups[$id] = HTML::a($dedup, $link) . " - [" . HTML::a("Generate PURL", $generateLink) . "]
-                       - [" . HTML::a("Download", $dedup) . "] - Rows: " . getRowCount(urldecode($dedup));
+        $dedups[$id] = HTML::a($dedup, $link) . "
+                       - [" . HTML::a("Generate PURL", $generateLink) . "]
+                       - [" . HTML::a("Download", $dedup) . "]
+                       - [" . HTML::a("Merge To Uniques", getMergeDupsGroupToUniquesLink($dedup, $dedupsPageURL)) . "]
+                       - Rows: " . getRowCount(urldecode($dedup));
     }
 
     return HTML::ol($dedups);
