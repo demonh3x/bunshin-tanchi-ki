@@ -6,11 +6,17 @@ include_once(__ROOT_DIR__ . "src/HashCalculators/NullRowFilter.php");
 
 class ExcludingRowListener implements RowListener{
     private $listener;
-    private $excludeRowsFrom;
+    private $excludeRowsFrom = array();
 
-    function __construct(RowListener $listener, $excludeRowsFrom){
+    function __construct(RowListener $listener, Array $excludeRowsFrom){
         $this->listener = $listener;
-        $this->excludeRowsFrom = $excludeRowsFrom;
+        foreach ($excludeRowsFrom as $reader){
+            $this->addExcludedReader($reader);
+        }
+    }
+
+    private function addExcludedReader(RandomReader $reader){
+        $this->excludeRowsFrom[] = $reader;
     }
 
     function receiveRow(RandomReader $reader, $rowIndex){
