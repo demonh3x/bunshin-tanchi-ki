@@ -1,6 +1,7 @@
 <?php
 
 include_once("common.php");
+include_once(__ROOT_DIR__ . "src/Writers/CsvColumnWriter.php");
 
 $dupsGroupFile = $_REQUEST["file"];
 $uniquesFilePath = $_REQUEST["uniquesFilePath"];
@@ -11,20 +12,17 @@ $dedupDirParts = explode(__DUPLICATES_FOLDER__, $dupsGroupFile);
 $dedupDir = substr($dedupDirParts[0], 0, -1);
 
 
-$readDupsGroupFile = new CsvRandomReader($dupsGroupFile);
-$dupsGroupData = array();
-for($row = 0; $row < $readDupsGroupFile->getRowCount(); $row++)
-{
-    $htmlInformation .= "<h1>Reading row: $row</h1>";
-    $dupsGroupData[] = $readDupsGroupFile->readRow($row);
-}
+$reader = new CsvColumnRandomReader($dupsGroupFile);
+$writer = new CsvColumnWriter($uniquesFilePath);
 
-$writer = new CsvWriter($uniquesFilePath);
-for($row = 1; $row < count($dupsGroupData); $row++)
+for($index = 0; $index < $reader->getRowCount(); $index++)
 {
-    $htmlInformation .= "<h1>Writing row: $row</h1>";
-    $writer->writeRow($dupsGroupData[$row]);
+    $htmlInformation .= "<h1>Merging row: $index</h1>";
+    $row = $reader->readRow($index);
+    $writer->writeRow($row);
 }
+$reader = null;
+$writer = null;
 
 $fileParts = explode("/", $dupsGroupFile);
 $fileName = $fileParts[count($fileParts)-1];
@@ -36,7 +34,6 @@ $target = $targetDir . $fileName;
 $htmlInformation .= "<h1>Moving DupsGroup File: $dupsGroupFile to: $target</h1>";
 rename($dupsGroupFile, $target);
 if (!is_file($target)){
-    beforeError();
     throw new Exception("Could not flag the dups group as merged!");
 }
 
