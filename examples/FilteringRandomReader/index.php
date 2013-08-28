@@ -29,7 +29,7 @@
          *
          * It receives in the constructor:
          * - another RandomReader where to get the data from
-         * - the filter to apply to the read data
+         * - the RowFilter to apply to the read data
          */
         $reader = new FilteringRandomReader(
             new CsvRandomReader("amaya_data_template.csv"),
@@ -55,7 +55,6 @@
          */
         $rowCount = $reader->getRowCount();
         echo "<h2>Row count: <input type='text' disabled='disabled' value='$rowCount'/></h2>";
-
 
         /*
          * The class FilteringRandomReader implements the RandomReader interface.

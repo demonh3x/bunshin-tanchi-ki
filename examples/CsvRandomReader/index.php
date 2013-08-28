@@ -56,6 +56,6 @@
         echo HTML::table($data);
 
     ?>
-    <p>Notice that the column names are interpreted as the first data row (because it actually is a data row), and the column names are the column indexes.</p>
+    <p>Notice that the column names are interpreted as the first data row (because they are actually a data row), and the column names are the column indexes.</p>
 </body>
 </html>
