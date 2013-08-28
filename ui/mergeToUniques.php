@@ -34,12 +34,18 @@ $target = $targetDir . $fileName;
 $htmlInformation .= "<h1>Moving DupsGroup File: $dupsGroupFile to: $target</h1>";
 rename($dupsGroupFile, $target);
 if (!is_file($target)){
+    beforeError();
     throw new Exception("Could not flag the dups group as merged!");
 }
 
 
 header('Location: ' . getViewDedupLink($dedupDir));
 
+function beforeError(){
+    global $htmlInformation, $writer;
+    echo $htmlInformation;
+    $writer = null;
+}
 
 
 
