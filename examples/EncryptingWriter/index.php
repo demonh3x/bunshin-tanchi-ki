@@ -22,7 +22,7 @@
 
         include_once(__ROOT_DIR__ . "src/Writers/CsvColumnWriter.php");
 
-        include_once(__ROOT_DIR__ . "HTML.php");
+        include_once(__ROOT_DIR__ . "ui/HTML.php");
 
         $filePath = "encrypted_output_file.csv";
         if (is_file($filePath)){

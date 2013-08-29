@@ -32,7 +32,7 @@
         include_once(__ROOT_DIR__ . "src/Writers/RamWriter.php");
 
 
-        include_once(__ROOT_DIR__ . "HTML.php");
+        include_once(__ROOT_DIR__ . "ui/HTML.php");
 
         function printHTMLTable(RandomReader $reader){
             $data = array();

@@ -24,7 +24,7 @@
         include_once(__ROOT_DIR__ . "src/RandomReaders/CsvRandomReader.php");
         include_once(__ROOT_DIR__ . "src/HashCalculators/ColumnMapperRowFilter.php");
 
-        include_once(__ROOT_DIR__ . "HTML.php");
+        include_once(__ROOT_DIR__ . "ui/HTML.php");
 
         /*
          * Create the FilteringRandomReader object.
