@@ -3,6 +3,10 @@ include_once("common.php");
 
 print_r($_FILES);
 
+if (!is_dir(__DEDUP_DIR__)){
+    mkdir(__DEDUP_DIR__);
+}
+
 $newDir = getNotExistingDedupDirName();
 $dedupDir = explode("/", $newDir);
 print_r($dedupDir);
