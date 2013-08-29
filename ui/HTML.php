@@ -48,7 +48,7 @@ class HTML {
             $html .= "<tr>";
             foreach ($array[$i] as $key => $value){
                 $html .= "<td>";
-                $html .= $value;
+                $html .= str_replace(" ", "&nbsp;", $value);;
             }
         }
 
