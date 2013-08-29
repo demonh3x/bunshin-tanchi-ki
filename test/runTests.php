@@ -11,13 +11,13 @@ namespace Enhance;
         define("__TEST_DB_IP__", "localhost");
         define("__TEST_DB_USER__", "root");
         define("__TEST_DB_PASSWORD__", "root");
-        define("__TEST_DB_SCHEMA__", "sqlReaderTests");
+        define("__TEST_DB_SCHEMA__", "DeduplicatorTests");
 
         include_once('EnhanceTestFramework.php');
         $filterRegex =  "//";
-        $excludeRegex = "//";
+        $excludeRegex = "/Sql/";
 
-        echo "PHP Version: " . phpversion() . "<br>";
+        echo "PHP Version: " . phpversion() . "<br><br>";
 
         $excludedTests = array();
         function logTestExcluded($filename){
@@ -39,7 +39,7 @@ namespace Enhance;
             }
         }
 
-        echo "Excluded Tests: " . implode(", ", $excludedTests) . "<br>";
+        echo "<b>Excluded Tests:</b> " . implode(", ", $excludedTests) . "<br>";
         Core::runTests();
     ?>
 
