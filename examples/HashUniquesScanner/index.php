@@ -15,7 +15,7 @@
     <h1>HashUniquesScanner example</h1>
     <p>The HashUniquesScanner is the class that detects the uniques and the duplicates in a series of data sources (RandomReaders).</p>
     <p>In this example we are checking the rows that have the same Firstname and Surname. Applying comparing filters when generating the hashes and cleaning filters to the output Writers.</p>
-    <p>We are also excluding the old data from getting into the unique rows output. And separating the excluded old data in the duplicates groups.</p>
+    <p>We are also excluding the old data from getting into the unique rows output. And separating the excluded old data from the duplicates groups.</p>
     <?php
         define("__ROOT_DIR__", "../../");
 
