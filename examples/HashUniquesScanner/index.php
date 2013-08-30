@@ -151,7 +151,6 @@
 
 
         $uniquesGlobalVariable = "uniques";
-        $duplicatesGlobalVariable = "duplicates";
         $salutationColumn = "Salutation";
         $cleaningFilterGroup = new PerColumnRowFilter(array(
             $salutationColumn => new FilterGroup(array(
