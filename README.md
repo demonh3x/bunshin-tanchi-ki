@@ -1,4 +1,4 @@
-bunshin-tanchi-ki
+tanchi-bunshin
 =================
 
 Duplicated data detector
